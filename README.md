@@ -17,6 +17,8 @@ NixOs beginner tutorials often encourage using flakes and modularizing the decla
   * [starter configs](https://github.com/Misterio77/nix-starter-configs)
   * [kickstarter config](https://github.com/ryan4yin/nix-config/tree/i3-kickstarter)
     * [nixos-and-flakes authors config](https://github.com/ryan4yin/nix-config)
+* [direnv blog post](https://determinate.systems/posts/nix-direnv/): how to configure specific development environments
+* [declarative gnome configuration](https://determinate.systems/posts/declarative-gnome-configuration-with-nixos/)
 
 ## Setup using nix flakes
 
@@ -30,13 +32,29 @@ Add to flake.nix:
     # replace <your-hostname> with your actual hostname
     nixosConfigurations.<your-hostname> = nixpkgs.lib.nixosSystem {
       modules = [
-        common.modules.basic-test
+        common.hm.basic-test
+        common.system.bluetooth
       ];
     };
   };
 }
 ```
 
+## Structure
+
+I use [home-manager](https://github.com/nix-community/home-manager) and enable most binaries and configurations there keeping NixOs itself at bare minimum. Modules are seperated by directory:
+
+* system: modules targeted for NixOs
+* hm-base: minimal default configuration that is enabled on every host
+* hm: home-manager modules that are only selectively enabled
+
 ## Developing
 
-... yet to document
+Testing locally before committing and pushing by setting url to a local path:
+
+```nix
+{
+    inputs.common.url = "git+file://<absolut-path-to-directory>";
+}
+```
+

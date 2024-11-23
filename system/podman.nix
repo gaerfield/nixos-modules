@@ -28,6 +28,7 @@ in {
   users.users."${mainuser}".extraGroups = [ "docker" ];
 
   programs.fish = {
-    shellAbbrs.dco = "docker compose";
+    shellAbbrs.p = "podman";
+    shellAbbrs.dco = "podman compose";
   };
 }

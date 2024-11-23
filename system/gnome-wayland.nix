@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   # https://nixos.wiki/wiki/GNOME
@@ -17,7 +17,20 @@
       noto-fonts-color-emoji
       wl-clipboard
       libsecret
+      # get metadata info for media files in nautilus 
+      gst_all_1.gst-plugins-good
+      gst_all_1.gst-plugins-bad
+      gst_all_1.gst-plugins-ugly
+      gst_all_1.gst-libav
     ];
+
+    # get metadata info for media files in nautilus
+    sessionVariables.GST_PLUGIN_SYSTEM_PATH_1_0 = lib.makeSearchPathOutput "lib" "lib/gstreamer-1.0" (with pkgs.gst_all_1; [
+      gst-plugins-good
+      gst-plugins-bad
+      gst-plugins-ugly
+      gst-libav
+    ]);
 
     # enable wayland support for all chromium and most electron apps
     sessionVariables.NIXOS_OZONE_WL = "1";

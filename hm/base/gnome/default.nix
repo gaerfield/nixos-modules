@@ -8,7 +8,7 @@
   ];
 
   fonts.fontconfig.enable = true;
-  
+
   # TODO remove when `pkgs.cantarell-fonts` is no more broken on darwin
   #home.packages = lib.optionals pkgs.stdenv.isLinux ([
   #  pkgs.cantarell-fonts
@@ -27,9 +27,10 @@
     # material-shell # tiling manager - vanished, but why
     #pano # clipboard-manager, required libgda and gsound
     clipboard-indicator # replacement until pano works *sigh
-    pkgs.libgda6
     pkgs.gsound
     pkgs.meld
+    # gstreamer plugins hopefully displaying some metadata infos
+    pkgs.gst_all_1.gst-plugins-good
     #pkgs.copyq
   ];
 

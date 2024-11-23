@@ -20,7 +20,9 @@ NixOs beginner tutorials often encourage using flakes and modularizing the decla
 * [direnv blog post](https://determinate.systems/posts/nix-direnv/): how to configure specific development environments
 * [declarative gnome configuration](https://determinate.systems/posts/declarative-gnome-configuration-with-nixos/)
 
-## Setup using nix flakes
+## usage
+
+### Setup using flakes
 
 Add to flake.nix:
 ```nix
@@ -32,12 +34,19 @@ Add to flake.nix:
     # replace <your-hostname> with your actual hostname
     nixosConfigurations.<your-hostname> = nixpkgs.lib.nixosSystem {
       modules = [
-        common.hm.basic-test
         common.system.bluetooth
+        common.hm.base.shell
+        common.hm.vlc
       ];
     };
   };
 }
+```
+
+### update
+
+```
+nix flake update common
 ```
 
 ## Structure

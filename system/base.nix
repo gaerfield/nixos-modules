@@ -95,7 +95,7 @@ in {
         noto-fonts-cjk-sans
 
         # nerdfonts
-        (nerdfonts.override {fonts = ["FiraCode" "JetBrainsMono" "Meslo"];})
+        (nerd-fonts.override {fonts = ["FiraCode" "JetBrainsMono" "Meslo"];})
       ];
 
       # use fonts specified by user rather than default ones

@@ -1,6 +1,4 @@
-{ pkgs, ... }: {
-  home.packages = [ pkgs.gnome-boxes ];
-
+{
   # Enable UEFI firmware support
   # https://nixos.wiki/wiki/Libvirt
   xdg.configFile."libvirt/qemu.conf".text = ''

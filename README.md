@@ -19,6 +19,17 @@ NixOs beginner tutorials often encourage using flakes and modularizing the decla
     * [nixos-and-flakes authors config](https://github.com/ryan4yin/nix-config)
 * [direnv blog post](https://determinate.systems/posts/nix-direnv/): how to configure specific development environments
 * [declarative gnome configuration](https://determinate.systems/posts/declarative-gnome-configuration-with-nixos/)
+* [impermanence](https://github.com/nix-community/impermanence) resets the OS persistence to its declared state (execept exceptions)
+  * [why this is a good idea](https://grahamc.com/blog/erase-your-darlings/)
+* automated nixos setups
+  * [nixos-anywhere](https://github.com/nix-community/nixos-anywhere)
+    * [basic example](https://github.com/nix-community/nixos-anywhere-examples/blob/main/flake.nix)
+    * [secrets](https://nix-community.github.io/nixos-anywhere/howtos/secrets.html)
+  * [disko](https://github.com/nix-community/disko) used by nixos anywhere
+    * [luks-btrfs example](https://github.com/nix-community/disko/blob/master/example/luks-btrfs-subvolumes.nix) 
+* nixos server example:
+  * [nixos as a server](https://guekka.github.io/nixos-server-1/)
+  * [tailscale setup](https://guekka.github.io/nixos-server-2/)
 
 ## usage
 

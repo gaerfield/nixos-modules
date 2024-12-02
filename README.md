@@ -32,6 +32,7 @@ NixOs beginner tutorials often encourage using flakes and modularizing the decla
 * nixos server example:
   * [nixos as a server](https://guekka.github.io/nixos-server-1/)
   * [tailscale setup](https://guekka.github.io/nixos-server-2/)
+* [nix dev environments](https://abhinavsarkar.net/posts/just-nix-podman-combo/)
 
 ## usage
 

@@ -18,7 +18,9 @@ NixOs beginner tutorials often encourage using flakes and modularizing the decla
   * [kickstarter config](https://github.com/ryan4yin/nix-config/tree/i3-kickstarter)
     * [nixos-and-flakes authors config](https://github.com/ryan4yin/nix-config)
 * [direnv blog post](https://determinate.systems/posts/nix-direnv/): how to configure specific development environments
-* [declarative gnome configuration](https://determinate.systems/posts/declarative-gnome-configuration-with-nixos/)
+* declarative gnome configuration
+  * [determinate.systems](https://determinate.systems/posts/declarative-gnome-configuration-with-nixos/)
+  * [hoverbear](https://hoverbear.org/blog/declarative-gnome-configuration-in-nixos/)
 * [impermanence](https://github.com/nix-community/impermanence) resets the OS persistence to its declared state (execept exceptions)
   * [why this is a good idea](https://grahamc.com/blog/erase-your-darlings/)
 * automated nixos setups

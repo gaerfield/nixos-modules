@@ -5,6 +5,7 @@
     ./flameshot.nix
     ./alacritty.nix
     ./notifications.nix
+    ./gnome-extensions.nix
   ];
 
   fonts.fontconfig.enable = true;

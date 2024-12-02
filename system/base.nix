@@ -83,7 +83,8 @@ in {
 
     # Enable CUPS to print documents.
     services.printing.enable = true;
-
+    
+    # https://wiki.nixos.org/wiki/Fonts
     fonts = {
       packages = with pkgs; [
         # icon fonts
@@ -93,9 +94,9 @@ in {
         noto-fonts
         noto-fonts-color-emoji
         noto-fonts-cjk-sans
-
-        # nerdfonts
-        (nerd-fonts.override {fonts = ["FiraCode" "JetBrainsMono" "Meslo"];})
+        nerd-fonts.fira-code
+        nerd-fonts.jetbrains-mono
+        nerd-fonts.meslo-lg
       ];
 
       # use fonts specified by user rather than default ones

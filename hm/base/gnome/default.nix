@@ -1,4 +1,4 @@
-{ pkgs, lib, colors, ... }: {
+{ pkgs, ... }: {
   imports = [
     ./theme.nix
     ./autostart.nix
@@ -18,20 +18,10 @@
   #  pkgs.yaru-theme
   #] ++ extensions);
 
-  home.packages = with pkgs.gnomeExtensions; [
-    # pkgs.gnome-extensions-cli
-    dash-to-dock
-    gsconnect
-    appindicator
-    gnome-40-ui-improvements
-    # material-shell # tiling manager - vanished, but why
-    #pano # clipboard-manager, required libgda and gsound
-    clipboard-indicator # replacement until pano works *sigh
-    pkgs.gsound
-    pkgs.meld
-    # gstreamer plugins hopefully displaying some metadata infos
-    pkgs.gst_all_1.gst-plugins-good
-    #pkgs.copyq
+  home.packages = with pkgs; [
+    meld
+    # gstreamer plugins hopefully displaying some metadata infos in nautilus
+    gst_all_1.gst-plugins-good
   ];
 
   dconf = {
@@ -111,25 +101,6 @@
         name = "restart gnome";
         command = "killall -3 gnome-shell";
         binding = "<Ctrl><Alt>BackSpace";
-      };
-
-      # gnome-shell-extensions
-      "org/gnome/shell" = {
-        disable-user-extensions = false;
-        enabled-extensions = [
-          "native-window-placement@gnome-shell-extensions.gcampax.github.com"
-          "gsconnect@andyholmes.github.io"
-          "dash-to-dock@micxgx.gmail.com"
-          "appindicatorsupport@rgcjonas.gmail.com"
-        ];
-      };
-
-      "org/gnome/shell/extensions/dash-to-dock" = {
-        show-trash = false;
-        hotkeys-show-dock = false;
-        apply-custom-theme = true;
-        hot-keys = false;
-        disable-overview-on-startup = true;
       };
     };
   };

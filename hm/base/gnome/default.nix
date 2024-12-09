@@ -57,7 +57,12 @@
         sort-order = [ "org.gnome.Documents.desktop" "org.gnome.Nautilus.desktop" ];
       };
       # super + right click allows for resizing windows
-      "org/gnome/desktop/wm/preferences".resize-with-right-button = true;
+      "org/gnome/desktop/wm/preferences" = {
+        # super + left = move windows, super + right = resize windows
+        mouse-button-modifier = "<Super>";
+        resize-with-right-button = true;
+        button-layout = "appmenu:minimize,close";
+      };
       "org/gnome/desktop/wm/keybindings" = {
         close=["<Super>q"];
         cycle-group=["<Super>Tab"];

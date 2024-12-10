@@ -13,10 +13,11 @@
       "org/virt-manager/virt-manager" = {
         system-tray = true;
         xmleditor-enabled = true;
-      };
-      "org/virt-manager/virt-manager/connections" = {
-        autoconnect = ["qemu:///system"];
-        uris = ["qemu:///system"];
+        connections = {
+          autoconnect = ["qemu:///system"];
+          uris = ["qemu:///system"];
+        };
+        "new-vm/firmware" = "uefi";
       };
 
       # "org/virt-manager/virt-manager/confirm" = {

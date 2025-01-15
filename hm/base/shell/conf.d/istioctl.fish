@@ -34,7 +34,7 @@ if status is-interactive
   alias istio-list="ls $ISTIO_CLI_BINARIES_LOCATION"
   alias istio-bin="ls -al $ISTIO_BINARY"
 
-  if test -f $ISTIO_BINARY
+  if type -q $ISTIO_BINARY
     istioctl completion fish | source
   end
 end

@@ -22,7 +22,8 @@
       in
       {
         base = {
-          home-manager = import ./hm/base/home-manager.nix;
+          miscellaneous = import ./hm/base/miscellaneous.nix;
+          home-manager-standalone = import ./hm/base/home-manager-standalone.nix;
           gnome = import ./hm/base/gnome;
           shell = import ./hm/base/shell;
           git = import ./hm/base/git.nix;

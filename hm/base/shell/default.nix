@@ -74,6 +74,20 @@
       p = "wl-paste";
       scpr = "rsync -avz --info=progress2 --human-readable";
       netstat = "ss";
+      convert-as-gif =  {
+        # source: https://www.baeldung.com/linux/gif-screen-recording
+        # -vf                       # video filters
+        #  fps=10                   # framerate to use, usually 10 for GIFs
+        #  scale=640:-1             # specifies width and height — -1 being proportional to the width
+        #  flags                    # additional parameters for the scale filter:
+        #    lanczos                # Lanczos resizing algorithm provides high-quality scaling
+        #    split[s0][s1]          # splits the video stream into two for generating and applying the color palette
+        #    [s0]palettegen[p]      # generates color palette from s0 and stores it in p
+        #    [s1][p]paletteuse      # applies the color palette from p to s1
+        # -loop 0: number of counts to loop, 0 loops the GIF indefinitely
+        expansion = ", ffmpeg vf \"fps=10,scale=640:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 -i %input.mp4 output.gif'";
+        setCursor = true;
+      };
     };
   };
 
@@ -113,6 +127,8 @@
     # it provides the command `nom` works just like `nix`
     # with more details log output
     nix-output-monitor
+    # put a ',' in front to run a command without installing it
+    comma
 
     # productivity
     glow # markdown previewer in terminal

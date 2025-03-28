@@ -7,41 +7,43 @@
   programs.vscode = {
     enable = true;
     package = pkgs.vscodium;
+    
+    profiles.default = {
+      enableUpdateCheck = false;
+      enableExtensionUpdateCheck = false;
 
-    enableUpdateCheck = false;
-    enableExtensionUpdateCheck = false;
+      mutableExtensionsDir = false;
 
-    mutableExtensionsDir = false;
+      extensions = with pkgs.vscode-extensions; [
+        shd101wyy.markdown-preview-enhanced
+        jnoortheen.nix-ide
+        github.copilot
+      ];
 
-    extensions = with pkgs.vscode-extensions; [
-      shd101wyy.markdown-preview-enhanced
-      jnoortheen.nix-ide
-      github.copilot
-    ];
+      userSettings = {
+        "editor.fontFamily" = "JetBrainsMono Nerd Font";
+        "terminal.external.linuxExec" = "${pkgs.alacritty}/bin/alacritty";
+        "terminal.integrated.defaultProfile.linux" = "fish";
+        "terminal.integrated.profiles.linux" = {
+          bash.path = "${pkgs.bash}/bin/bash";
+          fish.path = "${pkgs.fish}/bin/fish";
+          sh.path = "${pkgs.bashInteractive}/bin/sh";
+          zsh.path = "${pkgs.zsh}/bin/zsh";
+        };
+        "terminal.integrated.smoothScrolling" = true;
+        "window.autoDetectColorScheme" = true;
+        "workbench.colorTheme" = "Solarized Light";
+        "workbench.preferredDarkColorTheme" = "Solarized Dark";
+        "workbench.preferredLightColorTheme" = "Solarized Light";
 
-    userSettings = {
-      "editor.fontFamily" = "JetBrainsMono Nerd Font";
-      "terminal.external.linuxExec" = "${pkgs.alacritty}/bin/alacritty";
-      "terminal.integrated.defaultProfile.linux" = "fish";
-      "terminal.integrated.profiles.linux" = {
-        bash.path = "${pkgs.bash}/bin/bash";
-        fish.path = "${pkgs.fish}/bin/fish";
-        sh.path = "${pkgs.bashInteractive}/bin/sh";
-        zsh.path = "${pkgs.zsh}/bin/zsh";
-      };
-      "terminal.integrated.smoothScrolling" = true;
-      "window.autoDetectColorScheme" = true;
-      "workbench.colorTheme" = "Solarized Light";
-      "workbench.preferredDarkColorTheme" = "Solarized Dark";
-      "workbench.preferredLightColorTheme" = "Solarized Light";
-
-      "nix.enableLanguageServer" = true;
-      "nix.serverPath" = "nil";
-      "nix.formatterPath" = "nixpkgs-fmt";
-      "nix.serverSettings" = {
-        "nil" = { 
-          "formatting" = {
-            "command" = ["nixpkgs-fmt"];
+        "nix.enableLanguageServer" = true;
+        "nix.serverPath" = "nil";
+        "nix.formatterPath" = "nixpkgs-fmt";
+        "nix.serverSettings" = {
+          "nil" = { 
+            "formatting" = {
+              "command" = ["nixpkgs-fmt"];
+            };
           };
         };
       };

@@ -1,12 +1,13 @@
-{ config, pkgs, ... }: 
+{ config, ... }: 
 let 
   mainuser = config.system.username;
 in {
   # https://nixos.wiki/wiki/Virt-manager
-  virtualisation.libvirtd.enable = true;
+  virtualisation.libvirtd = {
+    enable = true;
+    qemu.swtpm.enable = true;
+  };
   programs.virt-manager.enable = true;
-
-  environment.systemPackages = with pkgs; [ swtpm tpm2-tools ];
 
   users.users."${mainuser}".extraGroups = [ "libvirtd" ];
 

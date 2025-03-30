@@ -7,12 +7,11 @@
   programs.vscode = {
     enable = true;
     package = pkgs.vscodium;
-    
+    mutableExtensionsDir = false;
+
     profiles.default = {
       enableUpdateCheck = false;
       enableExtensionUpdateCheck = false;
-
-      mutableExtensionsDir = false;
 
       extensions = with pkgs.vscode-extensions; [
         shd101wyy.markdown-preview-enhanced

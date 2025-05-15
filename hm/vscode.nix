@@ -21,7 +21,7 @@
 
       userSettings = {
         "editor.fontFamily" = "JetBrainsMono Nerd Font";
-        "terminal.external.linuxExec" = "${pkgs.alacritty}/bin/alacritty";
+        "terminal.external.linuxExec" = "${pkgs.kitty}/bin/kitty";
         "terminal.integrated.defaultProfile.linux" = "fish";
         "terminal.integrated.profiles.linux" = {
           bash.path = "${pkgs.bash}/bin/bash";

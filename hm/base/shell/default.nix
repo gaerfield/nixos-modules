@@ -1,5 +1,6 @@
 { pkgs, ... }: {
   imports = [
+    ./eza.nix
     ./fzf.nix
     ./zoxide.nix
     ./nix-direnv.nix
@@ -8,7 +9,6 @@
     ./tealdeer.nix
     ./tide.nix
     ./ranger.nix
-    ./kitty.nix
   ];
 
   # https://nixos.wiki/wiki/Fish
@@ -170,7 +170,6 @@
   #   # set default applications
   #   EDITOR = "nvim";
   #   BROWSER = "firefox";
-  #   TERMINAL = "alacritty";
   # 
   #   # enable scrolling in git diff
   #   DELTA_PAGER = "less -R";

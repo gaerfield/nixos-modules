@@ -3,7 +3,7 @@
     ./theme.nix
     ./autostart.nix
     ./flameshot.nix
-    ./alacritty.nix
+    ./kitty.nix
     ./notifications.nix
     ./gnome-extensions.nix
   ];
@@ -95,7 +95,7 @@
 
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
         name = "terminal";
-        command = "alacritty"; # alacritty -e byobu
+        command = "kitty";
         binding = "<Super>x";
       };
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {

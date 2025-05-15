@@ -1,4 +1,4 @@
-{ config, ... }: 
+{ pkgs, config, ... }: 
 let 
   mainuser = config.system.username;
 in {

@@ -7,7 +7,8 @@
     ./byobu.nix
     ./tealdeer.nix
     ./tide.nix
-    ./nnn.nix
+    ./ranger.nix
+    ./kitty.nix
   ];
 
   # https://nixos.wiki/wiki/Fish
@@ -93,7 +94,6 @@
 
   home.packages = with pkgs; [
     nix-your-shell
-    alacritty
     grc
     lazygit
     lazydocker

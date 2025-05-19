@@ -11,7 +11,7 @@
   };
 
   home.shellAliases = {
-    l = "eza -l";
+    l = "eza -l --no-permissions --no-user --no-git";
     ll = "eza -la";
   };
 }

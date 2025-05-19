@@ -9,6 +9,7 @@
     ./tealdeer.nix
     ./tide.nix
     ./ranger.nix
+    ./dust.nix
   ];
 
   # https://nixos.wiki/wiki/Fish
@@ -143,6 +144,7 @@
     ethtool
     pciutils # lspci
     usbutils # lsusb
+    progress # show progress of various commands even after started
   ];
 
   # tide configure --auto --style=Rainbow --prompt_colors='True color' --show_time=No --rainbow_prompt_separators=Angled --powerline_prompt_heads=Sharp --powerline_prompt_tails=Flat --powerline_prompt_style='Two lines, frame' --prompt_connection=Disconnected --powerline_right_prompt_frame=Yes --prompt_connection_andor_frame_color=Light --prompt_spacing=Compact --icons='Few icons' --transient=Yes
@@ -180,4 +182,6 @@
   # home.shellAliases = {
   #   # k = "kubectl";
   # };
+
+  programs.thefuck = { enable = true; alias = "fu"; };
 }

@@ -16,6 +16,10 @@ in {
         };
         init.defaultBranch = "main";
       };
+
+      ignores = [
+        "**/.jj/**"
+      ];
   };
 
   programs.jujutsu = {

@@ -41,9 +41,7 @@
         "nixpkgs" = {
           "expr" = "import <nixpkgs> { }";
         };
-        "formatting" = {
-          "command" = ["alejandra"];
-        };
+        "nix.formatterPath" = "alejandra";
       };
     };
   };

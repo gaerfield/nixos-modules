@@ -35,13 +35,17 @@
         "workbench.preferredDarkColorTheme" = "Solarized Dark";
         "workbench.preferredLightColorTheme" = "Solarized Light";
 
-        # nix language server and formatter
+        # nix-ide: nix language server and formatter
         "nix.enableLanguageServer" = true;
         "nix.serverPath" = "nixd";
-        "nixpkgs" = {
-          "expr" = "import <nixpkgs> { }";
-        };
         "nix.formatterPath" = "alejandra";
+        "nix.serverSettings" = {
+          "nixd" = {
+            "formatting" = {
+              "command" = ["alejandra"];
+            };
+          };
+        };
       };
     };
   };

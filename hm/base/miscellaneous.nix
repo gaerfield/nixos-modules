@@ -1,4 +1,4 @@
-{ config, ... }: {
+{ config, pkgs, inputs, ... }: {
   xdg.enable = true;
   home.sessionVariables = {
     XDG_BIN_HOME    = "${config.home.homeDirectory}/.local/bin";
@@ -12,4 +12,7 @@
   };
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";
+
+  home.packages = with pkgs; [ alejandra nixd ];
+  nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
 }

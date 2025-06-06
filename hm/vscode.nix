@@ -1,6 +1,6 @@
 { pkgs, ... }: {
   fonts.fontconfig.enable = true;
-  home.packages = [ (pkgs.nerd-fonts.jetbrains-mono) pkgs.nil ];
+  home.packages = [ (pkgs.nerd-fonts.jetbrains-mono) ];
 
   programs.fish.shellAbbrs.code = "codium";
 
@@ -35,15 +35,14 @@
         "workbench.preferredDarkColorTheme" = "Solarized Dark";
         "workbench.preferredLightColorTheme" = "Solarized Light";
 
+        # nix language server and formatter
         "nix.enableLanguageServer" = true;
-        "nix.serverPath" = "nil";
-        "nix.formatterPath" = "nixpkgs-fmt";
-        "nix.serverSettings" = {
-          "nil" = { 
-            "formatting" = {
-              "command" = ["nixpkgs-fmt"];
-            };
-          };
+        "nix.serverPath" = "nixd";
+        "nixpkgs" = {
+          "expr" = "import <nixpkgs> { }";
+        };
+        "formatting" = {
+          "command" = ["alejandra"];
         };
       };
     };

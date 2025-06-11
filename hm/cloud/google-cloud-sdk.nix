@@ -1,7 +1,11 @@
-{ pkgs, ... }: {
-
+{ inputs, system, ... }: let
+  pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+  gdk = pkgs.google-cloud-sdk.withExtraComponents( with pkgs.google-cloud-sdk.components; [
+    gke-gcloud-auth-plugin
+  ]);
+in {
   home.packages = with pkgs; [
-    (google-cloud-sdk.withExtraComponents [google-cloud-sdk.components.gke-gcloud-auth-plugin])
+    gdk
   ];
   home.sessionVariables = {
     USE_GKE_GCLOUD_AUTH_PLUGIN = "True";

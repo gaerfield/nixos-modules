@@ -32,9 +32,6 @@
       gst-libav
     ]);
 
-    # enable wayland support for all chromium and most electron apps
-    sessionVariables.NIXOS_OZONE_WL = "1";
-
     gnome.excludePackages = (with pkgs; [
       # gnome-photos
       gnome-tour

@@ -183,5 +183,5 @@
   #   # k = "kubectl";
   # };
 
-  programs.thefuck = { enable = true; alias = "fu"; };
+  programs.pay-respects = { enable = true; options = [ "--alias" "fu" ]; };
 }

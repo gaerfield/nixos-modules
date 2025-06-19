@@ -14,7 +14,7 @@ update:
 # Lint nix files
 [group('dev')]
 lint:
-  nix fmt
+  alejandra --quiet ./
 
 # Check nix flake
 [group('dev')]

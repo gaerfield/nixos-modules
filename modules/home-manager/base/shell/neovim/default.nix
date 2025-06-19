@@ -1,4 +1,9 @@
-{ pkgs, config, lib, ... }: {
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}: {
   systemd.user.tmpfiles.rules = [
     "d ${config.xdg.cacheHome}/nvim/undo"
     "d ${config.xdg.cacheHome}/nvim/swap"
@@ -8,7 +13,7 @@
 
   programs.fish.shellAbbrs = {
     v = "nvim";
-    vim = "nvim"; 
+    vim = "nvim";
   };
 
   programs.neovim = {

@@ -1,4 +1,3 @@
-{ pkgs, ... }: 
-{
-  home.packages = [ pkgs.rambox ];
+{pkgs, ...}: {
+  home.packages = [pkgs.rambox];
 }

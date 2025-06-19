@@ -1,7 +1,6 @@
-{  
+{
   dconf = {
     enable = true;
-
 
     settings = {
       "org/gnome/desktop/notifications/application" = {

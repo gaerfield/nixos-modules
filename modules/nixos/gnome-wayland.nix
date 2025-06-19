@@ -1,14 +1,16 @@
-{ pkgs, lib, ... }:
-
 {
+  pkgs,
+  lib,
+  ...
+}: {
   # https://nixos.wiki/wiki/GNOME
-  
+
   # Enable the GNOME Desktop Environment.
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
-  
+
   environment = {
-    systemPackages = with pkgs; [ 
+    systemPackages = with pkgs; [
       dconf-editor
       adwaita-icon-theme
       gnomeExtensions.appindicator
@@ -16,7 +18,7 @@
       noto-fonts-color-emoji
       wl-clipboard
       libsecret
-      # get metadata info for media files in nautilus 
+      # get metadata info for media files in nautilus
       gst_all_1.gst-plugins-good
       gst_all_1.gst-plugins-bad
       gst_all_1.gst-plugins-ugly
@@ -31,7 +33,7 @@
       gst-libav
     ]);
 
-    gnome.excludePackages = (with pkgs; [
+    gnome.excludePackages = with pkgs; [
       # gnome-photos
       gnome-tour
       cheese # webcam tool
@@ -46,10 +48,10 @@
       atomix # puzzle game
       gnome-weather # weather in notifications
       gnome-clocks # world clocks in notifications
-    ]);
+    ];
   };
 
   programs.dconf.enable = true;
-  services.udev.packages = with pkgs; [ gnome-settings-daemon ];
+  services.udev.packages = with pkgs; [gnome-settings-daemon];
   nixpkgs.config.allowAliases = false;
 }

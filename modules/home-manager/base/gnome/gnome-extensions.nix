@@ -1,5 +1,4 @@
-{ pkgs, ... }: {
-
+{pkgs, ...}: {
   home.packages = with pkgs.gnomeExtensions; [
     # pkgs.gnome-extensions-cli
     dash-to-dock
@@ -34,5 +33,4 @@
       disable-overview-on-startup = true;
     };
   };
-
 }

@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   # https://nixos.wiki/wiki/Appimage
   programs.appimage.enable = true;
   programs.appimage.binfmt = true;

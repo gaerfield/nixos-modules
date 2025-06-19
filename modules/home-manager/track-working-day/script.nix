@@ -1,6 +1,11 @@
-{ writeShellApplication, coreutils, glib }: writeShellApplication {
+{
+  writeShellApplication,
+  coreutils,
+  glib,
+}:
+writeShellApplication {
   name = "track-working-day";
-  runtimeInputs = [ coreutils glib ];
+  runtimeInputs = [coreutils glib];
   text = ''
     USAGE_INFO="Usage: track-working-day [start|info|help]"
     if [[ $1 != "info" && $1 != "start" && $1 != "help" ]]; then
@@ -28,7 +33,7 @@
     echo "starting ..."
     track_event "bootup"
 
-    while read -r line 
+    while read -r line
     do
         case "$line" in
             *"{'LockedHint': <true>}"*) track_event "logged out";;

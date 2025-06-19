@@ -1,3 +1,3 @@
-{ pkgs, ... }: {
-  home.packages = [ pkgs.obsidian ];
+{pkgs, ...}: {
+  home.packages = [pkgs.obsidian];
 }

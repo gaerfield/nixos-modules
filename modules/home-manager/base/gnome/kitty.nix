@@ -1,6 +1,6 @@
 {
   # https://wiki.nixos.org/wiki/Kitty
-  programs.kitty = {  
+  programs.kitty = {
     enable = true;
     # https://nix-community.github.io/home-manager/options.xhtml#opt-programs.kitty.enable
     themeFile = "Nord"; # https://github.com/kovidgoyal/kitty-themes/tree/master/themes

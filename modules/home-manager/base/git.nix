@@ -6,20 +6,20 @@ let
 in {
   # basic configuration of git
   programs.git = {
-      enable = true;
-      userName = user.name;
-      userEmail = user.email;
-    
-      extraConfig = {
-        core = {
-          sshCommand = "ssh -i ~/.ssh/gaerfield";
-        };
-        init.defaultBranch = "main";
-      };
+    enable = true;
+    userName = user.name;
+    userEmail = user.email;
 
-      ignores = [
-        "**/.jj/**"
-      ];
+    extraConfig = {
+      core = {
+        sshCommand = "ssh -i ~/.ssh/gaerfield";
+      };
+      init.defaultBranch = "main";
+    };
+
+    ignores = [
+      "**/.jj/**"
+    ];
   };
 
   programs.jujutsu = {

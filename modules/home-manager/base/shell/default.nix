@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   imports = [
     ./eza.nix
     ./fzf.nix
@@ -33,17 +33,38 @@
       set fish_greeting # Disable greeting
       nix-your-shell fish | source # nix-shell will use fish instead of bash
     '';
-    
+
     plugins = with pkgs.fishPlugins; [
-      { name = "grc"; src = grc.src; }
-      { name = "sponge"; src = sponge.src; }
-      { name = "colored-man-pages"; src = colored-man-pages.src; }
+      {
+        name = "grc";
+        src = grc.src;
+      }
+      {
+        name = "sponge";
+        src = sponge.src;
+      }
+      {
+        name = "colored-man-pages";
+        src = colored-man-pages.src;
+      }
     ];
     functions = {
-      emo-shrug = { description = "¯\_(ツ)_/¯"; body = "echo '¯\_(ツ)_/¯' | wl-copy";};
-      emo-stroll = { description = "ᕕ( ᐛ )ᕗ"; body = "echo '' | wl-copy";};
-      emo-flip = { description = "(╯°□°）╯︵ ┻━┻"; body = "echo '(╯°□°）╯︵ ┻━┻' | wl-copy";};
-      emo-rage = { description = "(屮ﾟДﾟ)屮"; body = "echo '(屮ﾟДﾟ)屮' | wl-copy";};
+      emo-shrug = {
+        description = "¯\_(ツ)_/¯";
+        body = "echo '¯\_(ツ)_/¯' | wl-copy";
+      };
+      emo-stroll = {
+        description = "ᕕ( ᐛ )ᕗ";
+        body = "echo '' | wl-copy";
+      };
+      emo-flip = {
+        description = "(╯°□°）╯︵ ┻━┻";
+        body = "echo '(╯°□°）╯︵ ┻━┻' | wl-copy";
+      };
+      emo-rage = {
+        description = "(屮ﾟДﾟ)屮";
+        body = "echo '(屮ﾟДﾟ)屮' | wl-copy";
+      };
       jwt-decode = {
         description = "cat jwtToken | jwt-decode";
         body = "jq -R 'split(\".\") | select(length > 0) | .[0],.[1] | @base64d | fromjson'";
@@ -56,8 +77,14 @@
     };
 
     shellAbbrs = {
-      shit = { expansion = "sudo $history[1]"; position = "anywhere"; };
-      "!!" = { expansion = "$history[1]"; position = "anywhere"; };
+      shit = {
+        expansion = "sudo $history[1]";
+        position = "anywhere";
+      };
+      "!!" = {
+        expansion = "$history[1]";
+        position = "anywhere";
+      };
       "!!c" = "echo $history[1] | wl-copy";
       opn = "xdg-open";
       df = "df -h";
@@ -76,7 +103,7 @@
       p = "wl-paste";
       scpr = "rsync -avz --info=progress2 --human-readable";
       netstat = "ss";
-      convert-as-gif =  {
+      convert-as-gif = {
         # source: https://www.baeldung.com/linux/gif-screen-recording
         # -vf                       # video filters
         #  fps=10                   # framerate to use, usually 10 for GIFs
@@ -108,15 +135,15 @@
     yq-go # yaml processer https://github.com/mikefarah/yq
     fzf # A command-line fuzzy finder
     sshfs # fuse mount directories through ssh
-  
+
     # networking tools
     mtr # A network diagnostic tool
     iperf3
-    dnsutils  # `dig` + `nslookup`
+    dnsutils # `dig` + `nslookup`
     ldns # replacement of `dig`, it provide the command `drill`
     socat # replacement of openbsd-netcat
     nmap # A utility for network discovery and security auditing
-    ipcalc  # it is a calculator for the IPv4/v6 addresses
+    ipcalc # it is a calculator for the IPv4/v6 addresses
 
     # misc
     file
@@ -133,7 +160,7 @@
 
     # productivity
     glow # markdown previewer in terminal
-    btop  # replacement of htop/nmon
+    btop # replacement of htop/nmon
     iotop # io monitoring
     iftop # network monitoring
 
@@ -148,11 +175,11 @@
   ];
 
   # tide configure --auto --style=Rainbow --prompt_colors='True color' --show_time=No --rainbow_prompt_separators=Angled --powerline_prompt_heads=Sharp --powerline_prompt_tails=Flat --powerline_prompt_style='Two lines, frame' --prompt_connection=Disconnected --powerline_right_prompt_frame=Yes --prompt_connection_andor_frame_color=Light --prompt_spacing=Compact --icons='Few icons' --transient=Yes
-  
+
   # branchvincent/tide-show-on-cmd
   # oh-my-fish/plugin-extract
   # gazorby/fish-abbreviation-tips
-  
+
   xdg.configFile."fish/conf.d" = {
     source = ./conf.d;
     recursive = true;
@@ -168,20 +195,23 @@
   #   # LESSHISTFILE = cache + "/less/history";
   #   # LESSKEY = c + "/less/lesskey";
   #   # WINEPREFIX = d + "/wine";
-  # 
+  #
   #   # set default applications
   #   EDITOR = "nvim";
   #   BROWSER = "firefox";
-  # 
+  #
   #   # enable scrolling in git diff
   #   DELTA_PAGER = "less -R";
-  # 
+  #
   #   #MANPAGER = "sh -c 'col -bx | bat -l man -p'";
   # };
-  # 
+  #
   # home.shellAliases = {
   #   # k = "kubectl";
   # };
 
-  programs.pay-respects = { enable = true; options = [ "--alias" "fu" ]; };
+  programs.pay-respects = {
+    enable = true;
+    options = ["--alias" "fu"];
+  };
 }

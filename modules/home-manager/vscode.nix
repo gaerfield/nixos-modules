@@ -1,6 +1,6 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   fonts.fontconfig.enable = true;
-  home.packages = [ (pkgs.nerd-fonts.jetbrains-mono) ];
+  home.packages = [(pkgs.nerd-fonts.jetbrains-mono)];
 
   programs.fish.shellAbbrs.code = "codium";
 

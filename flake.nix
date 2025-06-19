@@ -1,13 +1,13 @@
 {
   description = "Description for the project";
 
-  outputs = inputs@{ flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
+  outputs = inputs @ {flake-parts, ...}:
+    flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
         ./modules
         #inputs.home-manager.flakeModules.home-manager
       ];
-      systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
+      systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin"];
     };
 
   inputs = {
@@ -29,5 +29,4 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  
 }

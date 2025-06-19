@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   programs.fzf = {
     enable = true;
 
@@ -19,8 +19,14 @@
 
   programs.fish = {
     plugins = with pkgs.fishPlugins; [
-      { name = "fzf"; src = fzf.src; }
-      { name = "fzf-fish"; src = fzf-fish.src; } # requires fd and bat
+      {
+        name = "fzf";
+        src = fzf.src;
+      }
+      {
+        name = "fzf-fish";
+        src = fzf-fish.src;
+      } # requires fd and bat
     ];
     shellAbbrs.fzf-help = "fzf_configure_bindings --help";
     interactiveShellInit = ''
@@ -29,5 +35,5 @@
     '';
   };
 
-  home.packages = [ pkgs.fd pkgs.bat ];
+  home.packages = [pkgs.fd pkgs.bat];
 }

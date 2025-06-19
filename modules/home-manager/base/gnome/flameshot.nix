@@ -1,7 +1,12 @@
-{ pkgs, config, lib, ... }: {
-  home.packages = [ pkgs.flameshot ];
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}: {
+  home.packages = [pkgs.flameshot];
 
-  xdg.configFile."flameshot/flameshot.ini".source = (pkgs.formats.ini { }).generate "flameshot.ini" {
+  xdg.configFile."flameshot/flameshot.ini".source = (pkgs.formats.ini {}).generate "flameshot.ini" {
     General = {
       autoCloseIdleDaemon = true;
       contrastOpacity = 188;
@@ -12,11 +17,11 @@
       startupLaunch = true;
       disabledTrayIcon = false;
       drawColor = "#ff0000";
-      drawFontSize=32;
-      drawThickness=4;
+      drawFontSize = 32;
+      drawThickness = 4;
       filenamePattern = "%Y%m%d_%H%M%S";
       savePath = "${config.home.homeDirectory}/Bilder/Bildschirmfotos";
-      savePathFixed=true;
+      savePathFixed = true;
       showHelp = false;
       showStartupLaunchMessage = false;
     };
@@ -33,16 +38,16 @@
     '';
   };
 
-  dconf.settings ={
+  dconf.settings = {
     "org/gnome/desktop/wm/keybindings" = {
-      screenshot=[];
-      show-screenshot-ui=[];
-      screenshot-window=[];
+      screenshot = [];
+      show-screenshot-ui = [];
+      screenshot-window = [];
     };
     "org/gnome/settings-daemon/plugins/media-keys" = {
       custom-keybindings = [
         "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3/"
-        "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom4/"  
+        "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom4/"
       ];
     };
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom3" = {
@@ -55,6 +60,5 @@
       command = "flameshot-workaround full -p /home/gaerfield/Bilder/screenshots";
       binding = "<Alt>Print";
     };
-  
   };
 }

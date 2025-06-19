@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   imports = [
     ./theme.nix
     ./autostart.nix
@@ -33,17 +33,17 @@
       "org/gnome/desktop/interface".font-antialiasing = "rgba";
       "org/gnome/desktop/peripherals/mouse".natural-scroll = true;
       "org/gnome/desktop/peripherals/touchpad".tap-to-click = true;
-    
+
       "org/gnome/desktop/interface".enable-hot-corners = false;
       "org/gnome/shell/app-switcher".current-workspace-only = true;
       "org/gnome/mutter" = {
         dynamic-workspaces = true;
         workspaces-only-on-primary = true;
         experimental-features = [
-          "scale-monitor-framebuffer" # enable fractional scaling 
+          "scale-monitor-framebuffer" # enable fractional scaling
         ];
       };
-      
+
       "ca/desrt/dconf-editor/Settings".show-warning = false;
       "org/gnome/desktop/privacy" = {
         old-files-age = 30;
@@ -53,8 +53,8 @@
         send-software-usage-stats = false;
       };
       "org/gnome/desktop/search-providers" = {
-        disabled = [ "org.gnome.Contacts.desktop" ];
-        sort-order = [ "org.gnome.Documents.desktop" "org.gnome.Nautilus.desktop" ];
+        disabled = ["org.gnome.Contacts.desktop"];
+        sort-order = ["org.gnome.Documents.desktop" "org.gnome.Nautilus.desktop"];
       };
       # super + right click allows for resizing windows
       "org/gnome/desktop/wm/preferences" = {
@@ -64,33 +64,33 @@
         button-layout = "appmenu:minimize,close";
       };
       "org/gnome/desktop/wm/keybindings" = {
-        close=["<Super>q"];
-        cycle-group=["<Super>Tab"];
-        cycle-group-backward=["<Shift><Super>Tab"];
-        minimize=["<Super>w"];
-        move-to-monitor-left=["<Shift><Super>Left"];
-        move-to-monitor-right=["<Shift><Super>Right"];
-        move-to-workspace-left=["<Control><Super>Left"];
-        move-to-workspace-right=["<Control><Super>Right"];
-        switch-applications=["<Alt>Tab"];
-        switch-applications-backward=["<Shift><Alt>Tab"];
-        switch-to-workspace-left=["<Super>Left"];
-        switch-to-workspace-right=["<Super>Right"];
-        toggle-maximized=["<Super>m"];
-        toggle-message-tray=[];
+        close = ["<Super>q"];
+        cycle-group = ["<Super>Tab"];
+        cycle-group-backward = ["<Shift><Super>Tab"];
+        minimize = ["<Super>w"];
+        move-to-monitor-left = ["<Shift><Super>Left"];
+        move-to-monitor-right = ["<Shift><Super>Right"];
+        move-to-workspace-left = ["<Control><Super>Left"];
+        move-to-workspace-right = ["<Control><Super>Right"];
+        switch-applications = ["<Alt>Tab"];
+        switch-applications-backward = ["<Shift><Alt>Tab"];
+        switch-to-workspace-left = ["<Super>Left"];
+        switch-to-workspace-right = ["<Super>Right"];
+        toggle-maximized = ["<Super>m"];
+        toggle-message-tray = [];
       };
       "org/gnome/mutter/keybindings" = {
-        toggle-tiled-left=["<Alt><Super>Left"];
-        toggle-tiled-right=["<Alt><Super>Right"];
+        toggle-tiled-left = ["<Alt><Super>Left"];
+        toggle-tiled-right = ["<Alt><Super>Right"];
       };
       "org/gnome/settings-daemon/plugins/media-keys" = {
-        custom-keybindings=[
+        custom-keybindings = [
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/"
         ];
-        home=["<Super>e"];
-        www=["<Super>b"];
+        home = ["<Super>e"];
+        www = ["<Super>b"];
       };
 
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {

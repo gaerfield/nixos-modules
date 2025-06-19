@@ -1,11 +1,12 @@
-{ config, lib, pkgs, ... }:
-
-with lib;
-
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib; let
   cfg = config.system;
 in {
-
   options.system = {
     username = mkOption {
       type = types.str;
@@ -44,11 +45,11 @@ in {
       "getty@tty1".enable = false;
       "autovt@tty1".enable = false;
     };
-    
+
     boot.kernel.sysctl = {
       "kernel.sysrq" = 1; # enable reisub sequence
     };
-    
+
     # compatibility with non-nixos bash scripts
     # https://github.com/mic92/envfs
     # services.envfs.enable = true;
@@ -83,7 +84,7 @@ in {
 
     # Enable CUPS to print documents.
     services.printing.enable = true;
-    
+
     # https://wiki.nixos.org/wiki/Fonts
     fonts = {
       packages = with pkgs; [
@@ -131,7 +132,7 @@ in {
 
     # Enable flakes
     nix.settings = {
-      experimental-features = [ "nix-command" "flakes" ];
+      experimental-features = ["nix-command" "flakes"];
       auto-optimise-store = true;
     };
     # List packages installed in system profile. To search, run:

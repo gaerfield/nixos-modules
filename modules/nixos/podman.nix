@@ -1,9 +1,12 @@
-{ config, pkgs, ... }: 
-let 
+{
+  config,
+  pkgs,
+  ...
+}: let
   mainuser = config.system.username;
 in {
   virtualisation = {
-    containers.registries.search = [ "docker.io" ];
+    containers.registries.search = ["docker.io"];
 
     podman = {
       enable = true;
@@ -17,7 +20,7 @@ in {
   };
 
   environment = {
-    systemPackages = with pkgs; [ dive podman-tui podman-compose ];
+    systemPackages = with pkgs; [dive podman-tui podman-compose];
     shellAliases.docker-compose = "${config.virtualisation.podman.package}/bin/podman-compose";
     # odd ... I expected podman.dockerSocket.enable to take care of this
     sessionVariables = {
@@ -25,7 +28,7 @@ in {
     };
   };
 
-  users.users."${mainuser}".extraGroups = [ "docker" ];
+  users.users."${mainuser}".extraGroups = ["docker"];
 
   programs.fish = {
     shellAbbrs.p = "podman";

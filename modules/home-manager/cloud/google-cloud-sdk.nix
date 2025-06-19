@@ -1,6 +1,10 @@
-{ inputs, system, ... }: let
+{
+  inputs,
+  system,
+  ...
+}: let
   pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
-  gdk = pkgs.google-cloud-sdk.withExtraComponents( with pkgs.google-cloud-sdk.components; [
+  gdk = pkgs.google-cloud-sdk.withExtraComponents (with pkgs.google-cloud-sdk.components; [
     gke-gcloud-auth-plugin
   ]);
 in {
@@ -25,10 +29,10 @@ in {
       {
         name = "google-cloud-sdk-fish-completion";
         src = pkgs.fetchFromGitHub {
-            owner = "lgathy";
-            repo = "google-cloud-sdk-fish-completion";
-            rev = "bc24b0bf7da2addca377d89feece4487ca0b1e9c";
-            sha256 = "sha256-BIbzdxAj3mrf340l4hNkXwA13rIIFnC6BxM6YuJ7/w8=";
+          owner = "lgathy";
+          repo = "google-cloud-sdk-fish-completion";
+          rev = "bc24b0bf7da2addca377d89feece4487ca0b1e9c";
+          sha256 = "sha256-BIbzdxAj3mrf340l4hNkXwA13rIIFnC6BxM6YuJ7/w8=";
         };
       }
     ];

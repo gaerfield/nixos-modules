@@ -1,46 +1,33 @@
 {
-  description = "gaerfields default configurations for nixos";
+  description = "Description for the project";
 
-  outputs = _: {
-    system =
-      let
-        import = path: path; # let the module system know what we are exporting
-      in
-      {
-        appimage = import ./system/appimage.nix;
-        base = import ./system/base.nix;
-        bluetooth = import ./system/bluetooth.nix;
-        dns-resolve = import ./system/dns-resolve.nix;
-        gnome-wayland = import ./system/gnome-wayland.nix;
-        nix-ld = import ./system/nix-ld.nix;
-        podman = import ./system/podman.nix;
-        virtualization = import ./system/virtualization.nix;
-      };
-    hm =
-      let
-        import = path: path; # let the module system know what we are exporting
-      in
-      {
-        base = {
-          miscellaneous = import ./hm/base/miscellaneous.nix;
-          home-manager-standalone = import ./hm/base/home-manager-standalone.nix;
-          gnome = import ./hm/base/gnome;
-          shell = import ./hm/base/shell;
-          git = import ./hm/base/git.nix;
-        };
-        cloud = import ./hm/cloud;
-        development = {
-          java = import ./hm/development/java.nix;
-        };
-        track-working-day = import ./hm/track-working-day;
-        chromium = import ./hm/chromium.nix;
-        firefox = import ./hm/firefox.nix;
-        obsidian = import ./hm/obsidian.nix;
-        rambox = import ./hm/rambox.nix;
-        teams = import ./hm/teams-for-linux.nix;
-        virtualization = import ./hm/virtualization.nix;
-        vlc = import ./hm/vlc.nix;
-        vscode = import ./hm/vscode.nix;
-      };
+  outputs = inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = [
+        ./modules
+        #inputs.home-manager.flakeModules.home-manager
+      ];
+      systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
+    };
+
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-parts.url = "github:hercules-ci/flake-parts";
+
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    alejandra = {
+      url = "github:kamadorueda/alejandra/4.0.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
+  
 }

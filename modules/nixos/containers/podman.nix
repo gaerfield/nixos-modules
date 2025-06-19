@@ -3,7 +3,7 @@
   pkgs,
   ...
 }: let
-  mainuser = config.system.username;
+  mainuser = config.mainuser.name;
 in {
   virtualisation = {
     containers.registries.search = ["docker.io"];

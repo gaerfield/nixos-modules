@@ -1,8 +1,12 @@
 {
   pkgs,
   lib,
+  config,
   ...
-}: {
+}:
+with lib; let
+  mainuser = config.mainuser;
+in {
   # https://nixos.wiki/wiki/GNOME
 
   # Enable the GNOME Desktop Environment.
@@ -54,4 +58,16 @@
   programs.dconf.enable = true;
   services.udev.packages = with pkgs; [gnome-settings-daemon];
   nixpkgs.config.allowAliases = false;
+
+  ### automatic login ###
+  # Enable automatic login for the user.
+  services.displayManager.autoLogin = mkIf mainuser.autologin {
+    enable = true;
+    user = mainuser.username;
+  };
+  # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
+  systemd.services = mkIf mainuser.autologin {
+    "getty@tty1".enable = false;
+    "autovt@tty1".enable = false;
+  };
 }

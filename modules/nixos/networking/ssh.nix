@@ -10,5 +10,5 @@
       };
       openFirewall = true;
     };
-  };    
+  };
 }

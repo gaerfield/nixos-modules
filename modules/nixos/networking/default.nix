@@ -5,8 +5,7 @@
   opts,
   ...
 }:
- with lib;
- let
+with lib; let
   mainuser = config.mainuser.name;
   cfg = config.networking;
 in {
@@ -24,22 +23,21 @@ in {
       type = types.str;
       default = "de_DE.UTF-8";
     };
-
   };
 
   config = {
-    users.users.${mainuser}.extraGroups = [ "networkmanager" ];
+    users.users.${mainuser}.extraGroups = ["networkmanager"];
 
     # networking.firewall.allowedTCPPorts = [ ... ];
     # networking.firewall.allowedUDPPorts = [ ... ];
     # Or disable the firewall altogether.
     networking.firewall.enable = false;
-    
+
     # Set your time zone.
     time.timeZone = mkDefault cfg.timezone;
 
     # Select internationalisation properties.
-    i18n.defaultLocale =  mkDefault cfg.locale;
+    i18n.defaultLocale = mkDefault cfg.locale;
 
     i18n.extraLocaleSettings = {
       LC_ADDRESS = mkconfig cfg.locale;

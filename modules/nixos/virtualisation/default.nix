@@ -9,8 +9,8 @@ in {
 
   # for file sharing add
   # <binary path="/run/current-system/sw/bin/virtiofsd"/>
-  environment.systemPackages = with pkgs; [ virtiofsd ];
-  
+  environment.systemPackages = with pkgs; [virtiofsd];
+
   virtualisation.libvirtd = {
     enable = true;
     qemu.swtpm.enable = true;

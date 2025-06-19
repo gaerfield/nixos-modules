@@ -1,4 +1,4 @@
-{ lib, ... }: {
+{lib, ...}: {
   options = {
     mainuser = {
       name = lib.mkOption {

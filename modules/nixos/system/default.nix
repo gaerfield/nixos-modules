@@ -1,5 +1,10 @@
-{config, ...}: let
-  mainuser = config.mainuser;
+{
+  config,
+  lib,
+  ...
+}:
+with lib; let
+  mainuser = config.nixos-modules.system.mainuser;
 in {
   imports = [
     ./gc.nix
@@ -7,29 +12,49 @@ in {
     ./nix-ld.nix
   ];
 
-  users.users."${mainuser.name}" = {
-    isNormalUser = true;
-    description = "${mainuser.name}";
-    extraGroups = ["wheel"];
-    linger = true;
-    openssh.authorizedKeys.keys = mainuser.authorizedKeys;
+  options.nixos-modules.system.mainuser = {
+    name = mkOption {
+      type = types.str;
+      default = "nixos";
+      description = "Default user for the nixos system.";
+    };
+    autologin = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Should the default user be logged in automatically upon boot.";
+    };
+    authorizedKeys = mkOption {
+      type = types.listOf types.str;
+      default = [];
+      description = "SSH public keys for the default user.";
+    };
   };
 
-  boot.kernel.sysctl = {
-    "kernel.sysrq" = 1; # enable reisub sequence
-  };
+  config = {
+    users.users."${mainuser.name}" = {
+      isNormalUser = true;
+      description = "${mainuser.name}";
+      extraGroups = ["wheel"];
+      linger = true;
+      openssh.authorizedKeys.keys = mainuser.authorizedKeys;
+    };
 
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
+    boot.kernel.sysctl = {
+      "kernel.sysrq" = 1; # enable reisub sequence
+    };
 
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
+    # Allow unfree packages
+    nixpkgs.config.allowUnfree = true;
 
-  # Enable flakes
-  nix.settings = {
-    experimental-features = ["nix-command" "flakes"];
-    auto-optimise-store = true;
-    use-xdg-base-directories = true;
-    trusted-users = [mainuser.name "root"];
+    # Enable CUPS to print documents.
+    services.printing.enable = true;
+
+    # Enable flakes
+    nix.settings = {
+      experimental-features = ["nix-command" "flakes"];
+      auto-optimise-store = true;
+      use-xdg-base-directories = true;
+      trusted-users = [mainuser.name "root"];
+    };
   };
 }

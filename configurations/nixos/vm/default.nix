@@ -1,5 +1,4 @@
 {
-  inputs,
   pkgs,
   lib,
   self,
@@ -8,6 +7,7 @@
   imports = [
     ./hardware-configuration.nix
     self.nixosModules.system
+    self.nixosModules.home-manager
   ];
 
   config = {
@@ -23,7 +23,7 @@
     users.mutableUsers = true;
     users.users.gaerfield.initialPassword = "nixos";
 
-    boot.loader.grub = {
+  boot.loader.grub = {
       # no need to set devices, disko will add all devices that have a EF02 partition to the list already
       # devices = [ ];
       efiSupport = true;
@@ -69,5 +69,5 @@
     # common.system.base
     # common.system.dns-resolve
     # common.system.gnome-wayland55
-  };
+  }; 
 }

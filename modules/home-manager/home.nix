@@ -7,14 +7,22 @@
 # Common settings for all type of system/users that home-manager should have.
 # In General home-manager required defaults
 let
-  username = config.mainuser.name;
+  username = config.nixos-modules.home-manager.home.username;
 in {
-  home = {
-    username = "${username}";
-    homeDirectory = "/home/${username}";
-    packages = [pkgs.home-manager];
-    stateVersion = "25.05";
+  options.nixos-modules.home-manager.home.username = opts.mkOption {
+    type = opts.types.str;
+    default = "nixos";
+    description = "Default user for the home-manager system.";
   };
 
-  systemd.user.startServices = pkgs.stdenv.isLinux;
+  config = {
+    home = {
+      username = "${username}";
+      homeDirectory = "/home/${username}";
+      packages = [pkgs.home-manager];
+      stateVersion = "25.05";
+    };
+
+    systemd.user.startServices = pkgs.stdenv.isLinux;
+  };
 }

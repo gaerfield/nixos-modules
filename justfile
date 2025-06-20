@@ -20,4 +20,3 @@ lint:
 [group('dev')]
 check:
   nix flake check
-

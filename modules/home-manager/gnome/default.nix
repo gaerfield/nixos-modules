@@ -3,7 +3,6 @@
     ./theme.nix
     ./autostart.nix
     ./flameshot.nix
-    ./kitty.nix
     ./notifications.nix
     ./gnome-extensions.nix
   ];

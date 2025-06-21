@@ -7,12 +7,26 @@
   imports = [
     ./hardware-configuration.nix
     self.nixosModules.system
+    self.nixosModules.networking
+    self.nixosModules.hardware
+    self.nixosModules.gui
     self.nixosModules.home-manager
   ];
 
   config = {
     system.stateVersion = "25.05";
 
+    hm.imports = [
+      self.homeModules.home
+      self.homeModules.gnome
+      self.homeModules.shell
+      self.homeModules.terminal
+      self.homeModules.vscode
+      self.homeModules.firefoxBrowser
+      self.homeModules.chromiumBrowser
+    ];
+
+    networking.hostName = "nixos"; # Define your hostname.
     nixos-modules.system.mainuser = {
       name = "gaerfield";
       autologin = true;
@@ -23,14 +37,13 @@
     users.mutableUsers = true;
     users.users.gaerfield.initialPassword = "nixos";
 
-  boot.loader.grub = {
+    boot.loader.grub = {
       # no need to set devices, disko will add all devices that have a EF02 partition to the list already
       # devices = [ ];
       efiSupport = true;
       efiInstallAsRemovable = true;
     };
-    services.openssh.enable = true;
-
+    
     environment.systemPackages = map lib.lowPrio [
       pkgs.curl
       pkgs.gitMinimal
@@ -40,20 +53,7 @@
     boot.loader.systemd-boot.enable = true;
     boot.loader.efi.canTouchEfiVariables = true;
 
-    networking.hostName = "nixos"; # Define your hostname.
     # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-    # Enable networking
-    networking.networkmanager.enable = true;
-
-    # Configure keymap in X11
-    services.xserver = {
-      layout = "de";
-      xkbVariant = "nodeadkeys";
-    };
-
-    # Configure console keymap
-    console.keyMap = "de-latin1-nodeadkeys";
 
     # Enable touchpad support (enabled default in most desktopManager).
     # services.xserver.libinput.enable = true;
@@ -68,6 +68,6 @@
     # ./hardware-configuration.nix
     # common.system.base
     # common.system.dns-resolve
-    # common.system.gnome-wayland55
+    # common.system.gnome-wayland
   }; 
 }

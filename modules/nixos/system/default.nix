@@ -49,6 +49,9 @@ in {
     # Enable CUPS to print documents.
     services.printing.enable = true;
 
+    # Configure console keymap
+    console.keyMap = "de-latin1-nodeadkeys";
+
     # Enable flakes
     nix.settings = {
       experimental-features = ["nix-command" "flakes"];

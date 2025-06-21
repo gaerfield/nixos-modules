@@ -6,7 +6,7 @@
   ...
 }:
 with lib; let
-  mainuser = config.mainuser.name;
+  mainuser = config.nixos-modules.system.mainuser.name;
   cfg = config.networking;
 in {
   imports = [
@@ -28,6 +28,9 @@ in {
   config = {
     users.users.${mainuser}.extraGroups = ["networkmanager"];
 
+    # Enable networking
+    networking.networkmanager.enable = true;
+
     # networking.firewall.allowedTCPPorts = [ ... ];
     # networking.firewall.allowedUDPPorts = [ ... ];
     # Or disable the firewall altogether.
@@ -40,15 +43,15 @@ in {
     i18n.defaultLocale = mkDefault cfg.locale;
 
     i18n.extraLocaleSettings = {
-      LC_ADDRESS = mkconfig cfg.locale;
-      LC_IDENTIFICATION = mkconfig cfg.locale;
-      LC_MEASUREMENT = mkconfig cfg.locale;
-      LC_MONETARY = mkconfig cfg.locale;
-      LC_NAME = mkconfig cfg.locale;
-      LC_NUMERIC = mkconfig cfg.locale;
-      LC_PAPER = mkconfig cfg.locale;
-      LC_TELEPHONE = mkconfig cfg.locale;
-      LC_TIME = mkconfig cfg.locale;
+      LC_ADDRESS = mkDefault cfg.locale;
+      LC_IDENTIFICATION = mkDefault cfg.locale;
+      LC_MEASUREMENT = mkDefault cfg.locale;
+      LC_MONETARY = mkDefault cfg.locale;
+      LC_NAME = mkDefault cfg.locale;
+      LC_NUMERIC = mkDefault cfg.locale;
+      LC_PAPER = mkDefault cfg.locale;
+      LC_TELEPHONE = mkDefault cfg.locale;
+      LC_TIME = mkDefault cfg.locale;
     };
   };
 }

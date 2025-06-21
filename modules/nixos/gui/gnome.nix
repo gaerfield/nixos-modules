@@ -5,7 +5,7 @@
   ...
 }:
 with lib; let
-  mainuser = config.mainuser;
+  mainuser = config.nixos-modules.system.mainuser;
 in {
   # https://nixos.wiki/wiki/GNOME
 
@@ -63,11 +63,18 @@ in {
   # Enable automatic login for the user.
   services.displayManager.autoLogin = mkIf mainuser.autologin {
     enable = true;
-    user = mainuser.username;
+    user = mainuser.name;
   };
   # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
   systemd.services = mkIf mainuser.autologin {
     "getty@tty1".enable = false;
     "autovt@tty1".enable = false;
   };
+
+  # Configure keymap in X11
+  services.xserver = {
+    layout = "de";
+    xkbVariant = "nodeadkeys";
+  };
+
 }

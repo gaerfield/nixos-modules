@@ -5,7 +5,7 @@
   config,
   ...
 }: let
-  mainuser = config.nixos-modules.system.mainuser.name;
+  mainuser = config.gnm.system.mainuser.name;
 in {
   imports = [
     # inputs.home-manager.flakeModules.home-manager
@@ -18,7 +18,7 @@ in {
     hm.imports = [
       self.homeModules.home
     ];
-    hm.nixos-modules.home-manager.home.username = mainuser;
+    hm.gnm.home-manager.home.username = mainuser;
     # Make sure to use hm = { imports = [ ./<homemanagerFiles> ];}; in nixosconfig
     home-manager = {
       extraSpecialArgs = {inherit inputs self;};

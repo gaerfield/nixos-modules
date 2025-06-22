@@ -1,5 +1,5 @@
 {config, lib, ...}: with lib; let
-  virtualisation = config.nixos-modules.virtualisation.enable;
+  virtualisation = config.gnm.virtualisation.enable;
 in {
   config = mkif virtualisation {
     # Enable UEFI firmware support

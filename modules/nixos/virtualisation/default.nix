@@ -5,9 +5,9 @@
   ...
 }: with lib; let
   mainuser = config.mainuser.name;
-  virtualisation = config.nixos-modules.virtualisation.enable;
+  virtualisation = config.gnm.virtualisation.enable;
 in {
-  options.nixos-modules.virtualisation.enable = mkDefault true;
+  options.gnm.virtualisation.enable = mkDefault true;
 
   config = mkIf virtualisation {
     # https://nixos.wiki/wiki/Virt-manager

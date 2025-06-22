@@ -6,7 +6,7 @@
   ...
 }:
 with lib; let
-  mainuser = config.nixos-modules.system.mainuser.name;
+  mainuser = config.gnm.system.mainuser.name;
   cfg = config.networking;
 in {
   imports = [

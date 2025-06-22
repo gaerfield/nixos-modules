@@ -5,7 +5,7 @@
   ...
 }:
 with lib; let
-  mainuser = config.nixos-modules.system.mainuser;
+  mainuser = config.gnm.system.mainuser;
 in {
   # https://nixos.wiki/wiki/GNOME
 

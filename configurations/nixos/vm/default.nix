@@ -27,7 +27,7 @@
     ];
 
     networking.hostName = "nixos"; # Define your hostname.
-    nixos-modules.system.mainuser = {
+    gnm.system.mainuser = {
       name = "gaerfield";
       autologin = true;
       authorizedKeys = [

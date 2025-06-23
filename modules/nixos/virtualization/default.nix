@@ -4,7 +4,7 @@
   lib,
   ...
 }: with lib; let
-  mainuser = config.mainuser.name;
+  mainuser = config.gnm.system.mainuser.name;
   virtualization = config.gnm.virtualization.enable;
 in {
   options.gnm.virtualization.enable = mkDefault true;

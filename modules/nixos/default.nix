@@ -6,5 +6,5 @@
   home-manager = ./home-manager;
   networking = ./networking;
   system = ./system;
-  virtualisation = ./virtualisation;
+  virtualization = ./virtualization;
 }

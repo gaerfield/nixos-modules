@@ -1,8 +1,8 @@
 {
-  self,
-  inputs,
   lib,
   config,
+  self,
+  inputs,
   ...
 }: let
   mainuser = config.gnm.system.mainuser.name;
@@ -15,10 +15,10 @@ in {
   ];
 
   config = {
-    hm.imports = [
-      self.homeModules.home
-    ];
-    hm.gnm.home-manager.home.username = mainuser;
+    #hm.imports = [
+    #  homeModule
+    #];
+    # hm.gnm.home-manager.home.username = mainuser;
     # Make sure to use hm = { imports = [ ./<homemanagerFiles> ];}; in nixosconfig
     home-manager = {
       extraSpecialArgs = {inherit inputs self;};

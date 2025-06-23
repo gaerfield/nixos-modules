@@ -1,7 +1,7 @@
 {config, lib, ...}: with lib; let
-  virtualisation = config.gnm.virtualisation.enable;
+  virtualization = config.gnm.virtualization.enable;
 in {
-  config = mkif virtualisation {
+  config = mkIf virtualization {
     # Enable UEFI firmware support
     # https://nixos.wiki/wiki/Libvirt
     xdg.configFile."libvirt/qemu.conf".text = ''

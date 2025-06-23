@@ -5,11 +5,11 @@
   ...
 }: with lib; let
   mainuser = config.mainuser.name;
-  virtualisation = config.gnm.virtualisation.enable;
+  virtualization = config.gnm.virtualization.enable;
 in {
-  options.gnm.virtualisation.enable = mkDefault true;
+  options.gnm.virtualization.enable = mkDefault true;
 
-  config = mkIf virtualisation {
+  config = mkIf virtualization {
     # https://nixos.wiki/wiki/Virt-manager
 
     # for file sharing add

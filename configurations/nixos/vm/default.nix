@@ -25,7 +25,10 @@
       self.homeModules.firefoxBrowser
       self.homeModules.chromiumBrowser
     ];
-
+    #hm.imports = [
+    #  homeModule
+    #];
+    hm.gnm.home-manager.home.username = "gaerfield";
     networking.hostName = "nixos"; # Define your hostname.
     gnm.system.mainuser = {
       name = "gaerfield";

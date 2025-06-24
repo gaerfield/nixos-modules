@@ -3,6 +3,7 @@
   config,
   self,
   inputs,
+  pkgs,
   ...
 }: let
   mainuser = config.gnm.system.mainuser.name;
@@ -25,5 +26,8 @@ in {
       useGlobalPkgs = true;
       useUserPackages = true;
     };
+    environment.systemPackages = with pkgs; [
+      home-manager
+    ];
   };
 }

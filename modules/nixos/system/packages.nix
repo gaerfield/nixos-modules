@@ -6,7 +6,6 @@
     git
     sysstat
     lm_sensors
-    home-manager
     killall
     killport
   ];

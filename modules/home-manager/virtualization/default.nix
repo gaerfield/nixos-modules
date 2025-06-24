@@ -1,12 +1,12 @@
 {config, lib, ...}: with lib; let
-  virtualization = config.gnm.virtualization.enable;
+  virtualization = config.gnm.hm.virtualization.enable;
 in {
-  options.gnm.virtualization.enable = mkOption { 
+  options.gnm.hm.virtualization.enable = mkOption { 
     type = types.bool;
-    default = true;
+    default = config.gnm.virtualization.enable;
     description = "Enable virtualization support, including libvirt and virt-manager.";
   };
-  
+
   config = mkIf virtualization {
     # Enable UEFI firmware support
     # https://nixos.wiki/wiki/Libvirt

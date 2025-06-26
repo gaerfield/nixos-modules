@@ -3,11 +3,12 @@
   config,
   lib,
   ...
-}: with lib; let
+}:
+with lib; let
   mainuser = config.gnm.system.mainuser.name;
   virtualization = config.gnm.virtualization.enable;
 in {
-  options.gnm.virtualization.enable = mkOption { 
+  options.gnm.virtualization.enable = mkOption {
     type = types.bool;
     default = true;
     description = "Enable virtualization support, including libvirt and virt-manager.";

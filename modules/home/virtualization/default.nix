@@ -1,7 +1,12 @@
-{config, lib, ...}: with lib; let
+{
+  config,
+  lib,
+  ...
+}:
+with lib; let
   virtualization = config.gnm.hm.virtualization.enable;
 in {
-  options.gnm.hm.virtualization.enable = mkOption { 
+  options.gnm.hm.virtualization.enable = mkOption {
     type = types.bool;
     default = config.gnm.virtualization.enable;
     description = "Enable virtualization support, including libvirt and virt-manager.";

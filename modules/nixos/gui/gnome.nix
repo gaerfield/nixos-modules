@@ -76,5 +76,4 @@ in {
     layout = "de";
     variant = "nodeadkeys";
   };
-
 }

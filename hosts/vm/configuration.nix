@@ -1,44 +1,33 @@
 {
   pkgs,
-  lib,
-  self,
+  inputs,
   ...
-}: {
+}: let
+  nm = inputs.self.nixosModules;
+  mainuser = "gaerfield";
+in {
   imports = [
     ./hardware-configuration.nix
-    self.nixosModules.system
-    self.nixosModules.networking
-    self.nixosModules.hardware
-    self.nixosModules.gui
-    self.nixosModules.home-manager
+    nm.system
+    nm.networking
+    nm.hardware
+    nm.gui
+    nm.home-manager
   ];
 
   config = {
     system.stateVersion = "25.05";
 
-    hm.imports = [
-      self.homeModules.home
-      self.homeModules.gnome
-      self.homeModules.shell
-      self.homeModules.terminal
-      self.homeModules.vscode
-      self.homeModules.firefoxBrowser
-      self.homeModules.chromiumBrowser
-    ];
-    #hm.imports = [
-    #  homeModule
-    #];
-    hm.gnm.home-manager.home.username = "gaerfield";
     networking.hostName = "nixos"; # Define your hostname.
     gnm.system.mainuser = {
-      name = "gaerfield";
+      name = mainuser;
       autologin = true;
       authorizedKeys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJiwF/fhZ3Avw2RxpwuikiSraNpbD88ixd7rHJsuJHeG gaerfield@kramhal.de"
       ];
     };
     users.mutableUsers = true;
-    users.users.gaerfield.initialPassword = "nixos";
+    users.users.${mainuser}.initialPassword = "nixos";
 
     boot.loader.grub = {
       # no need to set devices, disko will add all devices that have a EF02 partition to the list already
@@ -46,7 +35,7 @@
       efiSupport = true;
       efiInstallAsRemovable = true;
     };
-    
+
     environment.systemPackages = map lib.lowPrio [
       pkgs.curl
       pkgs.gitMinimal
@@ -72,5 +61,5 @@
     # common.system.base
     # common.system.dns-resolve
     # common.system.gnome-wayland
-  }; 
+  };
 }

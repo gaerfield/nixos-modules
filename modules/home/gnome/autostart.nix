@@ -1,8 +1,4 @@
-{
-  pkgs,
-  lib,
-  ...
-}: {
+_: {
   xdg.configFile = {
     #"autostart/${pkgs.flameshot.pname}.desktop".text =
     #  let content = lib.readFile "${pkgs.flameshot}/share/applications/org.flameshot.Flameshot.desktop";

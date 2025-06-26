@@ -6,7 +6,7 @@
   pkgs,
   ...
 }: let
-  mainuser = config.gnm.system.mainuser.name;
+  mainuser = config.gnm.os.mainuser.name;
 in {
   imports = [
     # inputs.home-manager.flakeModules.home-manager

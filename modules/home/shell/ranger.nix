@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+_: {
   programs.ranger = {
     enable = true;
     settings = {

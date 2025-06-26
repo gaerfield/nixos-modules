@@ -11,7 +11,7 @@ with lib; let
 in {
   options.gnm.home-manager.home.username = mkOption {
     type = types.str;
-    default = config.gnm.system.mainuser.name;
+    #default = config.gnm.os.mainuser.name;
     description = "Default user for the home-manager system.";
   };
 

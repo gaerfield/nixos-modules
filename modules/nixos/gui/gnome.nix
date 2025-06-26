@@ -5,7 +5,7 @@
   ...
 }:
 with lib; let
-  mainuser = config.gnm.system.mainuser;
+  mainuser = config.gnm.os.mainuser;
 in {
   # https://nixos.wiki/wiki/GNOME
 
@@ -57,8 +57,7 @@ in {
 
   programs.dconf.enable = true;
   services.udev.packages = with pkgs; [gnome-settings-daemon];
-  nixpkgs.config.allowAliases = false;
-
+  
   ### automatic login ###
   # Enable automatic login for the user.
   services.displayManager.autoLogin = mkIf mainuser.autologin {

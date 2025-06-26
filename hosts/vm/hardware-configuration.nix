@@ -27,6 +27,4 @@
     fsType = "ext4";
     options = ["rw" "noatime"];
   };
-
-  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 }

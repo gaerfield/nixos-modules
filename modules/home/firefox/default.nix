@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}: {
+{config, ...}: {
   home.sessionVariables.BROWSER = "${config.programs.firefox.package}/bin/firefox";
 
   programs.firefox = {

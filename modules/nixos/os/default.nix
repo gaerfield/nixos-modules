@@ -4,7 +4,7 @@
   ...
 }:
 with lib; let
-  mainuser = config.gnm.system.mainuser;
+  mainuser = config.gnm.os.mainuser;
 in {
   imports = [
     ./gc.nix
@@ -12,7 +12,7 @@ in {
     ./nix-ld.nix
   ];
 
-  options.gnm.system.mainuser = {
+  options.gnm.os.mainuser = {
     name = mkOption {
       type = types.str;
       default = "nixos";

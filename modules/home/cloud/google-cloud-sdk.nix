@@ -1,8 +1,4 @@
-{
-  inputs,
-  system,
-  ...
-}: let
+{inputs, ...}: let
   pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
   gdk = pkgs.google-cloud-sdk.withExtraComponents (with pkgs.google-cloud-sdk.components; [
     gke-gcloud-auth-plugin

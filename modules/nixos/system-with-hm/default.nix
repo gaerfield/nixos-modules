@@ -74,6 +74,33 @@ in {
         enable = mkDefault false;
         users = [ cfg.mainuser.name ];
       };
+
+      
+    };
+
+    home-manager.users.${cfg.mainuser.name} = {
+      imports = [
+        #flake.homeManagerModules.base
+        flake.homeManagerModules.chromium
+        flake.homeManagerModules.cloud
+        flake.homeManagerModules.development
+        flake.homeManagerModules.firefox
+        flake.homeManagerModules.git
+        flake.homeManagerModules.gnome
+        flake.homeManagerModules.shell
+        flake.homeManagerModules.terminal
+        flake.homeManagerModules.track-working-day
+        flake.homeManagerModules.virtualisation
+        flake.homeManagerModules.vscode
+      ];
+
+      gnm.hm = {
+        gnome.enable = cfg.gnm.gui.enable;
+        terminal.enable = cfg.gnm.gui.enable;
+        virtualisation.enable = cfg.gnm.virtualisation.enable;
+        git.enable = mkDefault true;
+      };
+
     };
   };
 }

@@ -13,5 +13,5 @@ in {
   #hm.gnm.home-manager.home.username = "gaerfield";
   #home-manager.users.gaerfield.gnm.home-manager.home.username = "gaerfield";
   #home-manager.users.gaerfield.hm
-  home.stateVersion = "24.11"; 
+  home.stateVersion = "25.05";
 }

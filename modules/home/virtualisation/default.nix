@@ -4,11 +4,11 @@
   ...
 }:
 with lib; let
-  cfg = config.gnm.hm.virtualization;
+  cfg = config.gnm.hm.virtualisation;
 in {
   options.gnm.hm.virtualisation.enable = mkOption {
     type = types.bool;
-    default = config.gnm.virtualization.enable;
+    default = config.gnm.virtualisation.enable;
     description = "Enable virtualization support, including libvirt and virt-manager.";
   };
 

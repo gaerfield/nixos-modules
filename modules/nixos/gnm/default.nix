@@ -1,17 +1,7 @@
 { config, pkgs, lib, flake, ... }: with lib; let
-  cfg = config.gnm.systemWithHm;  
+  cfg = config.gnm.systemWithHm;
+  gnmConfig = config.gnm;
 in {
-
-  imports = [
-    flake.nixosModules.appimage
-    flake.nixosModules.containers
-    flake.nixosModules.gui
-    flake.nixosModules.hardware
-    flake.nixosModules.networking
-    flake.nixosModules.nix
-    flake.nixosModules.os
-    flake.nixosModules.virtualisation
-  ];
 
   options.gnm.systemWithHm = {
     mainuser = {
@@ -56,6 +46,17 @@ in {
     };
   };
 
+  imports = [
+    flake.nixosModules.appimage
+    flake.nixosModules.containers
+    flake.nixosModules.gui
+    flake.nixosModules.hardware
+    flake.nixosModules.networking
+    flake.nixosModules.nix
+    flake.nixosModules.os
+    flake.nixosModules.virtualisation
+  ];
+
   config = {
     gnm = { 
       appimage.enable = mkDefault false;
@@ -74,33 +75,38 @@ in {
         enable = mkDefault false;
         users = [ cfg.mainuser.name ];
       };
-
-      
     };
 
-    home-manager.users.${cfg.mainuser.name} = {
+    home-manager.users."${cfg.mainuser.name}" = {
       imports = [
         #flake.homeManagerModules.base
-        flake.homeManagerModules.chromium
-        flake.homeManagerModules.cloud
-        flake.homeManagerModules.development
-        flake.homeManagerModules.firefox
-        flake.homeManagerModules.git
-        flake.homeManagerModules.gnome
-        flake.homeManagerModules.shell
-        flake.homeManagerModules.terminal
-        flake.homeManagerModules.track-working-day
-        flake.homeManagerModules.virtualisation
-        flake.homeManagerModules.vscode
+        flake.homeModules.chromium
+        flake.homeModules.cloud
+        flake.homeModules.java-development
+        flake.homeModules.firefox
+        flake.homeModules.git
+        flake.homeModules.gnome
+        flake.homeModules.shell
+        flake.homeModules.terminal
+        flake.homeModules.track-working-day
+        flake.homeModules.virtualisation
+        flake.homeModules.vscode
       ];
 
       gnm.hm = {
-        gnome.enable = cfg.gnm.gui.enable;
-        terminal.enable = cfg.gnm.gui.enable;
-        virtualisation.enable = cfg.gnm.virtualisation.enable;
+        chromium.enable = mkDefault false;
+        cloud.enable = mkDefault false;
+        javaDevelopment.enable = mkDefault false;
+        firefox.enable = mkDefault true;
         git.enable = mkDefault true;
-      };
+        trackWorkingDay.enable = mkDefault false;
+        vscode.enable = mkDefault false;
 
+        virtualisation.enable = gnmConfig.virtualisation.enable;
+        gnome.enable = gnmConfig.gui.enable;
+        terminal.enable = gnmConfig.gui.enable;
+      };
     };
+    
   };
 }

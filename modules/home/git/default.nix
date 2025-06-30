@@ -6,10 +6,12 @@ in {
     enable = mkEnableOption "Enable git and jujutsu support";
     name = mkOption {
       type = types.str;
+      default = "";
       description = "The name to use for git commits.";
     };
     email = mkOption {
       type = types.str;
+      default = "";
       description = "The email to use for git commits.";
     };
   };

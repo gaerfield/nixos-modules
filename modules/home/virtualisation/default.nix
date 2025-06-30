@@ -6,11 +6,7 @@
 with lib; let
   cfg = config.gnm.hm.virtualisation;
 in {
-  options.gnm.hm.virtualisation.enable = mkOption {
-    type = types.bool;
-    default = config.gnm.virtualisation.enable;
-    description = "Enable virtualization support, including libvirt and virt-manager.";
-  };
+  options.gnm.hm.virtualisation.enable = mkEnableOption "Enable virtualization support, including libvirt and virt-manager.";
 
   config = mkIf cfg.enable {
     # Enable UEFI firmware support

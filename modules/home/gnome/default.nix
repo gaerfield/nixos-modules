@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }: with lib; let
+{ config, pkgs, lib, ... }: with lib; let
   cfg = config.gnm.hm.gnome;
 in {
   imports = [
@@ -9,9 +9,7 @@ in {
     ./gnome-extensions.nix
   ];
 
-  options.gnm.hm.gnome = {
-    enable = mkEnableOption "Enable gnome user config";
-  };
+  options.gnm.hm.gnome.enable = mkEnableOption "Enable gnome user config";
 
   config = mkIf cfg.enable {  
     fonts.fontconfig.enable = true;

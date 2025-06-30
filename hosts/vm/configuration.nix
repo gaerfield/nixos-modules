@@ -4,12 +4,11 @@
   lib,
   ...
 }: let
-  nm = flake.nixosModules;
   mainuser = "nixos";
 in {
   imports = [
     ./hardware-configuration.nix
-    nm.system-with-hm
+    flake.nixosModules.gnm
   ];
 
   system.stateVersion = "25.05";

@@ -1,9 +1,6 @@
-{pkgs, ...}: {
-  # List packages installed in system profile. To search, run:
-  environment.systemPackages = with pkgs; [
-    wget
-    curl
-    git
+{pkgs, lib, ...}: {
+  environment.systemPackages = with pkgs; map lib.lowPrio [
+    gitMinimal
     sysstat
     lm_sensors
     killall

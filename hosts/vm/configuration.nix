@@ -5,7 +5,7 @@
   ...
 }: let
   nm = flake.nixosModules;
-  mainuser = "gaerfield";
+  mainuser = "nixos";
 in {
   imports = [
     ./hardware-configuration.nix
@@ -13,24 +13,24 @@ in {
     nm.networking
     nm.hardware
     nm.gui
-    nm.home-manager
   ];
 
   system.stateVersion = "25.05";
   nixpkgs.hostPlatform = "x86_64-linux";
-  nixpkgs.config.allowUnfree = true;
-  users.users.${mainuser} = {
-    isNormalUser = true;
-    initialPassword = "nixos";
+  
+  gnm = {
+    os = {
+      mainuser = {
+        name = mainuser;
+        autologin = true;
+        authorizedKeys = [
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJiwF/fhZ3Avw2RxpwuikiSraNpbD88ixd7rHJsuJHeG gaerfield@kramhal.de"
+        ];
+      };
+      allowUnfree = true;
+      hostname = "nixos";
+    };
   };
-  networking.hostName = "nixos"; # Define your hostname.
-  #gnm.os.mainuser = {
-  #  name = mainuser;
-  #  autologin = true;
-  #  authorizedKeys = [
-  #    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJiwF/fhZ3Avw2RxpwuikiSraNpbD88ixd7rHJsuJHeG gaerfield@kramhal.de"
-  #  ];
-  #};
   users.mutableUsers = true;
   
   boot.loader.grub = {
@@ -40,10 +40,8 @@ in {
     efiInstallAsRemovable = true;
   };
 
-  environment.systemPackages = map lib.lowPrio [
-    pkgs.curl
-    pkgs.gitMinimal
-  ];
+  # Enable CUPS to print documents.
+  services.printing.enable = true;
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;

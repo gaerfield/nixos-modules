@@ -4,50 +4,78 @@
   ...
 }:
 with lib; let
-  mainuser = config.gnm.os.mainuser;
+  cfg = config.gnm.os;
+  mainuser = cfg.mainuser;
 in {
   imports = [
-    ./gc.nix
+    ./locale.nix
     ./packages.nix
-    ./nix-ld.nix
   ];
 
-  options.gnm.os.mainuser = {
-    name = mkOption {
-      type = types.str;
-      default = "nixos";
-      description = "Default user for the nixos system.";
+  options.gnm.os = {
+    mainuser = {
+      name = mkOption {
+        type = types.str;
+        default = "nixos";
+        description = "Default user for the nixos system.";
+      };
+      password = mkOption {
+        type = types.str;
+        default = "nixos";
+        description = "Default password for the default user.";
+      };
+      autologin = mkOption {
+        type = types.bool;
+        default = false;
+        description = "Should the default user be logged in automatically upon boot.";
+      };
+      authorizedKeys = mkOption {
+        type = types.listOf types.str;
+        default = [];
+        description = "SSH public keys for the default user.";
+      };
     };
-    autologin = mkOption {
+    allowUnfree = mkOption {
       type = types.bool;
       default = false;
-      description = "Should the default user be logged in automatically upon boot.";
+      description = "Allow unfree packages in the system.";
     };
-    authorizedKeys = mkOption {
-      type = types.listOf types.str;
-      default = [];
-      description = "SSH public keys for the default user.";
+    hostname = mkOption {
+      type = types.str;
+      default = "nixos";
+      description = "The hostname of the system.";
+    };
+    timezone = mkOption {
+      type = types.str;
+      default = "Europe/Berlin";
+    };
+    locale = mkOption {
+      type = types.str;
+      default = "de_DE.UTF-8";
     };
   };
 
   config = {
-    users.users."${mainuser.name}" = {
-      isNormalUser = true;
-      description = "${mainuser.name}";
-      extraGroups = ["wheel"];
-      linger = true;
-      openssh.authorizedKeys.keys = mainuser.authorizedKeys;
+    users = {
+      groups."${mainuser.name}" = { }; # Creates a default group with the username
+      users."${mainuser.name}" = {
+        isNormalUser = true;
+        description = "${mainuser.name}";
+        extraGroups = ["wheel" "video" "audio" "${mainuser.name}"];
+        linger = true;
+        password = "${mainuser.password}";
+        openssh.authorizedKeys.keys = mainuser.authorizedKeys;
+      };
     };
+
+    networking.hostName = cfg.hostname;
 
     boot.kernel.sysctl = {
       "kernel.sysrq" = 1; # enable reisub sequence
     };
 
     # Allow unfree packages
-    nixpkgs.config.allowUnfree = mkDefault true;
-
-    # Enable CUPS to print documents.
-    services.printing.enable = true;
+    nixpkgs.config.allowUnfree = cfg.allowUnfree;
 
     # Configure console keymap
     console.keyMap = "de-latin1-nodeadkeys";

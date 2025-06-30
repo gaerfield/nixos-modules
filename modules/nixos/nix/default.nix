@@ -1,6 +1,6 @@
 {
-  import = [
-    "./gc.nix"
-    "./nix-ld.nix"
+  imports = [
+    ./gc.nix
+    ./nix-ld.nix
   ];
 }

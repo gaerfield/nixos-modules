@@ -5,16 +5,17 @@
   ...
 }:
 with lib; let
-  mainuser = config.gnm.system.mainuser.name;
-  virtualization = config.gnm.virtualization.enable;
+  cfg = config.gnm.virtualization;
 in {
-  options.gnm.virtualization.enable = mkOption {
-    type = types.bool;
-    default = true;
-    description = "Enable virtualization support, including libvirt and virt-manager.";
+  options.gnm.virtualization = {
+    enable = mkEnableOption "Enable virtualization support, including libvirt and virt-manager.";
+    mainuser = mkOption {
+      type = types.str;
+      description = "The main user that is allowed to manage virtual machines.";
+    };
   };
 
-  config = mkIf virtualization {
+  config = mkIf cfg.enable {
     # https://nixos.wiki/wiki/Virt-manager
 
     # for file sharing add
@@ -31,7 +32,7 @@ in {
       spice-vdagentd.enable = true;
     };
 
-    users.users."${mainuser}".extraGroups = ["libvirtd"];
+    users.users."${cfg.mainuser}".extraGroups = ["libvirtd"];
 
     # allow nested virtualization (https://nixos.wiki/wiki/Libvirt)
     boot.extraModprobeConfig = "options kvm_intel nested=1";

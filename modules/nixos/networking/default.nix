@@ -2,17 +2,23 @@
   lib,
   config,
   ...
-}: let
-  mainuser = config.gnm.os.mainuser.name;
+}: with lib; let
+  cfg = config.gnm.networking;
 in {
   imports = [
     ./ssh.nix
     ./dns-resolve.nix
   ];
+  options.gnm.networking = {
+    enable = mkEnableOption "Enable NetworkManager for managing network connections.";
+    mainuser = mkOption {
+      type = types.str;
+      default = mainuser;
+      description = "The main user for networking configurations.";
+    };
+  };
 
-
-  config = {
-
+  config = mkIf cfg.enable {
     # networking.firewall.allowedTCPPorts = [ ... ];
     # networking.firewall.allowedUDPPorts = [ ... ];
     # Or disable the firewall altogether.
@@ -20,6 +26,6 @@ in {
       networkmanager.enable = true;
       firewall.enable = false;
     };
-    users.users.${mainuser}.extraGroups = ["networkmanager"];
+    users.users.${cfg.mainuser}.extraGroups = ["networkmanager"];
   };
 }

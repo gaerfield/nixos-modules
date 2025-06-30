@@ -5,9 +5,9 @@
   ...
 }:
 with lib; let
-  cfg = config.gnm.virtualization;
+  cfg = config.gnm.virtualisation;
 in {
-  options.gnm.virtualization = {
+  options.gnm.virtualisation = {
     enable = mkEnableOption "Enable virtualization support, including libvirt and virt-manager.";
     users = mkOption {
       type = types.listOf types.str;

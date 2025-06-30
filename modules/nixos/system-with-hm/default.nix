@@ -10,7 +10,7 @@ in {
     flake.nixosModules.networking
     flake.nixosModules.nix
     flake.nixosModules.os
-    flake.nixosModules.virtualization
+    flake.nixosModules.virtualisation
   ];
 
   options.gnm.systemWithHm = {
@@ -67,10 +67,10 @@ in {
       hardware.enable = mkDefault true;
       networking = {
         enable = mkDefault true;
-        mainuser = [ cfg.mainuser.name ];
+        users = [ cfg.mainuser.name ];
       };
       os = cfg;
-      virtualization = {
+      virtualisation = {
         enable = mkDefault false;
         users = [ cfg.mainuser.name ];
       };

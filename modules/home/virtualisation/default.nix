@@ -4,15 +4,15 @@
   ...
 }:
 with lib; let
-  virtualization = config.gnm.hm.virtualization.enable;
+  cfg = config.gnm.hm.virtualization;
 in {
-  options.gnm.hm.virtualization.enable = mkOption {
+  options.gnm.hm.virtualisation.enable = mkOption {
     type = types.bool;
     default = config.gnm.virtualization.enable;
     description = "Enable virtualization support, including libvirt and virt-manager.";
   };
 
-  config = mkIf virtualization {
+  config = mkIf cfg.enable {
     # Enable UEFI firmware support
     # https://nixos.wiki/wiki/Libvirt
     xdg.configFile."libvirt/qemu.conf".text = ''

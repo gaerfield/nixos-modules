@@ -11,10 +11,11 @@ in {
   ];
   options.gnm.networking = {
     enable = mkEnableOption "Enable NetworkManager for managing network connections.";
-    mainuser = mkOption {
-      type = types.str;
-      default = mainuser;
-      description = "The main user for networking configurations.";
+    users = mkOption {
+      type = types.listOf types.str;
+      default = [];
+      example = [ "user1" "user2" ];
+      description = "users that become members of the 'networkmanager' group to manage network connections";
     };
   };
 
@@ -26,6 +27,9 @@ in {
       networkmanager.enable = true;
       firewall.enable = false;
     };
-    users.users.${cfg.mainuser}.extraGroups = ["networkmanager"];
+    
+    users.users = lists.foldl' (acc: user: acc // {
+      "${user}" = { extraGroups = ["networkmanager"]; };
+    }) {} cfg.users;
   };
 }

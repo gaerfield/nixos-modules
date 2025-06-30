@@ -61,18 +61,18 @@ in {
       appimage.enable = mkDefault false;
       containers = {
         enable = mkDefault false;
-        mainuser = cfg.mainuser.name;
+        users = [ cfg.mainuser.name ];
       };
       gui.enable = mkDefault true;
       hardware.enable = mkDefault true;
       networking = {
         enable = mkDefault true;
-        mainuser = cfg.mainuser.name;
+        mainuser = [ cfg.mainuser.name ];
       };
       os = cfg;
       virtualization = {
         enable = mkDefault false;
-        mainuser = cfg.mainuser.name;
+        users = [ cfg.mainuser.name ];
       };
     };
   };

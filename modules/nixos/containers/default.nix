@@ -8,9 +8,11 @@
 in {
   options.gnm.containers = {
     enable = mkEnableOption "enable podman containerization support";
-    mainuser = mkOption {
-      type = types.str;
-      description = "The main user thats added to manage containers.";
+    users = mkOption {
+      type = types.listOf types.str;
+      default = [];
+      example = [ "user1" "user2" ];
+      description = "users that become members of the 'docker' group to manage containers";
     };
   };
 
@@ -38,7 +40,9 @@ in {
       };
     };
 
-    users.users."${cfg.mainuser}".extraGroups = ["docker"];
+    users.users = lists.foldl' (acc: user: acc // {
+      "${user}" = { extraGroups = ["docker"]; };
+    }) {} cfg.users;
 
     programs.fish = {
       shellAbbrs.p = "podman";

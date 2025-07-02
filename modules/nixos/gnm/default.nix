@@ -1,4 +1,4 @@
-{ config, pkgs, lib, flake, ... }: with lib; let
+{ config, inputs, lib, ... }: with lib; let
   cfg = config.gnm.systemWithHm;
   gnmConfig = config.gnm;
 in {
@@ -47,14 +47,14 @@ in {
   };
 
   imports = [
-    flake.nixosModules.appimage
-    flake.nixosModules.containers
-    flake.nixosModules.gui
-    flake.nixosModules.hardware
-    flake.nixosModules.networking
-    flake.nixosModules.nix
-    flake.nixosModules.os
-    flake.nixosModules.virtualisation
+    ./../appimage
+    ./../containers
+    ./../gui
+    ./../hardware
+    ./../networking
+    ./../nix
+    ./../os
+    ./../virtualisation
   ];
 
   config = {
@@ -80,17 +80,17 @@ in {
     home-manager.users."${cfg.mainuser.name}" = {
       imports = [
         #flake.homeManagerModules.base
-        flake.homeModules.chromium
-        flake.homeModules.cloud
-        flake.homeModules.java-development
-        flake.homeModules.firefox
-        flake.homeModules.git
-        flake.homeModules.gnome
-        flake.homeModules.shell
-        flake.homeModules.terminal
-        flake.homeModules.track-working-day
-        flake.homeModules.virtualisation
-        flake.homeModules.vscode
+        ./../../home/chromium
+        ./../../home/cloud
+        ./../../home/java-development
+        ./../../home/firefox
+        ./../../home/git
+        ./../../home/gnome
+        ./../../home/shell
+        ./../../home/terminal
+        ./../../home/track-working-day
+        ./../../home/virtualisation
+        ./../../home/vscode
       ];
 
       gnm.hm = {

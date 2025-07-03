@@ -42,7 +42,8 @@ Add to flake.nix:
 ```nix
 {
   description = "NixOS configuration with flakes";
-  inputs.common.url = "github:gaerfield/nixos-modules/main";
+  # gnf = gaerfields nixos modules
+  inputs.gnm.url = "github:gaerfield/nixos-modules/main";
 
   outputs = { self, nixpkgs, common }: {
     # replace <your-hostname> with your actual hostname
@@ -80,4 +81,3 @@ Testing locally before committing and pushing by setting url to a local path:
     inputs.common.url = "git+file://<absolut-path-to-directory>";
 }
 ```
-

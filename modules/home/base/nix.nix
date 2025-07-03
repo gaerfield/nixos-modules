@@ -1,5 +1,5 @@
-{inputs, pkgs, lib, ...}: with lib; let
-  cfg = inputs.gnm.hm.nix;
+{config, inputs, lib, pkgs, ...}: with lib; let
+  cfg = config.gnm.hm.nix;
 in {
   imports = [
     inputs.nix-index-database.hmModules.nix-index

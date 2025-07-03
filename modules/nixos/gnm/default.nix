@@ -80,12 +80,13 @@ in {
     home-manager.users."${cfg.mainuser.name}" = {
       imports = [
         #flake.homeManagerModules.base
+        ./../../home/base
         ./../../home/chromium
         ./../../home/cloud
-        ./../../home/java-development
         ./../../home/firefox
         ./../../home/git
         ./../../home/gnome
+        ./../../home/java-development
         ./../../home/shell
         ./../../home/terminal
         ./../../home/track-working-day

@@ -21,11 +21,11 @@
     plugins = with pkgs.fishPlugins; [
       {
         name = "fzf";
-        src = fzf.src;
+        inherit (fzf) src;
       }
       {
         name = "fzf-fish";
-        src = fzf-fish.src;
+        inherit (fzf-fish) src;
       } # requires fd and bat
     ];
     shellAbbrs.fzf-help = "fzf_configure_bindings --help";

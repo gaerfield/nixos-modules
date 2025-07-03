@@ -7,7 +7,7 @@ with lib; let
   cfg = config.gnm.os;
 in {
   networking.hostName = cfg.hostname;
-  
+
   # Set your time zone.
   time.timeZone = mkDefault cfg.timezone;
 

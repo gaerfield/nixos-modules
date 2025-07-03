@@ -1,4 +1,10 @@
-{config, lib, pkgs, ...}: with lib; let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib; let
   cfg = config.gnm.hm.vscode;
 in {
   options.gnm.hm.vscode.enable = mkEnableOption "Enable Visual Studio Code support";

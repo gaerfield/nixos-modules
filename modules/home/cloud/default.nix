@@ -1,4 +1,5 @@
-{ lib, ... }: with lib; {
+{lib, ...}:
+with lib; {
   imports = [
     ./google-cloud-sdk.nix
     ./kubectl.nix

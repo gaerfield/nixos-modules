@@ -1,4 +1,5 @@
-{ lib, ... }: with lib; {
+{lib, ...}:
+with lib; {
   imports = [
     ./gnome.nix
     ./fonts.nix

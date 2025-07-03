@@ -1,4 +1,9 @@
-{ lib, config, ... }: with lib; let 
+{
+  lib,
+  config,
+  ...
+}:
+with lib; let
   cfg = config.gnm.hardware;
 in {
   config = mkIf cfg.enable {

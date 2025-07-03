@@ -12,8 +12,8 @@ in {
     users = mkOption {
       type = types.listOf types.str;
       default = [];
-      example = [ "user1" "user2" ];
-      description = "users that become members of the 'libvirtd' group to manage virtual machines"; 
+      example = ["user1" "user2"];
+      description = "users that become members of the 'libvirtd' group to manage virtual machines";
     };
   };
 
@@ -34,9 +34,12 @@ in {
       spice-vdagentd.enable = true;
     };
 
-    users.users = lists.foldl' (acc: user: acc // {
-      "${user}" = { extraGroups = ["libvirtd"]; };
-    }) {} cfg.users;
+    users.users = lists.foldl' (acc: user:
+      acc
+      // {
+        "${user}" = {extraGroups = ["libvirtd"];};
+      }) {}
+    cfg.users;
 
     # allow nested virtualization (https://nixos.wiki/wiki/Libvirt)
     boot.extraModprobeConfig = "options kvm_intel nested=1";

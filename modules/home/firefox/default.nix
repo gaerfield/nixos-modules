@@ -1,4 +1,9 @@
-{config, lib, ...}: with lib; let
+{
+  config,
+  lib,
+  ...
+}:
+with lib; let
   cfg = config.gnm.hm.firefox;
 in {
   options.gnm.hm.firefox.enable = mkEnableOption "enable Firefox browser support";

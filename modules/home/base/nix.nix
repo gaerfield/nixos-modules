@@ -1,4 +1,11 @@
-{config, inputs, lib, pkgs, ...}: with lib; let
+{
+  config,
+  inputs,
+  lib,
+  pkgs,
+  ...
+}:
+with lib; let
   cfg = config.gnm.hm.nix;
 in {
   imports = [

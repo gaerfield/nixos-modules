@@ -1,5 +1,11 @@
-{ config, lib, pkgs, ...}: with lib; let 
-  cfg = config.gnm.appimage; 
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib; let
+  cfg = config.gnm.appimage;
 in {
   options.gnm.appimage.enable = mkEnableOption "enable AppImage support";
 

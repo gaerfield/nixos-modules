@@ -36,7 +36,7 @@
     plugins = with pkgs.fishPlugins; [
       {
         name = "grc";
-        src = grc.src;
+        inherit (grc) src;
       }
       # {
       #   name = "sponge";
@@ -44,7 +44,7 @@
       # }
       {
         name = "colored-man-pages";
-        src = colored-man-pages.src;
+        inherit (colored-man-pages) src;
       }
     ];
     functions = {

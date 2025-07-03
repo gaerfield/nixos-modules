@@ -1,4 +1,10 @@
-{config, lib, inputs, ...}: with lib; let
+{
+  config,
+  lib,
+  inputs,
+  ...
+}:
+with lib; let
   cfg = config.gnm.hm.cloud;
   pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
   gdk = pkgs.google-cloud-sdk.withExtraComponents (with pkgs.google-cloud-sdk.components; [
@@ -7,8 +13,8 @@
 in {
   config = mkIf cfg.enable {
     home = {
-      packages = [ gdk ];
-      sessionVariables = { USE_GKE_GCLOUD_AUTH_PLUGIN = "True"; };
+      packages = [gdk];
+      sessionVariables = {USE_GKE_GCLOUD_AUTH_PLUGIN = "True";};
     };
     programs.fish = {
       shellAbbrs.gcx = {

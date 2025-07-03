@@ -1,4 +1,10 @@
-{pkgs, config, lib, ...}: with lib; let 
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
+with lib; let
   cfg = config.gnm.gui;
 in {
   config = mkIf cfg.enable {

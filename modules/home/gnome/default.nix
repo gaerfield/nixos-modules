@@ -1,4 +1,10 @@
-{ config, pkgs, lib, ... }: with lib; let
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+with lib; let
   cfg = config.gnm.hm.gnome;
 in {
   imports = [
@@ -11,7 +17,7 @@ in {
 
   options.gnm.hm.gnome.enable = mkEnableOption "Enable gnome user config";
 
-  config = mkIf cfg.enable {  
+  config = mkIf cfg.enable {
     fonts.fontconfig.enable = true;
 
     # TODO remove when `pkgs.cantarell-fonts` is no more broken on darwin
@@ -114,5 +120,5 @@ in {
         };
       };
     };
-  };  
+  };
 }

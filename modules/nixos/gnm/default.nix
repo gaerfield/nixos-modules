@@ -1,8 +1,12 @@
-{ config, inputs, lib, ... }: with lib; let
+{
+  config,
+  lib,
+  ...
+}:
+with lib; let
   cfg = config.gnm.systemWithHm;
   gnmConfig = config.gnm;
 in {
-
   options.gnm.systemWithHm = {
     mainuser = {
       name = mkOption {
@@ -58,22 +62,22 @@ in {
   ];
 
   config = {
-    gnm = { 
+    gnm = {
       appimage.enable = mkDefault false;
       containers = {
         enable = mkDefault false;
-        users = [ cfg.mainuser.name ];
+        users = [cfg.mainuser.name];
       };
       gui.enable = mkDefault true;
       hardware.enable = mkDefault true;
       networking = {
         enable = mkDefault true;
-        users = [ cfg.mainuser.name ];
+        users = [cfg.mainuser.name];
       };
       os = cfg;
       virtualisation = {
         enable = mkDefault false;
-        users = [ cfg.mainuser.name ];
+        users = [cfg.mainuser.name];
       };
     };
 
@@ -108,6 +112,5 @@ in {
         terminal.enable = gnmConfig.gui.enable;
       };
     };
-    
   };
 }

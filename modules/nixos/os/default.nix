@@ -5,7 +5,7 @@
 }:
 with lib; let
   cfg = config.gnm.os;
-  mainuser = cfg.mainuser;
+  inherit (cfg) mainuser;
 in {
   imports = [
     ./locale.nix
@@ -57,7 +57,7 @@ in {
 
   config = {
     users = {
-      groups."${mainuser.name}" = { }; # Creates a default group with the username
+      groups."${mainuser.name}" = {}; # Creates a default group with the username
       users."${mainuser.name}" = {
         isNormalUser = true;
         description = "${mainuser.name}";

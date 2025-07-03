@@ -3,15 +3,16 @@
   pkgs,
   lib,
   ...
-}: with lib; let
-  cfg = config.gnm.containers; 
+}:
+with lib; let
+  cfg = config.gnm.containers;
 in {
   options.gnm.containers = {
     enable = mkEnableOption "enable podman containerization support";
     users = mkOption {
       type = types.listOf types.str;
       default = [];
-      example = [ "user1" "user2" ];
+      example = ["user1" "user2"];
       description = "users that become members of the 'docker' group to manage containers";
     };
   };
@@ -40,9 +41,12 @@ in {
       };
     };
 
-    users.users = lists.foldl' (acc: user: acc // {
-      "${user}" = { extraGroups = ["docker"]; };
-    }) {} cfg.users;
+    users.users = lists.foldl' (acc: user:
+      acc
+      // {
+        "${user}" = {extraGroups = ["docker"];};
+      }) {}
+    cfg.users;
 
     programs.fish = {
       shellAbbrs.p = "podman";

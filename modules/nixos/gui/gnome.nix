@@ -5,7 +5,6 @@
   ...
 }:
 with lib; let
-  mainuser = config.gnm.os.mainuser;
   cfg = config.gnm.gui;
 in {
   config = mkIf cfg.enable {

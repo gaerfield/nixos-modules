@@ -1,4 +1,9 @@
-{ config, lib, ...}: with lib; let 
+{
+  config,
+  lib,
+  ...
+}:
+with lib; let
   cfg = config.gnm.hardware;
 in {
   imports = [

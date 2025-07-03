@@ -1,7 +1,12 @@
-{config, lib, pkgs, ...}: with lib; let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib; let
   cfg = config.gnm.hm.cloud;
 in {
-
   config = mkIf cfg.enable {
     home.packages = with pkgs; [kubectl k9s kubectx];
     home.sessionVariables = {

@@ -1,9 +1,4 @@
-{
-  pkgs,
-  flake,
-  lib,
-  ...
-}: let
+{flake, ...}: let
   mainuser = "nixos";
 in {
   imports = [
@@ -13,7 +8,7 @@ in {
 
   system.stateVersion = "25.05";
   nixpkgs.hostPlatform = "x86_64-linux";
-  
+
   gnm = {
     gui.enable = true;
     systemWithHm = {
@@ -29,7 +24,7 @@ in {
     };
   };
   users.mutableUsers = true;
-  
+
   boot.loader.grub = {
     # no need to set devices, disko will add all devices that have a EF02 partition to the list already
     # devices = [ ];

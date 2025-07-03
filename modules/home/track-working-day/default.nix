@@ -1,4 +1,10 @@
-{config, lib, pkgs, ...}: with lib; let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib; let
   cfg = config.gnm.hm.trackWorkingDay;
   track-working-day = pkgs.callPackage ./script.nix {};
 in {

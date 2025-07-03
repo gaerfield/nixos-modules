@@ -1,4 +1,9 @@
-{ config, lib, ... }: with lib; let
+{
+  config,
+  lib,
+  ...
+}:
+with lib; let
   cfg = config.gnm.hm.terminal;
 in {
   options.gnm.hm.terminal.enable = mkEnableOption "Enable the kitty terminal";

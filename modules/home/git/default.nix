@@ -1,4 +1,8 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  ...
+}:
 with lib; let
   cfg = config.gnm.hm.git;
 in {
@@ -40,8 +44,8 @@ in {
       # https://github.com/jj-vcs/jj/blob/main/docs/config.md
       settings = {
         user = {
-          name = cfg.name;
-          email = cfg.email;
+          inherit (cfg) name;
+          inherit (cfg) email;
         };
         ui = {
           default-command = "log";

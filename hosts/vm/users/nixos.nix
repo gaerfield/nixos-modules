@@ -1,4 +1,4 @@
-{flake, ...}: {
+_: {
   # imports = [
   #   flake.homeModules.gnm
   # ];

@@ -20,6 +20,20 @@ in {
   config = mkIf cfg.enable {
     fonts.fontconfig.enable = true;
 
+    # disable styling for all shells and terminals, I want them dark!
+    stylix.targets = {
+      neovim.enable = false;
+      fish.enable = false;
+      k9s.enable = false;
+      kitty.enable = false;
+      bat.enable = false;
+      btop.enable = false;
+      fzf.enable = false;
+      kubecolor.enable = false;
+      lazygit.enable = false;
+      tmux.enable = false;
+    };
+
     # TODO remove when `pkgs.cantarell-fonts` is no more broken on darwin
     #home.packages = lib.optionals pkgs.stdenv.isLinux ([
     #  pkgs.cantarell-fonts

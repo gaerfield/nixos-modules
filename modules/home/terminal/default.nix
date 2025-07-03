@@ -9,7 +9,6 @@ in {
   options.gnm.hm.terminal.enable = mkEnableOption "Enable the kitty terminal";
 
   config = mkIf cfg.enable {
-    stylix.targets.kitty.enable = false;
     # https://wiki.nixos.org/wiki/Kitty
     programs.kitty = {
       enable = true;

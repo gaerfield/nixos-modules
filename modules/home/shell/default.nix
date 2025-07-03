@@ -39,10 +39,10 @@
         name = "grc";
         src = grc.src;
       }
-      {
-        name = "sponge";
-        src = sponge.src;
-      }
+      # {
+      #   name = "sponge";
+      #   src = sponge.src;
+      # }
       {
         name = "colored-man-pages";
         src = colored-man-pages.src;

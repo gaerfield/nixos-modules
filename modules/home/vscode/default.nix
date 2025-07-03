@@ -41,9 +41,9 @@ in {
           };
           "terminal.integrated.smoothScrolling" = true;
           "window.autoDetectColorScheme" = true;
-          "workbench.colorTheme" = "Solarized Light";
-          "workbench.preferredDarkColorTheme" = "Solarized Dark";
-          "workbench.preferredLightColorTheme" = "Solarized Light";
+          #"workbench.colorTheme" = "Solarized Light";
+          #"workbench.preferredDarkColorTheme" = "Solarized Dark";
+          #"workbench.preferredLightColorTheme" = "Solarized Light";
 
           # nix-ide: nix language server and formatter
           "nix.enableLanguageServer" = true;

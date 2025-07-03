@@ -1,18 +1,18 @@
-{ config, lib, pkgs, ... }: with lib; let
+{ config, inputs, lib, pkgs, ... }: with lib; let
   cfg = config.gnm.gui;
 in 
 {
+  imports = [ inputs.stylix.nixosModules.stylix ];
   config = mkIf cfg.enable {
     stylix = {
       enable = true;
-      # autoEnable = true;
-      # polarity = "light";
-      # image = pkgs.fetchurl {
-      #   url = "https://raw.githubusercontent.com/zhichaoh/catppuccin-wallpapers/refs/heads/main/os/nix-black-4k.png";
-      #   sha256 = "1d165878a0e67c0e7791bddf671b8d5af47c704f7ab4baea3d9857e3ecf89590";
-      # };
+      polarity = "light";
+      image = pkgs.fetchurl {
+        url = "https://raw.githubusercontent.com/D3Ext/aesthetic-wallpapers/main/images/acrylic.jpg";
+        sha256 = "XfZKZrIxezZ+9J9ZpIqx2laSmg7m7BWzraC4JI/Go38=";
+      };
       # https://tinted-theming.github.io/tinted-gallery/
-      base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-frappe.yaml";
+      base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-latte.yaml";
 
       # opacity = {
       #   terminal = 0.9;
@@ -25,14 +25,14 @@ in
       #   size = 24;
       # };
 
-      fonts = {
-        serif = config.stylix.fonts.monospace;
-        sansSerif = config.stylix.fonts.monospace;
-        monospace = {
-          package = pkgs.nerd-fonts.jetbrains-mono;
-          name = "JetBrainsMono Nerd Font";
-        };
-      };
+      # fonts = {
+      #   serif = config.stylix.fonts.monospace;
+      #   sansSerif = config.stylix.fonts.monospace;
+      #   monospace = {
+      #     package = pkgs.nerd-fonts.jetbrains-mono;
+      #     name = "JetBrainsMono Nerd Font";
+      #   };
+      # };
     };
   };
 }

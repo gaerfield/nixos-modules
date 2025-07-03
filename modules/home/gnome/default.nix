@@ -8,7 +8,7 @@ with lib; let
   cfg = config.gnm.hm.gnome;
 in {
   imports = [
-    ./theme.nix
+    # ./theme.nix
     ./autostart.nix
     ./flameshot.nix
     ./notifications.nix

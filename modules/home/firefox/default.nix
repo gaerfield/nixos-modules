@@ -10,7 +10,7 @@ in {
 
   config = mkIf cfg.enable {
     home.sessionVariables.BROWSER = "${config.programs.firefox.package}/bin/firefox";
-
+    stylix.targets.firefox.enable = false;
     programs.firefox = {
       enable = true;
       # package = pkgs.firefox.override {

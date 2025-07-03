@@ -31,7 +31,6 @@
     enable = true;
     interactiveShellInit = ''
       set fish_greeting # Disable greeting
-      nix-your-shell fish | source # nix-shell will use fish instead of bash
     '';
 
     plugins = with pkgs.fishPlugins; [
@@ -121,7 +120,6 @@
   };
 
   home.packages = with pkgs; [
-    nix-your-shell
     grc
     lazygit
     lazydocker
@@ -149,14 +147,6 @@
     file
     which
     tree
-
-    # nix related
-    #
-    # it provides the command `nom` works just like `nix`
-    # with more details log output
-    nix-output-monitor
-    # put a ',' in front to run a command without installing it
-    comma
 
     # productivity
     glow # markdown previewer in terminal

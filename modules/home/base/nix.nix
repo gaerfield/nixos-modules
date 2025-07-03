@@ -21,14 +21,17 @@ in {
     home.packages = with pkgs; [alejandra nixd];
     nix.nixPath = ["nixpkgs=${inputs.nixpkgs}"];
 
-    programs.nix-index.enable = true;
-
     # nixos-helper: https://github.com/nix-community/nh
-    programs.nh = {
-      enable = true;
-      clean.enable = true;
-      clean.extraArgs = "--keep-since 4d --keep 3";
-      flake = cfg.flakePath;
+    programs = {
+      nix-index.enable = true;
+      nix-index-database.comma.enable = true;
+      nix-your-shell.enable = true;
+      nh = {
+        enable = true;
+        clean.enable = true;
+        clean.extraArgs = "--keep-since 4d --keep 3";
+        flake = cfg.flakePath;
+      };
     };
   };
 }

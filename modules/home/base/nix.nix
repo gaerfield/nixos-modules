@@ -25,7 +25,12 @@ in {
     # Nicely reload system units when changing configs
     systemd.user.startServices = "sd-switch";
 
-    home.packages = with pkgs; [alejandra nixd];
+    home.packages = with pkgs; [
+      alejandra
+      nixd
+      nom # nix output monitor for improved details
+      nvd # nix version display = diffs between 2 generations
+    ];
     nix.nixPath = ["nixpkgs=${inputs.nixpkgs}"];
 
     # nixos-helper: https://github.com/nix-community/nh

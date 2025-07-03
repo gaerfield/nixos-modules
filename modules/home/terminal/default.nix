@@ -22,7 +22,7 @@ in {
         mouse_hide_wait = "-1.0";
         window_padding_width = 10;
         cursor_trail = 3;
-        font_family = "MesloLGS Nerd Font Mono";
+        # font_family = "MesloLGS Nerd Font Mono";
       };
     };
 

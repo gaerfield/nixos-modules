@@ -2,7 +2,8 @@
 with lib; {
   imports = [
     ./gnome.nix
-    ./fonts.nix
+    # ./fonts.nix
+    ./stylix.nix
   ];
 
   options.gnm.gui = {

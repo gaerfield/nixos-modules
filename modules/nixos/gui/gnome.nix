@@ -20,7 +20,7 @@ in {
         adwaita-icon-theme
         gnomeExtensions.appindicator
         gnome-tweaks
-        noto-fonts-color-emoji
+        # noto-fonts-color-emoji
         wl-clipboard
         libsecret
         # get metadata info for media files in nautilus

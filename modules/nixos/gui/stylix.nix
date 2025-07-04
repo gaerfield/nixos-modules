@@ -14,8 +14,8 @@ in
       # https://tinted-theming.github.io/tinted-gallery/
       base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-latte.yaml";
       targets = {
-            console.enable = false;
-            grub.enable = false;
+        console.enable = false;
+        grub.enable = false;
       };
       # opacity = {
       #   terminal = 0.9;

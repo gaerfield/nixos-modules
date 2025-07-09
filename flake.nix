@@ -1,15 +1,14 @@
 {
   description = "Description for the project";
 
-  outputs = inputs: inputs.blueprint {inherit inputs;};
+  outputs = { self, ... }@inputs: {
+    imports = [
+      ./modules
+    ];
+  };
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-
-    blueprint = {
-      url = "github:numtide/blueprint";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
     home-manager = {
       url = "github:nix-community/home-manager";

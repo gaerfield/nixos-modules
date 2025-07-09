@@ -51,14 +51,14 @@ in {
   };
 
   imports = [
-    ./../appimage
-    ./../containers
-    ./../gui
-    ./../hardware
-    ./../networking
-    ./../nix
-    ./../os
-    ./../virtualisation
+    inputs.self.nixosModules.appimage
+    inputs.self.nixosModules.containers
+    inputs.self.nixosModules.gui
+    inputs.self.nixosModules.hardware
+    inputs.self.nixosModules.networking
+    inputs.self.nixosModules.nix
+    inputs.self.nixosModules.os
+    inputs.self.nixosModules.virtualisation
   ];
 
   config = {
@@ -84,18 +84,18 @@ in {
     home-manager.users."${cfg.mainuser.name}" = {
       imports = [
         #flake.homeManagerModules.base
-        ./../../home/base
-        ./../../home/chromium
-        ./../../home/cloud
-        ./../../home/firefox
-        ./../../home/git
-        ./../../home/gnome
-        ./../../home/java-development
-        ./../../home/shell
-        ./../../home/terminal
-        ./../../home/track-working-day
-        ./../../home/virtualisation
-        ./../../home/vscode
+        inputs.self.homeModules.base
+        inputs.self.homeModules.chromium
+        inputs.self.homeModules.cloud
+        inputs.self.homeModules.firefox
+        inputs.self.homeModules.git
+        inputs.self.homeModules.gnome
+        inputs.self.homeModules.java-development
+        inputs.self.homeModules.shell
+        inputs.self.homeModules.terminal
+        inputs.self.homeModules.track-working-day
+        inputs.self.homeModules.virtualisation
+        inputs.self.homeModules.vscode
       ];
 
       gnm.hm = {

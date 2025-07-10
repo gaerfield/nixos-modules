@@ -1,9 +1,9 @@
-{flake, ...}: let
+{ self, ... }: let
   mainuser = "nixos";
 in {
   imports = [
     ./hardware-configuration.nix
-    flake.nixosModules.gnm
+    self.nixosModules.gnm
   ];
 
   system.stateVersion = "25.05";
@@ -11,7 +11,7 @@ in {
 
   gnm = {
     gui.enable = true;
-    systemWithHm = {
+    system = {
       mainuser = {
         name = mainuser;
         autologin = true;

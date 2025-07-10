@@ -1,4 +1,6 @@
 {
-  nixosModules = import ./nixos;
-  homeModules = import ./home;
+  flake = {
+    homeModules = import ./home;
+    nixosModules = import ./nixos;
+  };
 }

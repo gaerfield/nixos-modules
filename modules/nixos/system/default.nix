@@ -1,13 +1,14 @@
 {
   config,
+  inputs,
   lib,
   ...
 }:
 with lib; let
-  cfg = config.gnm.systemWithHm;
+  cfg = config.gnm.system;
   gnmConfig = config.gnm;
 in {
-  options.gnm.systemWithHm = {
+  options.gnm.system = {
     mainuser = {
       name = mkOption {
         type = types.str;
@@ -81,36 +82,36 @@ in {
       };
     };
 
-    home-manager.users."${cfg.mainuser.name}" = {
-      imports = [
-        #flake.homeManagerModules.base
-        inputs.self.homeModules.base
-        inputs.self.homeModules.chromium
-        inputs.self.homeModules.cloud
-        inputs.self.homeModules.firefox
-        inputs.self.homeModules.git
-        inputs.self.homeModules.gnome
-        inputs.self.homeModules.java-development
-        inputs.self.homeModules.shell
-        inputs.self.homeModules.terminal
-        inputs.self.homeModules.track-working-day
-        inputs.self.homeModules.virtualisation
-        inputs.self.homeModules.vscode
-      ];
-
-      gnm.hm = {
-        chromium.enable = mkDefault false;
-        cloud.enable = mkDefault false;
-        javaDevelopment.enable = mkDefault false;
-        firefox.enable = mkDefault true;
-        git.enable = mkDefault true;
-        trackWorkingDay.enable = mkDefault false;
-        vscode.enable = mkDefault false;
-
-        virtualisation.enable = gnmConfig.virtualisation.enable;
-        gnome.enable = gnmConfig.gui.enable;
-        terminal.enable = gnmConfig.gui.enable;
-      };
-    };
+    #home-manager.users."${cfg.mainuser.name}" = {
+    #  imports = [
+    #    #flake.homeManagerModules.base
+    #    inputs.self.homeModules.base
+    #    inputs.self.homeModules.chromium
+    #    inputs.self.homeModules.cloud
+    #    inputs.self.homeModules.firefox
+    #    inputs.self.homeModules.git
+    #    inputs.self.homeModules.gnome
+    #    inputs.self.homeModules.java-development
+    #    inputs.self.homeModules.shell
+    #    inputs.self.homeModules.terminal
+    #    inputs.self.homeModules.track-working-day
+    #    inputs.self.homeModules.virtualisation
+    #    inputs.self.homeModules.vscode
+    #  ];
+#
+    #  gnm.hm = {
+    #    chromium.enable = mkDefault false;
+    #    cloud.enable = mkDefault false;
+    #    javaDevelopment.enable = mkDefault false;
+    #    firefox.enable = mkDefault true;
+    #    git.enable = mkDefault true;
+    #    trackWorkingDay.enable = mkDefault false;
+    #    vscode.enable = mkDefault false;
+#
+    #    virtualisation.enable = gnmConfig.virtualisation.enable;
+    #    gnome.enable = gnmConfig.gui.enable;
+    #    terminal.enable = gnmConfig.gui.enable;
+    #  };
+    #};
   };
 }

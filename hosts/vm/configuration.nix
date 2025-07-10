@@ -3,7 +3,8 @@
 in {
   imports = [
     ./hardware-configuration.nix
-    self.nixosModules.gnm
+    ./users/nixos.nix
+    self.nixosModules.system
   ];
 
   system.stateVersion = "25.05";
@@ -14,7 +15,6 @@ in {
     system = {
       mainuser = {
         name = mainuser;
-        autologin = true;
         authorizedKeys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJiwF/fhZ3Avw2RxpwuikiSraNpbD88ixd7rHJsuJHeG gaerfield@kramhal.de"
         ];

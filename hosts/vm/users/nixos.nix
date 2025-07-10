@@ -1,4 +1,7 @@
-_: {
+{
+  hm = {
+    home.stateVersion = "25.05";
+  };
   # imports = [
   #   flake.homeModules.gnm
   # ];
@@ -19,5 +22,5 @@ _: {
   #hm.gnm.home-manager.home.username = "gaerfield";
   #home-manager.users.gaerfield.gnm.home-manager.home.username = "gaerfield";
   #home-manager.users.gaerfield.hm
-  home.stateVersion = "25.05";
+  
 }

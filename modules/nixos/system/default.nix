@@ -20,11 +20,6 @@ in {
         default = "nixos";
         description = "Default password for the default user.";
       };
-      autologin = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Should the default user be logged in automatically upon boot.";
-      };
       authorizedKeys = mkOption {
         type = types.listOf types.str;
         default = [];
@@ -56,6 +51,7 @@ in {
     inputs.self.nixosModules.containers
     inputs.self.nixosModules.gui
     inputs.self.nixosModules.hardware
+    inputs.self.nixosModules.home-manager
     inputs.self.nixosModules.networking
     inputs.self.nixosModules.nix
     inputs.self.nixosModules.os
@@ -71,6 +67,9 @@ in {
       };
       gui.enable = mkDefault true;
       hardware.enable = mkDefault true;
+      home-manager = {
+        user = cfg.mainuser.name;
+      };
       networking = {
         enable = mkDefault true;
         users = [cfg.mainuser.name];
@@ -81,37 +80,36 @@ in {
         users = [cfg.mainuser.name];
       };
     };
-
-    #home-manager.users."${cfg.mainuser.name}" = {
-    #  imports = [
-    #    #flake.homeManagerModules.base
-    #    inputs.self.homeModules.base
-    #    inputs.self.homeModules.chromium
-    #    inputs.self.homeModules.cloud
-    #    inputs.self.homeModules.firefox
-    #    inputs.self.homeModules.git
-    #    inputs.self.homeModules.gnome
-    #    inputs.self.homeModules.java-development
-    #    inputs.self.homeModules.shell
-    #    inputs.self.homeModules.terminal
-    #    inputs.self.homeModules.track-working-day
-    #    inputs.self.homeModules.virtualisation
-    #    inputs.self.homeModules.vscode
-    #  ];
-#
-    #  gnm.hm = {
-    #    chromium.enable = mkDefault false;
-    #    cloud.enable = mkDefault false;
-    #    javaDevelopment.enable = mkDefault false;
-    #    firefox.enable = mkDefault true;
-    #    git.enable = mkDefault true;
-    #    trackWorkingDay.enable = mkDefault false;
-    #    vscode.enable = mkDefault false;
-#
-    #    virtualisation.enable = gnmConfig.virtualisation.enable;
-    #    gnome.enable = gnmConfig.gui.enable;
-    #    terminal.enable = gnmConfig.gui.enable;
-    #  };
-    #};
+    
+    hm = {
+      imports = [
+        inputs.self.homeModules.base
+        inputs.self.homeModules.chromium
+        inputs.self.homeModules.cloud
+        inputs.self.homeModules.firefox
+        inputs.self.homeModules.git
+        inputs.self.homeModules.gnome
+        inputs.self.homeModules.java-development
+        inputs.self.homeModules.shell
+        inputs.self.homeModules.terminal
+        inputs.self.homeModules.track-working-day
+        inputs.self.homeModules.virtualisation
+        inputs.self.homeModules.vscode
+      ];
+    
+      gnm.hm = {
+        chromium.enable = mkDefault false;
+        cloud.enable = mkDefault false;
+        javaDevelopment.enable = mkDefault false;
+        firefox.enable = mkDefault true;
+        git.enable = mkDefault true;
+        trackWorkingDay.enable = mkDefault false;
+        vscode.enable = mkDefault false;
+    
+        virtualisation.enable = gnmConfig.virtualisation.enable;
+        gnome.enable = gnmConfig.gui.enable;
+        terminal.enable = gnmConfig.gui.enable;
+      };
+    };
   };
 }

@@ -14,7 +14,6 @@ in {
     system = {
       mainuser = {
         name = mainuser;
-        autologin = true;
         authorizedKeys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJiwF/fhZ3Avw2RxpwuikiSraNpbD88ixd7rHJsuJHeG gaerfield@kramhal.de"
         ];

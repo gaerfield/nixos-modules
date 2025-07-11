@@ -24,11 +24,6 @@ in {
         default = "nixos";
         description = "Default password for the default user.";
       };
-      autologin = mkOption {
-        type = types.bool;
-        default = false;
-        description = "Should the default user be logged in automatically upon boot.";
-      };
       authorizedKeys = mkOption {
         type = types.listOf types.str;
         default = [];

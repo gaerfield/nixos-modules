@@ -3,7 +3,7 @@
 in {
   imports = [
     ./hardware-configuration.nix
-    flake.nixosModules.gnm
+    flake.nixosModules.system
   ];
 
   system.stateVersion = "25.05";
@@ -11,7 +11,7 @@ in {
 
   gnm = {
     gui.enable = true;
-    systemWithHm = {
+    system = {
       mainuser = {
         name = mainuser;
         autologin = true;

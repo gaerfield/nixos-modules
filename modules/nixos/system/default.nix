@@ -4,10 +4,10 @@
   ...
 }:
 with lib; let
-  cfg = config.gnm.systemWithHm;
+  cfg = config.gnm.system;
   gnmConfig = config.gnm;
 in {
-  options.gnm.systemWithHm = {
+  options.gnm.system = {
     mainuser = {
       name = mkOption {
         type = types.str;

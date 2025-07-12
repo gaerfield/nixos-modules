@@ -8,6 +8,7 @@ with lib; let
   inherit (cfg) mainuser;
 in {
   imports = [
+    ./boot.nix
     ./locale.nix
     ./packages.nix
   ];

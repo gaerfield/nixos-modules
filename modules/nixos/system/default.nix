@@ -14,10 +14,9 @@ in {
         default = "nixos";
         description = "Default user for the nixos system.";
       };
-      password = mkOption {
+      passwordFile = mkOption {
         type = types.str;
-        default = "nixos";
-        description = "Default password for the default user.";
+        description = "path to the hashed password file for this user.";
       };
       authorizedKeys = mkOption {
         type = types.listOf types.str;

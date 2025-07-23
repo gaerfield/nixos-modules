@@ -20,10 +20,9 @@ in {
         default = "nixos";
         description = "Default user for the nixos system.";
       };
-      password = mkOption {
+      passwordFile = mkOption {
         type = types.str;
-        default = "nixos";
-        description = "Default password for the default user.";
+        description = "path to the hashed password file for this user.";
       };
       authorizedKeys = mkOption {
         type = types.listOf types.str;
@@ -53,13 +52,14 @@ in {
 
   config = {
     users = {
+      mutableUsers = false; # don't allow dynamic creation of users/groups or changes of passwords 
       groups."${mainuser.name}" = {}; # Creates a default group with the username
       users."${mainuser.name}" = {
         isNormalUser = true;
         description = "${mainuser.name}";
         extraGroups = ["wheel" "video" "audio" "${mainuser.name}"];
         linger = true;
-        password = "${mainuser.password}";
+        hashedPasswordFile = "${mainuser.passwordFile}";
         openssh.authorizedKeys.keys = mainuser.authorizedKeys;
       };
     };
@@ -76,7 +76,18 @@ in {
     # Configure console keymap
     console.keyMap = "de-latin1-nodeadkeys";
 
-    # Enable flakes
+    # supported file systems, so we can mount any removable disks with these filesystems
+    # relevant to "/boot" partition filesystems as well as usb sticks
+    boot.supportedFilesystems = [
+      "ext4"
+      "btrfs"
+      "xfs"
+      "ntfs"
+      "fat"
+      "vfat"
+      "cifs" # mount windows share
+    ];
+
     nix.settings = {
       experimental-features = ["nix-command" "flakes"];
       auto-optimise-store = true;

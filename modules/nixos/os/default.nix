@@ -52,7 +52,7 @@ in {
 
   config = {
     users = {
-      mutableUsers = false; # don't allow dynamic creation of users/groups or changes of passwords 
+      mutableUsers = mkDefault false; # don't allow dynamic creation of users/groups or changes of passwords 
       groups."${mainuser.name}" = {}; # Creates a default group with the username
       users."${mainuser.name}" = {
         isNormalUser = true;

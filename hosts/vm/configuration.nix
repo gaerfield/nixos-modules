@@ -17,12 +17,13 @@ in {
         authorizedKeys = [
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJiwF/fhZ3Avw2RxpwuikiSraNpbD88ixd7rHJsuJHeG gaerfield@kramhal.de"
         ];
+        # evaluate simplification for easier setup of VMs
+        passwordFile = "/persist/passwords/${mainuser}";
       };
       allowUnfree = true;
       hostname = "nixos";
     };
   };
-  users.mutableUsers = true;
 
   boot.loader.grub = {
     # no need to set devices, disko will add all devices that have a EF02 partition to the list already

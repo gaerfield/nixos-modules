@@ -45,12 +45,5 @@ in {
         "${user}" = {extraGroups = ["docker"];};
       }) {}
     cfg.users;
-
-    programs.fish = {
-      shellAbbrs.po = "podman";
-      shellAbbrs.docker = "podman";
-      shellAbbrs.dco = "podman compose";
-      shellAbbrs.pco = "podman compose";
-    };
   };
 }

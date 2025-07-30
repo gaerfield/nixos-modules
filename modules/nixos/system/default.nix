@@ -81,6 +81,7 @@ in {
         ./../../home/base
         ./../../home/chromium
         ./../../home/cloud
+        ./../../home/containers
         ./../../home/firefox
         ./../../home/git
         ./../../home/gnome
@@ -101,6 +102,7 @@ in {
         trackWorkingDay.enable = mkDefault false;
         vscode.enable = mkDefault false;
 
+        containers.enable = gnmConfig.containers.enable;
         virtualisation.enable = gnmConfig.virtualisation.enable;
         gnome.enable = gnmConfig.gui.enable;
         terminal.enable = gnmConfig.gui.enable;

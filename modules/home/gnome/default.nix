@@ -49,6 +49,9 @@ in {
       gst_all_1.gst-plugins-good
     ];
 
+    # useful commands:
+    # * `dconf watch /`
+    # * `dconf dump / | dconf2nix > dconf.nix` (see: https://github.com/nix-community/dconf2nix)
     dconf = {
       enable = true;
 

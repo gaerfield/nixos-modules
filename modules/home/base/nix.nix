@@ -9,7 +9,7 @@ with lib; let
   cfg = config.gnm.hm.nix;
 in {
   imports = [
-    inputs.nix-index-database.hmModules.nix-index
+    inputs.nix-index-database.homeModules.nix-index
   ];
 
   options.gnm.hm.nix = {

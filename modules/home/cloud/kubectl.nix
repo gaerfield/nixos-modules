@@ -10,7 +10,7 @@ in {
   config = mkIf cfg.enable {
     home.packages = with pkgs; [kubectl k9s kubectx];
     home.sessionVariables = {
-      KUBECONFIG = "$XDG_CONFIG_HOME/kube/config";
+      KUBECONFIG = "${config.xdg.configHome}/kube/config";
     };
     programs.fish = {
       # interactiveShellInit = ''

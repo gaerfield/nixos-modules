@@ -50,12 +50,12 @@
     ];
     functions = {
       emo-shrug = {
-        description = "¯\_(ツ)_/¯";
-        body = "echo '¯\_(ツ)_/¯' | wl-copy";
+        description = "¯\\_(ツ)_/¯";
+        body = "echo '¯\\_(ツ)_/¯' | wl-copy";
       };
       emo-stroll = {
         description = "ᕕ( ᐛ )ᕗ";
-        body = "echo '' | wl-copy";
+        body = "echo 'ᕕ( ᐛ )ᕗ' | wl-copy";
       };
       emo-flip = {
         description = "(╯°□°）╯︵ ┻━┻";

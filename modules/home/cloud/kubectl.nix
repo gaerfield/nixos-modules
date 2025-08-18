@@ -19,7 +19,7 @@ in {
       # '';
       shellAbbrs = {
         k = "kubectl";
-        krestart = "kubectl rollout restart deployment ";
+        krestart = "kubectl rollout restart deployment";
         kcx = "kubectx";
         kns = "kubens";
       };

@@ -6,16 +6,16 @@
     enableFishIntegration = true;
     enableZshIntegration = true;
     defaultOptions = [
-      "--info=inline"
-      "--preview='bat -n --color=always {}'"
-      "--border=rounded"
-      "--margin=1"
-      "--padding=1"
+      "--info=inline-right"
+      "--preview-window='border-rounded'"
+      "--padding='1'"
+      "--margin='1'"
+      "--layout='reverse'"
     ];
     # regarding options: https://github.com/junegunn/fzf?tab=readme-ov-file#key-bindings-for-command-line
     # alt-c options
     changeDirWidgetOptions = [
-      "--preview 'eza --group-directories-first --no-quotes --no-permissions --no-user --no-git --tree --level=2 --color=always {}'"
+      "--preview 'eza --group-directories-first --no-quotes --no-permissions --no-user --no-git --icons --color=always {}'"
     ];
     # ctrl-t options
     fileWidgetOptions = [
@@ -23,7 +23,9 @@
       "--bind 'ctrl-/:change-preview-window(down|hidden|)'"
     ];
     # ctrl-r options
-    historyWidgetOptions = [ "--no-multi" ];
+    historyWidgetOptions = [ 
+      "--no-multi"
+    ];
   };
 
   programs.fish = {

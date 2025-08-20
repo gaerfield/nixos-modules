@@ -23,14 +23,14 @@
   # turn off DNSSEC for WIFIonICE, as it is otherwise impossible to open "https://login.wifionice.de"
   # to agree with the terms of usage
   # maybe this could be done more restrictive ... had  no time to investigate deeper yet
-  environment.etc."/systemd/resolved.conf.d/WIFIonICE.conf".text = ''
-    [Match]
-    Name=WIFIonICE
-
-    [Resolve]
-    DNSOverTLS=off
-    DNSSEC=off
-    DNS=172.18.0.2 # lets just hope, this is always correct
-    Domains=~wifionice.de
-  '';
+  # environment.etc."/systemd/resolved.conf.d/WIFIonICE.conf".text = ''
+  #   [Match]
+  #   Name=WIFIonICE
+  # 
+  #   [Resolve]
+  #   DNSOverTLS=off
+  #   DNSSEC=off
+  #   DNS=172.18.0.2 # lets just hope, this is always correct
+  #   Domains=~wifionice.de
+  # '';
 }

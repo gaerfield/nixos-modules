@@ -104,7 +104,7 @@ in {
 
         containers.enable = gnmConfig.containers.enable;
         virtualisation.enable = gnmConfig.virtualisation.enable;
-        gnome.enable = gnmConfig.gui.enable;
+        gnome.enable = gnmConfig.gui.gnome.enable;
         terminal.enable = gnmConfig.gui.enable;
       };
     };

@@ -7,7 +7,13 @@
 with lib; let
   cfg = config.gnm.gui;
 in {
-  config = mkIf cfg.enable {
+  options.gnm.gui.gnome.enable = mkOption {
+    type = types.bool;
+    default = cfg.enable;
+    description =  "Enable gnome ui";
+  };
+
+  config = mkIf cfg.gnome.enable {
     # https://nixos.wiki/wiki/GNOME
 
     # Enable the GNOME Desktop Environment.

@@ -7,6 +7,6 @@ with lib; {
   ];
 
   options.gnm.gui = {
-    enable = mkEnableOption "Enable the GNOME GUI.";
+    enable = mkEnableOption "Enable GUI.";
   };
 }

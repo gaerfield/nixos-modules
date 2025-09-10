@@ -102,10 +102,10 @@ in {
         trackWorkingDay.enable = mkDefault false;
         vscode.enable = mkDefault false;
 
-        containers.enable = gnmConfig.containers.enable;
-        virtualisation.enable = gnmConfig.virtualisation.enable;
-        gnome.enable = gnmConfig.gui.gnome.enable;
-        terminal.enable = gnmConfig.gui.enable;
+        containers.enable = mkDefault gnmConfig.containers.enable;
+        virtualisation.enable = mkDefault gnmConfig.virtualisation.enable;
+        gnome.enable = mkDefault gnmConfig.gui.gnome.enable;
+        terminal.enable = mkDefault gnmConfig.gui.enable;
       };
     };
   };

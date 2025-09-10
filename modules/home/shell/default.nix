@@ -8,7 +8,7 @@
     ./byobu.nix
     ./tealdeer.nix
     ./tide.nix
-    ./ranger.nix
+    ./yazi.nix
     ./dust.nix
   ];
 

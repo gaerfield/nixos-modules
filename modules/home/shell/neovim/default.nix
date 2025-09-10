@@ -15,7 +15,6 @@
     "d ${config.xdg.cacheHome}/nvim/view"
   ];
 
-  stylix.targets.nvf.enable = false;
   programs.fish.shellAbbrs = {
     v = "nvim";
   };

@@ -1,4 +1,4 @@
-{
+{ pkgs, ... }: {
   programs.yazi = {
     # https://yazi-rs.github.io/docs/configuration
     enable = true;
@@ -22,8 +22,12 @@
         # maximum 250MB allocation when opening an image
         # no other size restrictions
         image_alloc = 250000000; 
-        image_bound = 0;
+        image_bound = [0 0];
       };
     };
   };
+  home.packages = with pkgs; [
+    exiftool
+    mpv
+  ];
 }

@@ -25,9 +25,15 @@
         image_bound = [0 0];
       };
     };
+    plugins = with pkgs.yaziPlugins; {
+      full-border = full-border;
+      wl-clipboard = wl-clipboard;
+    };
   };
+  xdg.configFile."yazi/init.lua".source = ./config/init.lua;
   home.packages = with pkgs; [
     exiftool
     mpv
+    mediainfo
   ];
 }

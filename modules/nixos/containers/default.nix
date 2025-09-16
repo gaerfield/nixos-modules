@@ -35,7 +35,7 @@ in {
       shellAliases.docker-compose = "${config.virtualisation.podman.package}/bin/podman-compose";
       # odd ... I expected podman.dockerSocket.enable to take care of this
       sessionVariables = {
-        DOCKER_HOST = "unix://$XDG_RUNTIME_DIR/podman/podman.sock";
+        DOCKER_HOST = "unix://$\{XDG_RUNTIME_DIR\}/podman/podman.sock";
       };
     };
 

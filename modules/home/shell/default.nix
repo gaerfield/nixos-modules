@@ -26,7 +26,8 @@
       fi
     '';
   };
-
+  
+  programs.btop.enable = true;
   programs.fish = {
     enable = true;
     interactiveShellInit = ''
@@ -150,7 +151,6 @@
 
     # productivity
     glow # markdown previewer in terminal
-    btop # replacement of htop/nmon
     iotop # io monitoring
     iftop # network monitoring
 

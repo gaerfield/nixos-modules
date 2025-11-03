@@ -4,29 +4,39 @@
   ...
 }: {
   imports = [
-    # inputs.nvf.nixosModules.default 
     inputs.nvf.homeManagerModules.default
   ];
-  
-  systemd.user.tmpfiles.rules = [
-    "d ${config.xdg.cacheHome}/nvim/undo"
-    "d ${config.xdg.cacheHome}/nvim/swap"
-    "d ${config.xdg.cacheHome}/nvim/backup"
-    "d ${config.xdg.cacheHome}/nvim/view"
-  ];
+
+  systemd.user.tmpfiles.settings = {
+    "10-nvim-cache-dirs" = let
+      dirConfig = {
+        d = {
+          user = config.home.username;
+          mode = "0700";
+        };
+      };
+    in {
+      rules."${config.xdg.cacheHome}/nvim/undo" = dirConfig;
+      rules."${config.xdg.cacheHome}/nvim/swap" = dirConfig;
+      rules."${config.xdg.cacheHome}/nvim/backup" = dirConfig;
+      rules."${config.xdg.cacheHome}/nvim/view" = dirConfig;
+    };
+  };
 
   programs.fish.shellAbbrs = {
     v = "nvim";
   };
+
+  # configuration options: https://notashelf.github.io/nvf/options.html
   programs.nvf = {
     enable = true;
     enableManpages = true;
     settings.vim = {
       options = {
-        undodir="$XDG_CACHE_HOME/nvim/undo";
-        directory="$XDG_CACHE_HOME/nvim/swap";
-        backupdir="$XDG_CACHE_HOME/nvim/backup";
-        viewdir="$XDG_CACHE_HOME/nvim/view";
+        undodir = "$XDG_CACHE_HOME/nvim/undo";
+        directory = "$XDG_CACHE_HOME/nvim/swap";
+        backupdir = "$XDG_CACHE_HOME/nvim/backup";
+        viewdir = "$XDG_CACHE_HOME/nvim/view";
       };
       viAlias = true;
       vimAlias = true;
@@ -37,10 +47,10 @@
         name = "nord";
         style = "dark";
       };
-      
+
       spellcheck = {
         enable = true;
-        languages = [ "en" "de"];
+        languages = ["en" "de"];
       };
 
       lsp = {
@@ -84,18 +94,18 @@
       telescope.enable = true;
       tabline.nvimBufferline.enable = true;
       treesitter.context.enable = true;
-      
+
       binds = {
         whichKey.enable = true;
         cheatsheet.enable = true;
       };
-      
+
       git = {
         enable = true;
         gitsigns.enable = true;
         gitsigns.codeActions.enable = false; # throws an annoying debug message
       };
-      
+
       notify.nvim-notify.enable = true;
 
       utility = {

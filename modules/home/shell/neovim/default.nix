@@ -7,21 +7,28 @@
     inputs.nvf.homeManagerModules.default
   ];
 
-  systemd.user.tmpfiles.settings = {
-    "10-nvim-cache-dirs" = let
-      dirConfig = {
-        d = {
-          user = config.home.username;
-          mode = "0700";
-        };
-      };
-    in {
-      rules."${config.xdg.cacheHome}/nvim/undo" = dirConfig;
-      rules."${config.xdg.cacheHome}/nvim/swap" = dirConfig;
-      rules."${config.xdg.cacheHome}/nvim/backup" = dirConfig;
-      rules."${config.xdg.cacheHome}/nvim/view" = dirConfig;
-    };
-  };
+  #systemd.user.tmpfiles.settings = {
+  #  "10-nvim-cache-dirs" = let
+  #    dirConfig = {
+  #      d = {
+  #        user = config.home.username;
+  #        mode = "0700";
+  #      };
+  #    };
+  #  in {
+  #    rules."${config.xdg.cacheHome}/nvim/undo" = dirConfig;
+  #    rules."${config.xdg.cacheHome}/nvim/swap" = dirConfig;
+  #    rules."${config.xdg.cacheHome}/nvim/backup" = dirConfig;
+  #    rules."${config.xdg.cacheHome}/nvim/view" = dirConfig;
+  #  };
+  #};
+  
+  systemd.user.tmpfiles.rules = [
+    "d ${config.xdg.cacheHome}/nvim/undo"
+    "d ${config.xdg.cacheHome}/nvim/swap"
+    "d ${config.xdg.cacheHome}/nvim/backup"
+    "d ${config.xdg.cacheHome}/nvim/view"
+  ];
 
   programs.fish.shellAbbrs = {
     v = "nvim";

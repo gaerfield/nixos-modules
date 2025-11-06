@@ -23,10 +23,8 @@ in {
   config = {
     programs.git.settings = {
       enable = true;
-      user = {
-        inherit (cfg) name;
-        inherit (cfg) email;
-      };
+      userName = cfg.name;
+      userEmail = cfg.email;
       core = {
         sshCommand = "ssh -i ~/.ssh/gaerfield";
       };

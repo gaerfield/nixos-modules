@@ -21,15 +21,18 @@ in {
   };
 
   config = {
-    programs.git.settings = {
+    programs.git = {
       enable = true;
-      userName = cfg.name;
-      userEmail = cfg.email;
-      core = {
-        sshCommand = "ssh -i ~/.ssh/gaerfield";
+      settings = {
+        user = {
+          name = cfg.name;
+          email = cfg.email;
+        };
+        core = {
+          sshCommand = "ssh -i ~/.ssh/gaerfield";
+        };
+        init.defaultBranch = "main";
       };
-      init.defaultBranch = "main";
-      
       ignores = [
         "**/.jj/**"
       ];

@@ -11,7 +11,7 @@ in {
 
   config = mkIf cfg.enable {
     # fonts.fontconfig.enable = true;
-    # home.packages = [pkgs.nerd-fonts.jetbrains-mono];
+    home.packages = [pkgs.nerd-fonts.jetbrains-mono];
 
     programs.fish.shellAbbrs.code = "codium";
     programs.vscode = {
@@ -30,7 +30,7 @@ in {
         ];
 
         userSettings = {
-          # "editor.fontFamily" = "JetBrainsMono Nerd Font";
+          "editor.fontFamily" = "JetBrainsMono Nerd Font";
           "terminal.external.linuxExec" = "${pkgs.kitty}/bin/kitty";
           "terminal.integrated.defaultProfile.linux" = "fish";
           "terminal.integrated.profiles.linux" = {

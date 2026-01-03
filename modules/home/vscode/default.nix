@@ -46,6 +46,18 @@ in {
           #"workbench.preferredDarkColorTheme" = "Solarized Dark";
           #"workbench.preferredLightColorTheme" = "Solarized Light";
 
+          #### Copilot
+          "github.copilot.advanced" = { };
+          "github.copilot.editor.enableAutoCompletions" = true;
+          "github.copilot.enable" = {
+            "*" = true;
+            "plaintext" = false;
+            "markdown" = false;
+            "scminput" = false;
+            "yaml" = false;
+          };
+          "github.copilot.chat" = { };
+
           # nix-ide: nix language server and formatter
           "nix.enableLanguageServer" = true;
           "nix.serverPath" = "nixd";

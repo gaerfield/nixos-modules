@@ -17,18 +17,18 @@ in {
     programs.vscode = {
       enable = true;
       package = pkgs.vscodium;
-      mutableExtensionsDir = false;
+      #mutableExtensionsDir = false;
 
-      profiles.default = {
-        enableUpdateCheck = false;
-        enableExtensionUpdateCheck = false;
-
-        extensions = with pkgs.vscode-extensions; [
-          shd101wyy.markdown-preview-enhanced
-          jnoortheen.nix-ide
-          github.copilot
-          github.copilot-chat
-        ];
+      #profiles.default = {
+      #  enableUpdateCheck = false;
+      #  enableExtensionUpdateCheck = false;
+#
+      #  extensions = with pkgs.vscode-extensions; [
+      #    shd101wyy.markdown-preview-enhanced
+      #    jnoortheen.nix-ide
+      #    github.copilot
+      #    github.copilot-chat
+      #  ];
 
         #userSettings = {
         #  "editor.fontFamily" = "JetBrainsMono Nerd Font";
@@ -70,7 +70,7 @@ in {
         #    };
         #  };
         #};
-      };
+ #     };
     };
   };
 }

@@ -27,6 +27,7 @@ in {
           shd101wyy.markdown-preview-enhanced
           jnoortheen.nix-ide
           github.copilot
+          github.copilot-chat
         ];
 
         userSettings = {

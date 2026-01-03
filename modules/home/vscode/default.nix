@@ -30,46 +30,46 @@ in {
           github.copilot-chat
         ];
 
-        userSettings = {
-          "editor.fontFamily" = "JetBrainsMono Nerd Font";
-          "terminal.external.linuxExec" = "${pkgs.kitty}/bin/kitty";
-          "terminal.integrated.defaultProfile.linux" = "fish";
-          "terminal.integrated.profiles.linux" = {
-            bash.path = "${pkgs.bash}/bin/bash";
-            fish.path = "${pkgs.fish}/bin/fish";
-            sh.path = "${pkgs.bashInteractive}/bin/sh";
-            zsh.path = "${pkgs.zsh}/bin/zsh";
-          };
-          "terminal.integrated.smoothScrolling" = true;
-          "window.autoDetectColorScheme" = true;
-          #"workbench.colorTheme" = "Solarized Light";
-          #"workbench.preferredDarkColorTheme" = "Solarized Dark";
-          #"workbench.preferredLightColorTheme" = "Solarized Light";
+        #userSettings = {
+        #  "editor.fontFamily" = "JetBrainsMono Nerd Font";
+        #  "terminal.external.linuxExec" = "${pkgs.kitty}/bin/kitty";
+        #  "terminal.integrated.defaultProfile.linux" = "fish";
+        #  "terminal.integrated.profiles.linux" = {
+        #    bash.path = "${pkgs.bash}/bin/bash";
+        #    fish.path = "${pkgs.fish}/bin/fish";
+        #    sh.path = "${pkgs.bashInteractive}/bin/sh";
+        #    zsh.path = "${pkgs.zsh}/bin/zsh";
+        #  };
+        #  "terminal.integrated.smoothScrolling" = true;
+        #  "window.autoDetectColorScheme" = true;
+        #  #"workbench.colorTheme" = "Solarized Light";
+        #  #"workbench.preferredDarkColorTheme" = "Solarized Dark";
+        #  #"workbench.preferredLightColorTheme" = "Solarized Light";
 
-          #### Copilot
-          "github.copilot.advanced" = { };
-          "github.copilot.editor.enableAutoCompletions" = true;
-          "github.copilot.enable" = {
-            "*" = true;
-            "plaintext" = false;
-            "markdown" = false;
-            "scminput" = false;
-            "yaml" = false;
-          };
-          "github.copilot.chat" = { };
+        #  #### Copilot
+        #  "github.copilot.advanced" = { };
+        #  "github.copilot.editor.enableAutoCompletions" = true;
+        #  "github.copilot.enable" = {
+        #    "*" = true;
+        #    "plaintext" = false;
+        #    "markdown" = false;
+        #    "scminput" = false;
+        #    "yaml" = false;
+        #  };
+        #  "github.copilot.chat" = { };
 
-          # nix-ide: nix language server and formatter
-          "nix.enableLanguageServer" = true;
-          "nix.serverPath" = "nixd";
-          "nix.formatterPath" = "alejandra";
-          "nix.serverSettings" = {
-            "nixd" = {
-              "formatting" = {
-                "command" = ["alejandra"];
-              };
-            };
-          };
-        };
+        #  # nix-ide: nix language server and formatter
+        #  "nix.enableLanguageServer" = true;
+        #  "nix.serverPath" = "nixd";
+        #  "nix.formatterPath" = "alejandra";
+        #  "nix.serverSettings" = {
+        #    "nixd" = {
+        #      "formatting" = {
+        #        "command" = ["alejandra"];
+        #      };
+        #    };
+        #  };
+        #};
       };
     };
   };

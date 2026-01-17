@@ -24,6 +24,11 @@
         image_alloc = 250000000; 
         image_bound = [0 0];
       };
+      opener = {
+        open = [
+    	    { run = "swayimg -g %s"; desc = "swayimg gallery"; }
+        ];
+      };
     };
     plugins = with pkgs.yaziPlugins; {
       full-border = full-border;

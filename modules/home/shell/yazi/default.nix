@@ -26,9 +26,23 @@
       };
       opener = {
         open = [
-    	    { run = "swayimg -g %s"; desc = "swayimg gallery"; }
+    	    { run = "xdg-open %s"; desc = "Open"; }
         ];
-      };
+        gallery = [
+          { run = "swayimg -g %s"; desc = "swayimg Gallery"; }
+        ];
+        swayimg = [
+          { run = "swayimg %s"; desc = "swayimg"; }
+        ];
+       };
+       open = {
+         prepend_rules = [
+          { mime = "image/*"; use = "swayimg"; }
+         ];
+         append_rules = [
+          { url = "*"; use = "gallery"; }
+         ];
+       };       
     };
     plugins = with pkgs.yaziPlugins; {
       full-border = full-border;
@@ -36,6 +50,9 @@
     };
   };
   xdg.configFile."yazi/init.lua".source = ./config/init.lua;
+  # https://github.com/sxyazi/yazi/tree/shipped/yazi-config/preset
+  xdg.configFile."yazi/keymap.toml".source = ./config/keymap.toml;
+  
   home.packages = with pkgs; [
     exiftool
     mpv

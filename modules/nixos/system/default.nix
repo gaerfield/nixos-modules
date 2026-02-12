@@ -52,6 +52,7 @@ in {
     ./../networking
     ./../nix
     ./../os
+    ./../shell
     ./../virtualisation
   ];
 

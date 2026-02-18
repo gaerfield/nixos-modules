@@ -2,6 +2,7 @@
   programs.yazi = {
     # https://yazi-rs.github.io/docs/configuration
     enable = true;
+    shellWrapperName = "yy";
     settings = {
       mgr = {
         show_hidden = false;
@@ -28,21 +29,21 @@
         open = [
     	    { run = "xdg-open %s"; desc = "Open"; }
         ];
-        gallery = [
-          { run = "swayimg -g %s"; desc = "swayimg Gallery"; }
-        ];
-        swayimg = [
-          { run = "swayimg %s"; desc = "swayimg"; }
-        ];
+        # gallery = [
+        #   { run = "swayimg -g %s"; desc = "swayimg Gallery"; }
+        # ];
+        # swayimg = [
+        #   { run = "swayimg %s"; desc = "swayimg"; }
+        # ];
        };
-       open = {
-         prepend_rules = [
-          { mime = "image/*"; use = "swayimg"; }
-         ];
-         append_rules = [
-          { url = "*"; use = "gallery"; }
-         ];
-       };       
+       # open = {
+       #   prepend_rules = [
+       #    { mime = "image/*"; use = "swayimg"; }
+       #   ];
+       #   append_rules = [
+       #    { url = "*"; use = "gallery"; }
+       #   ];
+       # };       
     };
     plugins = with pkgs.yaziPlugins; {
       full-border = full-border;

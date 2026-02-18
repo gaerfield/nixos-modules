@@ -32,18 +32,18 @@
         # gallery = [
         #   { run = "swayimg -g %s"; desc = "swayimg Gallery"; }
         # ];
-        # swayimg = [
-        #   { run = "swayimg %s"; desc = "swayimg"; }
-        # ];
-       };
-       # open = {
-       #   prepend_rules = [
-       #    { mime = "image/*"; use = "swayimg"; }
-       #   ];
-       #   append_rules = [
-       #    { url = "*"; use = "gallery"; }
-       #   ];
-       # };       
+        swayimg = [
+          { run = "swayimg %s"; desc = "swayimg"; }
+        ];
+      };
+      open = {
+        prepend_rules = [
+          { mime = "image/*"; use = "swayimg"; }
+        ];
+        #   append_rules = [
+        #    { url = "*"; use = "gallery"; }
+        #   ];
+      };       
     };
     plugins = with pkgs.yaziPlugins; {
       full-border = full-border;

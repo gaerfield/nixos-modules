@@ -23,12 +23,12 @@
       openssl
       python3
       stdenv.cc.cc
-      xorg.libX11
-      xorg.libXcursor
-      xorg.libXext
-      xorg.libXi
-      xorg.libXrender
-      xorg.libXtst
+      libx11
+      libxcursor
+      libxext
+      libxi
+      libxrender
+      libxtst
       xz
       zlib
     ];

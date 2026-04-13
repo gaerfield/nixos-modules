@@ -117,6 +117,14 @@
         expansion = ", ffmpeg vf \"fps=10,scale=640:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse\" -loop 0 -i %input.mp4 output.gif'";
         setCursor = true;
       };
+      mount-usb = {
+        expansion = "udisksctl mount -b /dev/disk/by-label/%";
+        setCursor = true;
+      };
+      umount-usb = {
+        expansion = "udisksctl unmount -b /dev/disk/by-label/%";
+        setCursor = true;
+      };
     };
   };
 

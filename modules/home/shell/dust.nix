@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   home.packages = [pkgs.dust];
-  home.shellAliases = {
-    du = "dust";
+  programs.fish.shellAbbrs = {
+    dust-no-recurse = "dust --depth 1";
   };
 }

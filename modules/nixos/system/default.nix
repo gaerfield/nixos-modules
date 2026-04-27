@@ -87,6 +87,7 @@ in {
         ./../../home/track-working-day
         ./../../home/virtualisation
         ./../../home/vscode
+        ./../../home/persistence
       ];
 
       gnm.hm = {

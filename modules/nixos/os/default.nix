@@ -30,11 +30,6 @@ in {
         description = "SSH public keys for the default user.";
       };
     };
-    allowUnfree = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Allow unfree packages in the system.";
-    };
     hostname = mkOption {
       type = types.str;
       default = "nixos";
@@ -69,9 +64,6 @@ in {
     boot.kernel.sysctl = {
       "kernel.sysrq" = 1; # enable reisub sequence
     };
-
-    # Allow unfree packages
-    nixpkgs.config.allowUnfree = cfg.allowUnfree;
 
     # Configure console keymap
     console.keyMap = "de-latin1-nodeadkeys";

@@ -7,7 +7,10 @@ in {
   ];
 
   system.stateVersion = "25.05";
-  nixpkgs.hostPlatform = "x86_64-linux";
+  nixpkgs = {
+    hostPlatform = "x86_64-linux";
+    config.allowUnfree = true;
+  };
 
   gnm = {
     gui.enable = true;
@@ -20,7 +23,6 @@ in {
         # evaluate simplification for easier setup of VMs
         passwordFile = "/persist/passwords/${mainuser}";
       };
-      allowUnfree = true;
       hostname = "nixos";
     };
   };

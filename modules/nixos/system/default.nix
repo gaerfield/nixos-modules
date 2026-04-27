@@ -24,11 +24,6 @@ in {
         description = "SSH public keys for the default user.";
       };
     };
-    allowUnfree = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Allow unfree packages in the system.";
-    };
     hostname = mkOption {
       type = types.str;
       default = "nixos";

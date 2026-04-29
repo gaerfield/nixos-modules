@@ -14,7 +14,6 @@
       enable = true;
       createDirectories = true;
       setSessionVariables = lib.mkDefault false;
-      extraConfig.BIN_HOME = "${config.home.homeDirectory}/.local/bin";
     };
     mimeApps.enable = true;
   };

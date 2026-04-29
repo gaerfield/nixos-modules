@@ -80,11 +80,14 @@ in {
       "cifs" # mount windows share
     ];
 
-    nix.settings = {
-      experimental-features = ["nix-command" "flakes"];
-      auto-optimise-store = true;
-      use-xdg-base-directories = true;
-      trusted-users = [mainuser.name "root"];
+    nix = {
+      settings = {
+        experimental-features = ["nix-command" "flakes"];
+        auto-optimise-store = true;
+        use-xdg-base-directories = true;
+        trusted-users = [mainuser.name "root"];
+      };
+      channel.enable = false; # mute warnings about missing channels, since we use flakes
     };
   };
 }

@@ -24,5 +24,9 @@ in {
         ExecStart = "${track-working-day}/bin/track-working-day start";
       };
     };
+
+    persistence.directories = [
+      { directory = "${config.xdg.stateHome}/track-working-day"; mode = "0700"; }
+    ];
   };
 }

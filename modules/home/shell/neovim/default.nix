@@ -23,13 +23,18 @@
   #  };
   #};
   
-  systemd.user.tmpfiles.rules = [
-    "d ${config.xdg.cacheHome}/nvim/undo"
-    "d ${config.xdg.cacheHome}/nvim/swap"
-    "d ${config.xdg.cacheHome}/nvim/backup"
-    "d ${config.xdg.cacheHome}/nvim/view"
+  systemd.user.tmpfiles.rules = with config.xdg; [
+    "d ${cacheHome}/nvim/undo"
+    "d ${cacheHome}/nvim/swap"
+    "d ${cacheHome}/nvim/backup"
+    "d ${cacheHome}/nvim/view"
   ];
-
+  persistence.directories = with config.xdg; [
+    { directory = "${dataHome}/nvim"; mode = "0700"; }
+    { directory = "${cacheHome}/nvim"; mode = "0700"; }
+    { directory = "${dataHome}/nvf"; mode = "0700"; }
+    { directory = "${cacheHome}/nvf"; mode = "0700"; }
+  ];
   programs.fish.shellAbbrs = {
     v = "nvim";
   };

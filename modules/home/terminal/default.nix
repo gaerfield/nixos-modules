@@ -28,5 +28,9 @@ in {
     home.sessionVariables = {
       TERMINAL = "kitty";
     };
+
+    persistence.directories = [
+      { directory = "${config.xdg.cacheHome}/kitty"; mode = "0700"; }
+    ];
   };
 }

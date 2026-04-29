@@ -39,5 +39,12 @@ in {
         }
       ];
     };
+    
+    persistence.directories = [
+      { directory = "${config.home.homeDirectory}/.kube"; mode = "0700"; }
+      { directory = "${config.home.homeDirectory}/.docker"; mode = "0700"; } # config for using gcp cloud auth
+      { directory = "${config.xdg.configHome}/gcloud"; mode = "0700"; }
+    ];
+    
   };
 }

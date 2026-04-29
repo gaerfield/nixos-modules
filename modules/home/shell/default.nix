@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ config, pkgs, ... }: {
   imports = [
     ./eza.nix
     ./fzf.nix
@@ -125,6 +125,7 @@
         expansion = "udisksctl unmount -b /dev/disk/by-label/%";
         setCursor = true;
       };
+      
     };
   };
 
@@ -212,4 +213,9 @@
     enable = true;
     options = ["--alias" "fu"];
   };
+
+  persistence.directories = [
+    { directory = "${config.xdg.cacheHome}/fish"; mode = "0700"; }
+    { directory = "${config.xdg.stateHome}/fish"; mode = "0700"; }
+  ];
 }

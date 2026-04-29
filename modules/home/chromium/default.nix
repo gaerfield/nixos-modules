@@ -12,5 +12,10 @@ in {
     programs.chromium = {
       enable = true;
     };
+
+    persistence.directories = [
+      { directory = "${config.xdg.configHome}/chromium"; mode = "0700"; }
+      { directory = "${config.xdg.cacheHome}/chromium"; mode = "0700"; }
+    ];
   };
 }

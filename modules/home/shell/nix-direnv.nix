@@ -1,4 +1,4 @@
-{
+{ config, ... }: {
   # https://github.com/nix-community/nix-direnv
   programs = {
     direnv = {
@@ -21,4 +21,9 @@
       '';
     };
   };
+
+  persistence.directories = [
+    { directory = "${config.xdg.cacheHome}/direnv"; mode = "0700"; }
+    { directory = "${config.xdg.dataHome}/direnv"; mode = "0700"; }
+  ];
 }

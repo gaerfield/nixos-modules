@@ -1,4 +1,4 @@
-{config, pkgs, ...}: {
+{config, pkgs, lib, ...}: {
   xdg = {
     enable = true;
     portal = {
@@ -13,16 +13,13 @@
     userDirs = {
       enable = true;
       createDirectories = true;
+      setSessionVariables = lib.mkDefault false;
+      extraConfig.BIN_HOME = "${config.home.homeDirectory}/.local/bin";
     };
     mimeApps.enable = true;
   };
 
   home.packages = [ pkgs.xdg-utils ];
-  home.sessionVariables = {
-    XDG_BIN_HOME = "${config.home.homeDirectory}/.local/bin";
-  };
-
-  home.sessionPath = ["$XDG_BIN_HOME"];
 
   persistence.directories = with config.xdg.userDirs; [
     { directory = "${desktop}"; mode = "0700"; }
@@ -34,6 +31,6 @@
     { directory = "${publicShare}"; mode = "0700"; }
     { directory = "${templates}"; mode = "0700"; }
     { directory = "${videos}"; mode = "0700"; }
-    "${config.home.homeDirectory}/.local/bin"
+    "${config.xdg.binHome}"
   ];
 }

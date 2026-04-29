@@ -21,7 +21,7 @@ in {
       # simply keep all jetbrains products persisted
       { directory = "${configHome}/JetBrains"; mode = "0700"; }
       { directory = "${dataHome}/JetBrains"; mode = "0700"; }
-      { directory = "${stateHome}/JetBrains"; mode = "0700"; }
+      { directory = "${cacheHome}/JetBrains"; mode = "0700"; }
     ];
   };
 }

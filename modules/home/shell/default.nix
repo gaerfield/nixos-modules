@@ -216,6 +216,6 @@
 
   persistence.directories = [
     { directory = "${config.xdg.cacheHome}/fish"; mode = "0700"; }
-    { directory = "${config.xdg.stateHome}/fish"; mode = "0700"; }
+    { directory = "${config.xdg.dataHome}/fish"; mode = "0700"; }
   ];
 }

@@ -21,5 +21,9 @@ in {
         ];
       };
     };
+
+    persistence.directories = [
+      "${config.home.homeDirectory}/Applications"
+    ];
   };
 }

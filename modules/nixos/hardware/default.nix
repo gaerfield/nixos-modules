@@ -9,6 +9,7 @@ in {
   imports = [
     ./audio.nix
     ./bluetooth.nix
+    ./usb.nix
   ];
 
   options.gnm.hardware.enable = mkEnableOption "Enable audio, bluetooth and firmware update support.";

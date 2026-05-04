@@ -47,6 +47,7 @@ in {
     ./../networking
     ./../nix
     ./../os
+    ./../persistence
     ./../shell
     ./../virtualisation
   ];
@@ -82,12 +83,12 @@ in {
         ./../../home/git
         ./../../home/gnome
         ./../../home/java-development
+        ./../../home/persistence
         ./../../home/shell
         ./../../home/terminal
         ./../../home/track-working-day
         ./../../home/virtualisation
         ./../../home/vscode
-        ./../../home/persistence
       ];
 
       gnm.hm = {

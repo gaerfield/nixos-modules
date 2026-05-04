@@ -5,6 +5,7 @@
 }:
 with lib; let
   cfg = config.gnm.networking;
+  normalUsers = lib.filterAttrs (_: u: u.isNormalUser) config.users.users;
 in {
   imports = [
     ./ssh.nix
@@ -36,11 +37,9 @@ in {
       # interfaces.wlp0s20f3.useDHCP = lib.mkDefault true;
     };
 
-    users.users = lists.foldl' (acc: user:
-      acc
-      // {
-        "${user}" = {extraGroups = ["networkmanager"];};
-      }) {}
-    cfg.users;
+    users.groups = {
+      networkmanager.members = lib.attrNames normalUsers;
+      dialout.members = lib.attrNames normalUsers;
+    };
   };
 }

@@ -44,6 +44,7 @@ in {
     ./../containers
     ./../gui
     ./../hardware
+    ./../impermanence
     ./../networking
     ./../nix
     ./../os
@@ -61,6 +62,7 @@ in {
       networking.enable = mkDefault true;
       os = cfg;
       virtualisation.enable = mkDefault false;
+      impermanence.enable = mkDefault false;
     };
 
     home-manager.users."${cfg.mainuser.name}" = {

@@ -1,11 +1,8 @@
-# The home-manager impermanence module creates bind mounts during HM activation
-# (which can race with services), while the NixOS module does it at boot time.
-# This is a lightweight HM option module that just defines persistence.directories
+# This is a lightweight option module that just defines persistence.directories
 # and persistence.files as mergeable list options. No bind mounts, 
 # no activation logic — it's purely a data collector used by NixOS-level persistence.
-#
-# see: https://discourse.nixos.org/t/impermanence-can-the-nixos-module-do-everything-the-home-manager-module-does/60638/2
-
+# It simply collects the directories and files that should be persisted if impermanence is enabled,
+# and then the actual impermanence module will take care of the rest.
 { lib, ... }: {
   options.persistence = {
     directories = lib.mkOption {

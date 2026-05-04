@@ -6,15 +6,10 @@
 }:
 with lib; let
   cfg = config.gnm.containers;
+  normalUsers = lib.filterAttrs (_: u: u.isNormalUser) config.users.users;
 in {
   options.gnm.containers = {
     enable = mkEnableOption "enable podman containerization support";
-    users = mkOption {
-      type = types.listOf types.str;
-      default = [];
-      example = ["user1" "user2"];
-      description = "users that become members of the 'docker' group to manage containers";
-    };
   };
 
   config = mkIf cfg.enable {
@@ -39,11 +34,8 @@ in {
       };
     };
 
-    users.users = lists.foldl' (acc: user:
-      acc
-      // {
-        "${user}" = {extraGroups = ["docker"];};
-      }) {}
-    cfg.users;
+    users.groups = {
+      docker.members = lib.attrNames normalUsers;
+    };
   };
 }

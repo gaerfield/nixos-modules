@@ -55,21 +55,12 @@ in {
   config = {
     gnm = {
       appimage.enable = mkDefault false;
-      containers = {
-        enable = mkDefault false;
-        users = [cfg.mainuser.name];
-      };
+      containers.enable = mkDefault false;
       gui.enable = mkDefault true;
       hardware.enable = mkDefault true;
-      networking = {
-        enable = mkDefault true;
-        users = [cfg.mainuser.name];
-      };
+      networking.enable = mkDefault true;
       os = cfg;
-      virtualisation = {
-        enable = mkDefault false;
-        users = [cfg.mainuser.name];
-      };
+      virtualisation.enable = mkDefault false;
     };
 
     home-manager.users."${cfg.mainuser.name}" = {

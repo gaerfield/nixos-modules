@@ -14,9 +14,8 @@ in {
     home.packages = [pkgs.nerd-fonts.jetbrains-mono];
 
     programs.fish.shellAbbrs.code = "codium";
-    programs.vscode = {
+    programs.vscodium = {
       enable = true;
-      package = pkgs.vscodium;
       #mutableExtensionsDir = false;
 
       #profiles.default = {

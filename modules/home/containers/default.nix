@@ -1,15 +1,15 @@
 {
   config,
-  pkgs,
+  osConfig,
   lib,
   ...
 }:
-with lib; let
-  cfg = config.gnm.hm.containers;
-in {
-  options.gnm.hm.containers.enable = mkEnableOption "Enable containers user config";
+with lib; {
+  config = mkIf osConfig.virtualisation.podman.enable {
 
-  config = mkIf cfg.enable {
+    # user specific persistence for podman
+    persistence.directories = [ "${config.xdg.dataHome}/containers" ];
+    
     programs.fish = {
       shellAbbrs.po = "podman";
       shellAbbrs.docker = "podman";

@@ -1,6 +1,6 @@
 {
-  lib,
   config,
+  lib,
   ...
 }:
 with lib; let
@@ -15,5 +15,7 @@ in {
 
     # not strictly required but offers some command-line utilities
     services.blueman.enable = true;
+
+    persistence.directories = [ "/var/lib/bluetooth" ];
   };
 }

@@ -33,7 +33,9 @@ in {
         DOCKER_HOST = "unix://$\{XDG_RUNTIME_DIR\}/podman/podman.sock";
       };
     };
-
+    
+    persistence.directories = [ "/var/lib/containers/storage" ];
+    
     users.groups = {
       docker.members = lib.attrNames normalUsers;
     };

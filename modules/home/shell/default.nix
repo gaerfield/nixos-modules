@@ -215,7 +215,8 @@
   };
 
   persistence.directories = [
-    { directory = "${config.xdg.cacheHome}/fish"; mode = "0700"; }
-    { directory = "${config.xdg.dataHome}/fish"; mode = "0700"; }
+    "${config.xdg.cacheHome}/fish"
+    "${config.xdg.dataHome}/fish"
+    ".local/state/lazygit"
   ];
 }

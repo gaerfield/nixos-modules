@@ -29,11 +29,13 @@ in {
       spice-vdagentd.enable = true;
     };
 
+    # allow nested virtualization (https://nixos.wiki/wiki/Libvirt)
+    boot.extraModprobeConfig = "options kvm_intel nested=1";
+
+    persistence.directories = [ "/var/lib/libvirt" "/etc/libvirt" ];
+
     users.groups = {
       libvirtd.members = lib.attrNames normalUsers;
     };
-
-    # allow nested virtualization (https://nixos.wiki/wiki/Libvirt)
-    boot.extraModprobeConfig = "options kvm_intel nested=1";
   };
 }

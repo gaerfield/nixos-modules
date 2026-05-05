@@ -1,14 +1,16 @@
 {
   config,
+  osConfig,
   lib,
   ...
-}:
-with lib; let
-  cfg = config.gnm.hm.virtualisation;
-in {
-  options.gnm.hm.virtualisation.enable = mkEnableOption "Enable virtualization support, including libvirt and virt-manager.";
+}: with lib; {
+  config = mkIf osConfig.virtualisation.libvirtd.enable {
+    persistence.directories = [
+        "${config.xdg.cacheHome}/libvirt"
+        "${config.xdg.dataHome}/libvirt"
+        "${config.xdg.cacheHome}/dconf" # because we enabled dconf here
+    ];
 
-  config = mkIf cfg.enable {
     # Enable UEFI firmware support
     # https://nixos.wiki/wiki/Libvirt
     xdg.configFile."libvirt/qemu.conf".text = ''

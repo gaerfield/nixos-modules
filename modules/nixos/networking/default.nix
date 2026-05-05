@@ -41,5 +41,12 @@ in {
       networkmanager.members = lib.attrNames normalUsers;
       dialout.members = lib.attrNames normalUsers;
     };
+
+    persistence.directories = [
+      # wifi connections
+      "/etc/NetworkManager/system-connections"
+      # in case of iwd
+      # "/var/lib/iwd"
+    ];
   };
 }

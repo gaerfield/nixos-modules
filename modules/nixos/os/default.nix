@@ -80,6 +80,25 @@ in {
       "cifs" # mount windows share
     ];
 
+    # the bare minimum set of files that must be persistent when using impermanence
+    persistence = {
+      directories = [
+        "/var/log"
+        "/var/lib/nixos"
+        "/var/lib/systemd"
+        # { directory = "/var/lib/colord"; user = "colord"; group = "colord"; mode = "u=rwx,g=rx,o="; }
+      ];
+
+      files = [
+        "/etc/machine-id"
+        "/etc/ssh/ssh_host_ed25519_key"
+        "/etc/ssh/ssh_host_ed25519_key.pub"
+        "/etc/ssh/ssh_host_rsa_key"
+        "/etc/ssh/ssh_host_rsa_key.pub"
+        # { file = "/var/keys/secret_file"; parentDirectory = { mode = "u=rwx,g=,o="; }; }
+      ];
+    };
+
     nix = {
       settings = {
         experimental-features = ["nix-command" "flakes"];

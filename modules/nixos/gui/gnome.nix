@@ -65,6 +65,8 @@ in {
     programs.dconf.enable = true;
     services.udev.packages = with pkgs; [gnome-settings-daemon];
 
+    persistence.directories = [ "${config.xdg.cacheHome}/dconf" ];
+
     # Configure keymap in X11
     services.xserver.xkb = {
       layout = "de";

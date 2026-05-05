@@ -45,5 +45,11 @@ in {
         flake = cfg.flakePath;
       };
     };
+
+    persistence.directories = [
+      # "${config.home.homeDirectory}/.nixops"
+      "${config.xdg.cacheHome}/nix"
+      "${config.xdg.cacheHome}/nix-index"
+    ];
   };
 }

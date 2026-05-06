@@ -10,6 +10,9 @@
     # Currently I have no better place for these
     "${cacheHome}/mesa_shader_cache_db"   # mesa shader cache (Vulkan and OpenGL)
     "${cacheHome}/obexd"                  # bluetooth dbus service stuff
+    # fucked up java cache for: fonts, application user preferences (like JetBrains daFuq?), and stuff?
+    # simply persist all of it to stay out of trouble
+    "${config.home.homeDirectory}/.java"
   ]
       # thats here because of audio.nix and I didn't wanted to add another file for this single line
       ++ lib.optionals osConfig.services.pipewire.enable [ "${config.xdg.stateHome}/wireplumber" ]

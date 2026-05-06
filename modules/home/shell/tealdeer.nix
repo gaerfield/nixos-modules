@@ -13,6 +13,6 @@
   };
 
   persistence.directories = [
-    { directory = "${config.xdg.cacheHome}/tealdeer"; mode = "0700"; }
+    "${config.xdg.cacheHome}/tealdeer"
   ];
 }

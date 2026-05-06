@@ -22,8 +22,8 @@
     };
   };
 
-  persistence.directories = [
-    { directory = "${config.xdg.cacheHome}/direnv"; mode = "0700"; }
-    { directory = "${config.xdg.dataHome}/direnv"; mode = "0700"; }
+  persistence.directories = with config.xdg; [
+    "${cacheHome}/direnv"
+    "${dataHome}/direnv"
   ];
 }

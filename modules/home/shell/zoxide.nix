@@ -7,6 +7,6 @@
   };
 
   persistence.directories = [
-    { directory = "${config.xdg.dataHome}/zoxide"; mode = "0700"; }
+    "${config.xdg.dataHome}/zoxide"
   ];
 }

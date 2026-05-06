@@ -18,7 +18,6 @@ in {
     persistence.directories = with config.xdg; [
       "${dataHome}/gradle"
 
-      "${config.home.homeDirectory}/.java" # fucked up java cache
       # simply keep all jetbrains products persisted
       "${config.home.homeDirectory}/IdeaProjects"
       "${configHome}/JetBrains"

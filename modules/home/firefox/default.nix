@@ -29,9 +29,9 @@ in {
       MOZ_USE_XINPUT2 = "1";
     };
 
-    persistence.directories = [
-      { directory = "${config.xdg.configHome}/mozilla/firefox"; mode = "0700"; }
-      { directory = "${config.xdg.cacheHome}/mozilla/firefox"; mode = "0700"; }
+    persistence.directories = with config.xdg; [
+      "${configHome}/mozilla/firefox"
+      "${cacheHome}/mozilla/firefox"
     ];
   };
 }

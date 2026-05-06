@@ -6,7 +6,7 @@
 #
 # see: https://discourse.nixos.org/t/impermanence-can-the-nixos-module-do-everything-the-home-manager-module-does/60638/2
 
-{ config, osConfig, lib, ... }: {
+{ lib, ... }: {
   options.persistence = {
     directories = lib.mkOption {
       type = lib.types.listOf lib.types.anything;

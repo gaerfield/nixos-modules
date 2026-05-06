@@ -25,8 +25,6 @@ in {
       };
     };
 
-    persistence.directories = [
-      { directory = "${config.xdg.dataHome}/track-working-day"; mode = "0700"; }
-    ];
+    persistence.directories = [ "${config.xdg.dataHome}/track-working-day" ];
   };
 }

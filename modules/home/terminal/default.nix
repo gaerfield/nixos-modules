@@ -29,8 +29,6 @@ in {
       TERMINAL = "kitty";
     };
 
-    persistence.directories = [
-      { directory = "${config.xdg.cacheHome}/kitty"; mode = "0700"; }
-    ];
+    persistence.directories = [ "${config.xdg.cacheHome}/kitty" ];
   };
 }

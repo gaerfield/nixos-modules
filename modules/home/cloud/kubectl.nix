@@ -25,11 +25,11 @@ in {
       };
     };
 
-    persistence.directories = [
-      { directory = "${config.xdg.configHome}/kube"; mode = "0700"; }
-      { directory = "${config.xdg.configHome}/k9s"; mode = "0700"; }
-      { directory = "${config.xdg.dataHome}/k9s"; mode = "0700"; }
-      { directory = "${config.xdg.stateHome}/k9s"; mode = "0700"; }
+    persistence.directories = with config.xdg;[
+      "${configHome}/kube"
+      "${configHome}/k9s"
+      "${dataHome}/k9s"
+      "${stateHome}/k9s"
     ];
   };
 }

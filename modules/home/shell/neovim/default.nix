@@ -30,10 +30,10 @@
     "d ${cacheHome}/nvim/view"
   ];
   persistence.directories = with config.xdg; [
-    { directory = "${dataHome}/nvim"; mode = "0700"; }
-    { directory = "${cacheHome}/nvim"; mode = "0700"; }
-    { directory = "${dataHome}/nvf"; mode = "0700"; }
-    { directory = "${cacheHome}/nvf"; mode = "0700"; }
+    "${dataHome}/nvim"
+    "${cacheHome}/nvim"
+    "${dataHome}/nvf"
+    "${cacheHome}/nvf"
   ];
   programs.fish.shellAbbrs = {
     v = "nvim";

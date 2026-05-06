@@ -1,6 +1,6 @@
 {
-  pkgs,
   config,
+  inputs,
   lib,
   ...
 }:
@@ -78,6 +78,10 @@ with lib; let
       umount /btrfs_tmp
     '';
 in {
+  imports = [
+    inputs.impermanence.nixosModules.impermanence
+  ];
+
   options.gnm.impermanence = {
     enable = mkEnableOption ''
       Enable impermanence for system and home manager.

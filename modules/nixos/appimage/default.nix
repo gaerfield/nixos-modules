@@ -6,7 +6,6 @@
 }:
 with lib; let
   cfg = config.gnm.appimage;
-  normalUsers = lib.filterAttrs (_: u: u.isNormalUser) config.users.users;
 in {
   options.gnm.appimage.enable = mkEnableOption "enable AppImage support";
 
@@ -22,9 +21,5 @@ in {
         ];
       };
     };
-
-    # exclude "Applications" in user homes from impermanence
-    persistence.directories =
-      lib.mapAttrsToList (_: u: "${u.home}/Applications") normalUsers;
   };
 }

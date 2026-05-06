@@ -16,12 +16,14 @@ in {
     };
 
     persistence.directories = with config.xdg; [
-      { directory = "${dataHome}/gradle"; mode = "0700"; }
+      "${dataHome}/gradle"
 
+      "${config.home.homeDirectory}/.java" # fucked up java cache
       # simply keep all jetbrains products persisted
-      { directory = "${configHome}/JetBrains"; mode = "0700"; }
-      { directory = "${dataHome}/JetBrains"; mode = "0700"; }
-      { directory = "${cacheHome}/JetBrains"; mode = "0700"; }
+      "${config.home.homeDirectory}/IdeaProjects"
+      "${configHome}/JetBrains"
+      "${dataHome}/JetBrains"
+      "${cacheHome}/JetBrains"
     ];
   };
 }

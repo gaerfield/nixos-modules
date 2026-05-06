@@ -35,6 +35,28 @@ in {
       gst_all_1.gst-plugins-good
     ];
 
+    persistence = {
+      directories = with config.xdg; [
+          "${cacheHome}/glycin"          # image editor - https://gnome.pages.gitlab.gnome.org/glycin/
+          "${cacheHome}/gtk-4.0"
+          "${cacheHome}/tracker3"        # gnome file indexer
+          "${cacheHome}/gstreamer-1.0"   # multimedia cache - enabled in os-level gnome
+          "${dataHome}/gedit"
+          "${dataHome}/gnome-settings-daemon" # enabled in os-level gnome
+          "${dataHome}/gnome-shell"
+          "${dataHome}/gvfs-metadata"   # metadata for gvfs (e.g. nautilus)
+          "${dataHome}/icc"             # color profiles for display calibration
+          "${dataHome}/keyrings"        # gnome keyring
+          "${dataHome}/mime"            # mime-type associations
+          "${dataHome}/sounds"          # individual notification sounds (login, etc.)
+          "${dataHome}/themes"          # user themes (e.g. gtk, icons, cursor)
+      ];
+
+      files = with config.xdg; [
+        "${dataHome}/recently-used.xbel"    # recently opened files
+      ];
+    };
+
     # useful commands:
     # * `dconf watch /`
     # * `dconf dump / | dconf2nix > dconf.nix` (see: https://github.com/nix-community/dconf2nix)

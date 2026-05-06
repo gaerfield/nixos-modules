@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ config, pkgs, ... }: {
   home.packages = with pkgs.gnomeExtensions; [
     # pkgs.gnome-extensions-cli
     dash-to-dock
@@ -9,6 +9,12 @@
     #pano # clipboard-manager, required libgda and gsound
     clipboard-indicator # replacement until pano works *sigh
     pkgs.gsound
+  ];
+
+  persistence.directories = with config.xdg; [
+    "${dataHome}/gnome-shell-extensions"
+    "${dataHome}/glib-2.0"
+    "${cacheHome}/clipboard-indicator@tudmotu.com"
   ];
 
   dconf.settings = {

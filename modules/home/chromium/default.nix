@@ -13,9 +13,10 @@ in {
       enable = true;
     };
 
-    persistence.directories = [
-      { directory = "${config.xdg.configHome}/chromium"; mode = "0700"; }
-      { directory = "${config.xdg.cacheHome}/chromium"; mode = "0700"; }
+    persistence.directories = with config.xdg; [
+      "${config.home.homeDirectory}/.pki" # chromium store for certificates
+      "${configHome}/chromium"
+      "${cacheHome}/chromium"
     ];
   };
 }

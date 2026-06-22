@@ -26,23 +26,38 @@
         image_bound = [0 0];
       };
       opener = {
-        open = [
-    	    { run = "xdg-open %s"; desc = "Open"; }
+        gallery = [
+          { run = "swayimg -g %s"; desc = "swayimg Gallery"; }
         ];
-        # gallery = [
-        #   { run = "swayimg -g %s"; desc = "swayimg Gallery"; }
-        # ];
         swayimg = [
           { run = "swayimg %s"; desc = "swayimg"; }
         ];
       };
       open = {
+        # These are the defaults from: https://github.com/sxyazi/yazi/blob/main/yazi-config/preset/yazi-default.toml
+        # docs: https://yazi-rs.github.io/docs/configuration/yazi/#open
+        # uncommented matchers got a custom opener appended (like swayimg_gallery)
+        # sadly the user array gets overwritten instead of merged with the default one, so I have to copy all the defaults here and then add my custom ones
         prepend_rules = [
-          { mime = "image/*"; use = "swayimg"; }
+          # Folder
+          { url = "*/"; use = [ "edit" "open" "reveal" "gallery" ]; }
+          # Text
+          #{ mime = "text/*"; use = [ "edit" "reveal" ]; }
+          # Image
+          { mime = "image/*"; use = [ "open" "reveal" "swayimg" ]; }
+          # Media
+          #{ mime = "{audio,video}/*"; use = [ "play" "reveal" ]; }
+          # Code
+          #{ mime = "application/{json,ndjson,javascript,wine-extension-ini}"; use = [ "edit" "reveal" ]; }
+          # Archive
+          #{ mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}"; use = [ "extract" "reveal" ]; }
+          # Empty file
+          #{ mime = "inode/empty"; use = [ "edit" "reveal" ]; }
+          # Virtual file system
+          #{ mime = "vfs/{absent,stale}"; use = "download" }
+          # Fallback
+          #{ url = "*"; use = [ "open" "reveal" ]; }
         ];
-        #   append_rules = [
-        #    { url = "*"; use = "gallery"; }
-        #   ];
       };       
     };
     plugins = with pkgs.yaziPlugins; {

@@ -16,16 +16,16 @@
     ];
     # regarding options: https://github.com/junegunn/fzf?tab=readme-ov-file#key-bindings-for-command-line
     # alt-c options
-    changeDirWidgetOptions = [
+    changeDirWidget.options = [
       "--preview 'eza --group-directories-first --no-quotes --no-permissions --no-user --no-git --icons --color=always {}'"
     ];
     # ctrl-t options
-    fileWidgetOptions = [
+    fileWidget.options = [
       "--preview='bat -n --color=always {}'"
       "--bind 'ctrl-/:change-preview-window(down|hidden|)'"
     ];
     # ctrl-r options
-    historyWidgetOptions = [ 
+    historyWidget.options = [ 
       "--no-multi"
     ];
   };

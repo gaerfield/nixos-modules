@@ -1,9 +1,9 @@
 {config, pkgs, lib, ...}: {
   xdg = {
-    enable = true;
+    enable = lib.mkDefault true;
     portal = {
-      enable = true;
-      xdgOpenUsePortal = true;
+      enable = lib.mkDefault true;
+      xdgOpenUsePortal = lib.mkDefault true;
       extraPortals = with pkgs; [ 
         xdg-desktop-portal
         xdg-desktop-portal-gtk
@@ -11,11 +11,11 @@
       config.common.default = "*";
     };
     userDirs = {
-      enable = true;
-      createDirectories = true;
+      enable = lib.mkDefault true;
+      createDirectories = lib.mkDefault true;
       setSessionVariables = lib.mkDefault false;
     };
-    mimeApps.enable = true;
+    mimeApps.enable = lib.mkDefault true;
   };
 
   home.packages = [ pkgs.xdg-utils ];

@@ -14,7 +14,7 @@ in {
 
   config = mkIf cfg.enable {
     virtualisation = {
-      containers.registries.search = ["docker.io"];
+      containers.registries.settings.registry = [ { location = "docker.io"; } ];
 
       podman = {
         enable = true;

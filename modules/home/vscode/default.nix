@@ -76,6 +76,7 @@ in {
       "${config.xdg.configHome}/VSCodium"
       "${config.xdg.stateHome}/VSCodium"
       "${config.home.homeDirectory}/.vscode-oss"
+      "${config.home.homeDirectory}/.vscode-oss-shared"
     ];
   };
 }

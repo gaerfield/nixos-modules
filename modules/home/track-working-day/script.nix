@@ -1,11 +1,11 @@
 {
   writeShellApplication,
-  coreutils,
+  uutils-coreutils-noprefix,
   glib,
 }:
 writeShellApplication {
   name = "track-working-day";
-  runtimeInputs = [coreutils glib];
+  runtimeInputs = [uutils-coreutils-noprefix glib];
   text = ''
     USAGE_INFO="Usage: track-working-day [start|info|help]"
     if [[ $1 != "info" && $1 != "start" && $1 != "help" ]]; then

@@ -20,6 +20,25 @@
         }
       '';
     };
+
+    fish.functions = {
+      "direnv-off" = {
+        description = "Temporarily disable direnv in this terminal";
+        body = ''
+          # Delete the background event listener function
+          functions -e __direnv_export_eval
+          echo "direnv disabled for this terminal session"
+        '';
+      };
+
+      "direnv-on" = {
+        description = "Re-enable direnv in this terminal";
+        body = ''
+          direnv hook fish | source
+          echo "direnv re-enabled"
+        '';
+      };
+    };
   };
 
   persistence.directories = with config.xdg; [

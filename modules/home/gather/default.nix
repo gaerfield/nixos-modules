@@ -17,12 +17,14 @@ with lib; let
 
   appIcon = app:
     let
+      appTitle = app.appTitle;
+      safeAppTitle = sanitizeDesktopName appTitle;
       iconSource = if app.iconUrl != null then app.iconUrl else app.icon;
     in if iconSource == null then null else if builtins.isPath iconSource then iconSource else if lib.hasPrefix "http://" iconSource || lib.hasPrefix "https://" iconSource then
       pkgs.fetchurl {
         url = iconSource;
         hash = app.iconHash;
-        name = "${sanitizeDesktopName app.appTitle}-icon";
+        name = "${safeAppTitle}-icon";
       }
     else if builtins.isString iconSource && (lib.hasPrefix "./" iconSource || lib.hasPrefix "../" iconSource || lib.hasPrefix "/" iconSource) then
       throw "Gather icon paths must be passed as Nix path literals, e.g. icon = ./gather-logo.png; rather than quoted strings."
@@ -32,43 +34,57 @@ with lib; let
   gatherApp = app:
     let
       appTitle = app.appTitle;
-      windowTitle = if app.windowTitle == "" then appTitle else app.windowTitle;
       safeAppTitle = sanitizeDesktopName appTitle;
-      safeWindowTitle = sanitizeDesktopName windowTitle;
       profileDir = "${config.xdg.configHome}/${safeAppTitle}";
       cacheDir = "${config.xdg.cacheHome}/${safeAppTitle}";
-    in pkgs.writeShellScriptBin safeAppTitle ''
-      exec ${pkgs.chromium}/bin/chromium \
-        --class=${safeWindowTitle} \
-        --user-data-dir="${profileDir}" \
-        --disk-cache-dir="${cacheDir}" \
-        --profile-directory=Default \
-        --app="${app.url}" \
-        --no-first-run \
-        "$@"
-    '';
+      launchScript = ''
+        if command -v hyprctl >/dev/null 2>&1; then
+          window="$(hyprctl clients -j | ${pkgs.jq}/bin/jq -r --arg app "${safeAppTitle}" '
+            map(select((.class // "") | contains($app))) | .[0].address // empty
+          ')"
+          if [ -n "$window" ]; then
+            hyprctl dispatch "hl.dsp.focus({ window = "address:$window" })"
+            exit 0
+          fi
+        fi
+
+        exec ${pkgs.chromium}/bin/chromium \
+          --class=${safeAppTitle} \
+          --user-data-dir="${profileDir}" \
+          --disk-cache-dir="${cacheDir}" \
+          --profile-directory="${safeAppTitle}" \
+          --app="${app.url}" \
+          --no-first-run \
+          "$@"
+      '';
+    in pkgs.writeShellScriptBin safeAppTitle launchScript;
 
   gatherDesktopEntries = builtins.listToAttrs (
-    map (app: {
-      name = sanitizeDesktopName app.appTitle;
-      value = {
-        name = app.appTitle;
-        genericName = app.appTitle;
-        exec = sanitizeDesktopName app.appTitle;
-        icon = if (appIcon app) == null then null else toString (appIcon app);
+    map (app: let
+      appTitle = app.appTitle;
+      safeAppTitle = sanitizeDesktopName appTitle;
+      iconPath = appIcon app;
+      desktopEntry = {
+        name = appTitle;
+        genericName = appTitle;
+        exec = safeAppTitle;
         terminal = false;
         categories = [ "Network" "Chat" ];
         startupNotify = true;
         settings = {
-          StartupWMClass = sanitizeDesktopName (if app.windowTitle == "" then app.appTitle else app.windowTitle);
+          StartupWMClass = safeAppTitle;
         };
       };
+    in {
+      name = safeAppTitle;
+      value = if iconPath == null then desktopEntry else desktopEntry // { icon = toString iconPath; };
     }) cfg.apps
   );
 
   persistedDirs = lib.concatMap (
     app: let
-      dirName = sanitizeDesktopName app.appTitle;
+      appTitle = app.appTitle;
+      dirName = sanitizeDesktopName appTitle;
     in [
       "${config.xdg.configHome}/${dirName}"
       "${config.xdg.cacheHome}/${dirName}"
@@ -83,11 +99,6 @@ in {
           appTitle = mkOption {
             type = types.str;
             description = "The display name for this Gather app. This also becomes the config and cache directory name. Example: \"Gather\".";
-          };
-          windowTitle = mkOption {
-            type = types.str;
-            default = "";
-            description = "Optional window title to match in Hyprland. Defaults to appTitle. Example: \"Gather\".";
           };
           iconUrl = mkOption {
             type = types.nullOr types.str;
@@ -127,7 +138,6 @@ in {
               }
               {
                 appTitle = "Gather Ops";
-                windowTitle = "Gather";
                 url = "https://app.v2.gather.town/app/another-room";
                 icon = ./icons/gather-ops.png;
               }

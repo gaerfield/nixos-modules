@@ -73,6 +73,7 @@ in {
         ./../../home/cloud
         ./../../home/containers
         ./../../home/firefox
+        ./../../home/gather
         ./../../home/git
         ./../../home/gnome
         ./../../home/java-development
@@ -89,6 +90,7 @@ in {
         cloud.enable = mkDefault false;
         javaDevelopment.enable = mkDefault false;
         firefox.enable = mkDefault true;
+        gather.enable = mkDefault false;
         git.enable = mkDefault true;
         trackWorkingDay.enable = mkDefault false;
         vscode.enable = mkDefault false;

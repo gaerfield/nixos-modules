@@ -31,6 +31,129 @@ with lib; let
     else
       iconSource;
 
+  gatherExternalLinkHost = pkgs.writeShellApplication {
+    name = "gather-open-external-host";
+    runtimeInputs = [ pkgs.python3 pkgs.xdg-utils ];
+    text = ''
+      python3 - <<'PY'
+      import json
+      import os
+      import shlex
+      import struct
+      import sys
+
+      def write_response(payload):
+          encoded = json.dumps(payload, separators=(",", ":")).encode("utf-8")
+          sys.stdout.buffer.write(struct.pack("<I", len(encoded)))
+          sys.stdout.buffer.write(encoded)
+          sys.stdout.buffer.flush()
+
+      data = sys.stdin.buffer.read()
+      if len(data) < 4:
+          sys.exit(0)
+
+      msg_len = struct.unpack("<I", data[:4])[0]
+      raw = data[4:4 + msg_len]
+      if len(raw) < msg_len:
+          sys.exit(0)
+
+      try:
+          message = json.loads(raw.decode("utf-8"))
+      except Exception:
+          write_response({"status": "error"})
+          sys.exit(0)
+
+      url = message.get("url") or message.get("URL")
+      if url:
+          os.system(f"${pkgs.xdg-utils}/bin/xdg-open {shlex.quote(url)} >/dev/null 2>&1")
+
+      write_response({"status": "ok"})
+      PY
+    '';
+  };
+
+  gatherExternalLinkExtension = pkgs.runCommand "gather-open-external-extension" { } ''
+    mkdir -p "$out"
+    cat > "$out/manifest.json" <<'EOF'
+    {
+      "manifest_version": 3,
+      "name": "Gather External Link Handler",
+      "version": "1.0.0",
+      "description": "Open external links in the system browser instead of the Gather app.",
+      "permissions": ["nativeMessaging"],
+      "host_permissions": [
+        "https://*/*",
+        "http://*/*"
+      ],
+      "content_scripts": [
+        {
+          "matches": [
+            "https://*.gather.town/*",
+            "https://app.v2.gather.town/*",
+            "http://localhost/*"
+          ],
+          "js": ["content.js"],
+          "run_at": "document_start",
+          "all_frames": true
+        }
+      ]
+    }
+    EOF
+
+    cat > "$out/content.js" <<'EOF'
+    const isInternalGatherUrl = (value) => {
+      if (!value) return false;
+      try {
+        const url = new URL(value, window.location.href);
+        const host = url.hostname.toLowerCase();
+        return host === "gather.town" || host === "app.v2.gather.town" || host.endsWith(".gather.town");
+      } catch {
+        return false;
+      }
+    };
+
+    const openExternalUrl = (url) => {
+      if (!url || isInternalGatherUrl(url)) return false;
+      try {
+        chrome.runtime.sendNativeMessage("com.gather.open_external", { url });
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
+    document.addEventListener(
+      "click",
+      (event) => {
+        const anchor = event.target.closest("a[href]");
+        if (!anchor) return;
+
+        const href = anchor.href;
+        if (!href || isInternalGatherUrl(href)) return;
+
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+          return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+        openExternalUrl(href);
+      },
+      true,
+    );
+
+    const originalOpen = window.open.bind(window);
+    window.open = function (url, target, features) {
+      if (url && typeof url === "string" && !isInternalGatherUrl(url)) {
+        if (openExternalUrl(url)) {
+          return null;
+        }
+      }
+      return originalOpen(url, target, features);
+    };
+    EOF
+  '';
+
   gatherApp = app:
     let
       appTitle = app.appTitle;
@@ -48,14 +171,15 @@ with lib; let
           fi
         fi
 
-        exec ${pkgs.chromium}/bin/chromium \
+        BROWSER="${pkgs.xdg-utils}/bin/xdg-open" exec ${pkgs.chromium}/bin/chromium \
           --class=${safeAppTitle} \
+          --disable-extensions-except="${gatherExternalLinkExtension}" \
+          --load-extension="${gatherExternalLinkExtension}" \
           --user-data-dir="${profileDir}" \
           --disk-cache-dir="${cacheDir}" \
           --profile-directory="${safeAppTitle}" \
-          --app="${app.url}" \
           --no-first-run \
-          "$@"
+          --new-window "${app.url}" "$@"
       '';
     in pkgs.writeShellScriptBin safeAppTitle launchScript;
 
@@ -149,6 +273,12 @@ in {
 
   config = mkIf cfg.enable {
     home.packages = map gatherApp cfg.apps;
+    xdg.configFile."chromium/NativeMessagingHosts/com.gather.open_external.json".text = builtins.toJSON {
+      name = "com.gather.open_external";
+      description = "Open Gather external links in the system browser.";
+      path = "${gatherExternalLinkHost}/bin/gather-open-external-host";
+      type = "stdio";
+    };
     xdg.desktopEntries = gatherDesktopEntries;
     persistence.directories = persistedDirs;
   };

@@ -11,6 +11,14 @@ in {
   config = mkIf cfg.enable {
     programs.chromium = {
       enable = true;
+
+      # https://webextension.org/listing/open-in.html
+      
+      # Native Message Host: https://github.com/andy-portmen/native-client
+      extensions = [
+        # Open in Firefox Browser
+        "lmeddoobegbaiopohmpmmobpnpjifpii"
+      ];
     };
 
     persistence.directories = with config.xdg; [

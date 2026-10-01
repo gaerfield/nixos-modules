@@ -35,7 +35,6 @@ with lib; let
     let
       appTitle = app.appTitle;
       safeAppTitle = sanitizeDesktopName appTitle;
-      profileDir = "${config.xdg.configHome}/${safeAppTitle}";
       cacheDir = "${config.xdg.cacheHome}/${safeAppTitle}";
       launchScript = ''
         if command -v hyprctl >/dev/null 2>&1; then
@@ -50,7 +49,6 @@ with lib; let
 
         exec ${pkgs.chromium}/bin/chromium \
           --class=${safeAppTitle} \
-          --user-data-dir="${profileDir}" \
           --disk-cache-dir="${cacheDir}" \
           --profile-directory="${safeAppTitle}" \
           --app="${app.url}" \

@@ -5,7 +5,7 @@
   ...
 }:
 with lib; let
-  cfg = config.gnm.hm.gather;
+  cfg = config.gnm.hm.pwaChromium;
 
   sanitizeDesktopName = value:
     lib.toLower (
@@ -47,11 +47,11 @@ with lib; let
     };
   };
 
-  gatherExtensionFiles = builtins.listToAttrs (
+  pwaExtensionFiles = builtins.listToAttrs (
     concatMap (app: map (ext: mkExtensionJson app ext) pwaExtensions) cfg.apps
   );
-  # fake comment
-  gatherApp = app:
+
+  pwaApp = app:
     let
       appTitle = app.appTitle;
       safeAppTitle = sanitizeDesktopName appTitle;
@@ -81,7 +81,7 @@ with lib; let
       '';
     in pkgs.writeShellScriptBin safeAppTitle launchScript;
   
-  gatherDesktopEntries = builtins.listToAttrs (
+  pwaDesktopEntries = builtins.listToAttrs (
     map (app: let
       appTitle = app.appTitle;
       safeAppTitle = sanitizeDesktopName appTitle;
@@ -113,14 +113,14 @@ with lib; let
     ]
   ) cfg.apps;
 in {
-  options.gnm.hm.gather = {
-    enable = mkEnableOption "enable Gather Town Chromium apps";
+  options.gnm.hm.pwaChromium = {
+    enable = mkEnableOption "enable Chromium PWA apps";
     apps = mkOption {
       type = types.listOf (types.submodule {
         options = {
           appTitle = mkOption {
             type = types.str;
-            description = "The display name for this Gather app. This also becomes the config and cache directory name. Example: \"Gather\".";
+            description = "The display name for this PWA app. This also becomes the config and cache directory name. Example: \"Gather\".";
           };
           iconUrl = mkOption {
             type = types.nullOr types.str;
@@ -139,17 +139,17 @@ in {
           };
           url = mkOption {
             type = types.str;
-            description = "The Gather URL to open in Chromium app mode. Example: \"https://app.v2.gather.town/app/73f14dcd-9d94-434f-893e-f35291385057\".";
+            description = "The URL to open in Chromium app mode. Example: \"https://app.v2.gather.town/app/73f14dcd-9d94-434f-893e-f35291385057\".";
           };
         };
       });
       default = [];
       description = ''
-        The Gather app instances to create.
+        The PWA app instances to create.
 
         Example:
 
-          gnm.hm.gather = {
+          gnm.hm.pwaChromium = {
             enable = true;
             apps = [
               {
@@ -175,10 +175,10 @@ in {
       extraChromiumDataDirs = map (app: "${config.xdg.configHome}/${sanitizeDesktopName app.appTitle}") cfg.apps;
     };
 
-    home.packages = map gatherApp cfg.apps;
-    xdg.desktopEntries = gatherDesktopEntries;
+    home.packages = map pwaApp cfg.apps;
+    xdg.desktopEntries = pwaDesktopEntries;
     persistence.directories = persistedDirs;
 
-    home.file = gatherExtensionFiles;
+    home.file = pwaExtensionFiles;
   };
 }

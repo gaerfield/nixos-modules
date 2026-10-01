@@ -31,10 +31,32 @@ with lib; let
     else
       iconSource;
 
+  pwaExtensions = [
+    {
+      title = "Open in Firefox";
+      id = "lmeddoobegbaiopohmpmmobpnpjifpii";
+    }
+  ];
+  
+  mkExtensionJson = app: ext: {
+    name = "${config.xdg.configHome}/${sanitizeDesktopName app.appTitle}/External Extensions/${ext.id}.json";
+    value = {
+      text = builtins.toJSON {
+        external_update_url = ext.updateUrl or "https://clients2.google.com/service/update2/crx";
+      };
+    };
+  };
+
+  gatherExtensionFiles = builtins.listToAttrs (
+    concatMap (app: map (ext: mkExtensionJson app ext) pwaExtensions) cfg.apps
+  );
+  # fake comment
   gatherApp = app:
     let
       appTitle = app.appTitle;
       safeAppTitle = sanitizeDesktopName appTitle;
+      userDataDir = "${config.xdg.configHome}/${safeAppTitle}";
+      profileName = "${safeAppTitle}";
       cacheDir = "${config.xdg.cacheHome}/${safeAppTitle}";
       launchScript = ''
         if command -v hyprctl >/dev/null 2>&1; then
@@ -42,21 +64,23 @@ with lib; let
             map(select((.class // "") | contains($app))) | .[0].address // empty
           ')"
           if [ -n "$window" ]; then
-            hyprctl dispatch "hl.dsp.focus({ window = "address:$window" })"
+            hyprctl dispatch "hl.dsp.focus({ window = \"address:$window\" })"
             exit 0
           fi
         fi
-
+    
         exec ${pkgs.chromium}/bin/chromium \
           --class=${safeAppTitle} \
+          --user-data-dir="${userDataDir}" \
           --disk-cache-dir="${cacheDir}" \
-          --profile-directory="${safeAppTitle}" \
+          --profile-directory="${profileName}" \
           --app="${app.url}" \
+          --app-id=${safeAppTitle} \
           --no-first-run \
           "$@"
       '';
     in pkgs.writeShellScriptBin safeAppTitle launchScript;
-
+  
   gatherDesktopEntries = builtins.listToAttrs (
     map (app: let
       appTitle = app.appTitle;
@@ -146,8 +170,15 @@ in {
   };
 
   config = mkIf cfg.enable {
+    gnm.hm.browserNativeClient = {
+      enable = true;
+      extraChromiumDataDirs = map (app: "${config.xdg.configHome}/${sanitizeDesktopName app.appTitle}") cfg.apps;
+    };
+
     home.packages = map gatherApp cfg.apps;
     xdg.desktopEntries = gatherDesktopEntries;
     persistence.directories = persistedDirs;
+
+    home.file = gatherExtensionFiles;
   };
 }

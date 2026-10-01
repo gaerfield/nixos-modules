@@ -69,6 +69,7 @@ in {
       imports = [
         #flake.homeManagerModules.base
         ./../../home/base
+        ./../../home/browser-native-client
         ./../../home/chromium
         ./../../home/cloud
         ./../../home/containers

@@ -17,8 +17,8 @@ with lib; let
 
   appIcon = app:
     let
-      appTitle = app.appTitle;
-      safeAppTitle = sanitizeDesktopName appTitle;
+      title = app.title;
+      safeAppTitle = sanitizeDesktopName title;
       iconSource = if app.iconUrl != null then app.iconUrl else app.icon;
     in if iconSource == null then null else if builtins.isPath iconSource then iconSource else if lib.hasPrefix "http://" iconSource || lib.hasPrefix "https://" iconSource then
       pkgs.fetchurl {
@@ -39,7 +39,7 @@ with lib; let
   ];
   
   mkExtensionJson = app: ext: {
-    name = "${config.xdg.configHome}/${sanitizeDesktopName app.appTitle}/External Extensions/${ext.id}.json";
+    name = "${config.xdg.configHome}/${sanitizeDesktopName app.title}/External Extensions/${ext.id}.json";
     value = {
       text = builtins.toJSON {
         external_update_url = ext.updateUrl or "https://clients2.google.com/service/update2/crx";
@@ -53,8 +53,8 @@ with lib; let
 
   pwaApp = app:
     let
-      appTitle = app.appTitle;
-      safeAppTitle = sanitizeDesktopName appTitle;
+      title = app.title;
+      safeAppTitle = sanitizeDesktopName title;
       userDataDir = "${config.xdg.configHome}/${safeAppTitle}";
       profileName = "${safeAppTitle}";
       cacheDir = "${config.xdg.cacheHome}/${safeAppTitle}";
@@ -83,12 +83,12 @@ with lib; let
   
   pwaDesktopEntries = builtins.listToAttrs (
     map (app: let
-      appTitle = app.appTitle;
-      safeAppTitle = sanitizeDesktopName appTitle;
+      title = app.title;
+      safeAppTitle = sanitizeDesktopName title;
       iconPath = appIcon app;
       desktopEntry = {
-        name = appTitle;
-        genericName = appTitle;
+        name = title;
+        genericName = title;
         exec = safeAppTitle;
         terminal = false;
         categories = [ "Network" "Chat" ];
@@ -105,8 +105,8 @@ with lib; let
 
   persistedDirs = lib.concatMap (
     app: let
-      appTitle = app.appTitle;
-      dirName = sanitizeDesktopName appTitle;
+      title = app.title;
+      dirName = sanitizeDesktopName title;
     in [
       "${config.xdg.configHome}/${dirName}"
       "${config.xdg.cacheHome}/${dirName}"
@@ -118,7 +118,7 @@ in {
     apps = mkOption {
       type = types.listOf (types.submodule {
         options = {
-          appTitle = mkOption {
+          title = mkOption {
             type = types.str;
             description = "The display name for this PWA app. This also becomes the config and cache directory name. Example: \"Gather\".";
           };
@@ -153,13 +153,13 @@ in {
             enable = true;
             apps = [
               {
-                appTitle = "Gather";
+                title = "Gather";
                 url = "https://app.v2.gather.town/app/big-long-id";
                 iconUrl = "https://example.com/icons/gather.png";
                 iconHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
               }
               {
-                appTitle = "Gather Ops";
+                title = "Gather Ops";
                 url = "https://app.v2.gather.town/app/another-room";
                 icon = ./icons/gather-ops.png;
               }
@@ -172,7 +172,7 @@ in {
   config = mkIf cfg.enable {
     gnm.hm.browserNativeClient = {
       enable = true;
-      extraChromiumDataDirs = map (app: "${config.xdg.configHome}/${sanitizeDesktopName app.appTitle}") cfg.apps;
+      extraChromiumDataDirs = map (app: "${config.xdg.configHome}/${sanitizeDesktopName app.title}") cfg.apps;
     };
 
     home.packages = map pwaApp cfg.apps;

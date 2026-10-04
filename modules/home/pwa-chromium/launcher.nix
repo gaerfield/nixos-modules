@@ -4,16 +4,22 @@
 , appDataDir
 , appCacheDir
 , mkPwaPolicyDir
+, browserPackage
+, enableScreenSharing
 , writeShellApplication
 }:
 let
   safeAppTitle = appName app;
+  chromiumExtraFlags = if enableScreenSharing then ''
+    --enable-features=UseOzonePlatform,WebRTCPipeWireCapturer \
+    --ozone-platform=wayland \
+  '' else "";
 in writeShellApplication {
   name = safeAppTitle;
 
   runtimeInputs = with pkgs; [
     bubblewrap
-    chromium
+    browserPackage
     hyprland
     jq
   ];
@@ -42,7 +48,8 @@ in writeShellApplication {
       --bind "${appDataDir app}" "${appDataDir app}" \
       --bind "${appCacheDir app}" "${appCacheDir app}" \
       --ro-bind "${mkPwaPolicyDir app}" /etc/chromium/policies \
-      ${pkgs.chromium}/bin/chromium \
+      ${browserPackage}/bin/chromium \
+        ${chromiumExtraFlags}
         --class=${safeAppTitle} \
         --user-data-dir="${appDataDir app}" \
         --disk-cache-dir="${appCacheDir app}" \

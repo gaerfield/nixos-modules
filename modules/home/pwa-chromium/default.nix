@@ -17,6 +17,16 @@ let
 in {
   options.gnm.hm.pwaChromium = {
     enable = mkEnableOption "enable Chromium PWA apps";
+    enableScreenSharing = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Enable XDG portal integration for Chromium PWA apps.
+
+        This enables the desktop portal on the user level so web apps can request
+        microphone, camera, and screen-sharing access via the Hyprland portal backend.
+      '';
+    };
     apps = mkOption {
       type = types.listOf (types.submodule instance.appModule);
       default = [];
@@ -35,9 +45,15 @@ in {
                 iconHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
               }
               {
-                title = "Gather Ops";
-                url = "https://app.v2.gather.town/app/another-room";
-                icon = ./icons/gather-ops.png;
+                title = "Teams";
+                url = "https://teams.microsoft.com";
+                icon = ./icons/teams.png;
+                cookieAllowlist = [
+                  "https://*.microsoft.com"
+                  "https://login.microsoftonline.com"
+                  "https://*.live.com"
+                  "https://*.office.com"
+                ];
               }
             ];
           };
@@ -49,6 +65,13 @@ in {
     gnm.hm.browserNativeClient = {
       enable = true;
       extraChromiumDataDirs = map instance.appDataDir cfg.apps;
+    };
+
+    xdg.portal = mkIf cfg.enableScreenSharing {
+      enable = true;
+      extraPortals = with pkgs; [
+        xdg-desktop-portal-hyprland
+      ];
     };
 
     home.packages = map instance.mkPwaLauncher cfg.apps;

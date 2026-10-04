@@ -32,23 +32,36 @@ let
     updateUrl = "https://clients2.google.com/service/update2/crx";
   };
 
-  mkPwaPolicyDir = app: pkgs.writeTextDir "managed/pwa.json" (
-    builtins.toJSON {
-      ExtensionInstallForcelist = [
-        "${openInFirefoxExtension.id};${openInFirefoxExtension.updateUrl}"
-      ];
+  browserPackage = pkgs.ungoogled-chromium;
 
-      "3rdparty" = {
-        extensions = {
-          "${openInFirefoxExtension.id}" = {
-            reverse = true;
-            urls = [ "${app.url}*" ];
-            faqs = false;
+  appOrigin = app:
+    let
+      match = builtins.match "^([a-zA-Z]+)://([^/]+).*" app.url;
+      scheme = builtins.elemAt match 0;
+      host = builtins.elemAt match 1;
+    in "${scheme}://${host}";
+
+  mkPwaPolicyDir = app:
+    let
+      cookieAllowlist = lib.unique ([ (appOrigin app) ] ++ app.cookieAllowlist);
+      policy = {
+        ExtensionInstallForcelist = [
+          "${openInFirefoxExtension.id};${openInFirefoxExtension.updateUrl}"
+        ];
+
+        "3rdparty" = {
+          extensions = {
+            "${openInFirefoxExtension.id}" = {
+              reverse = true;
+              urls = [ "${app.url}*" ];
+              faqs = false;
+            };
           };
         };
+      } // lib.optionalAttrs (cookieAllowlist != []) {
+        CookiesAllowedForUrls = cookieAllowlist;
       };
-    }
-  );
+    in pkgs.writeTextDir "managed/pwa.json" (builtins.toJSON policy);
 
   pwaDesktopEntry = app:
     let
@@ -71,9 +84,11 @@ let
   mkPwaLauncher = app:
     pkgs.callPackage ./launcher.nix {
       inherit app appName appDataDir appCacheDir mkPwaPolicyDir;
+      browserPackage = browserPackage;
+      enableScreenSharing = config.gnm.hm.pwaChromium.enableScreenSharing;
     };
 in {
-  inherit appId appName appDataDir appCacheDir appIcon mkPwaPolicyDir mkPwaLauncher pwaDesktopEntry;
+  inherit appId appName appDataDir appCacheDir appIcon browserPackage mkPwaPolicyDir mkPwaLauncher pwaDesktopEntry;
 
   appModule = {
     options = {
@@ -99,6 +114,18 @@ in {
       url = mkOption {
         type = types.str;
         description = "The URL to open in Chromium app mode. Example: \"https://app.v2.gather.town/app/73f14dcd-9d94-434f-893e-f35291385057\".";
+      };
+      cookieAllowlist = mkOption {
+        type = types.listOf types.str;
+        default = [];
+        description = ''
+          Additional URL patterns that should be allowed to set cookies beyond the
+          app's own origin derived from the configured URL.
+
+          Example values:
+            - "https://*.gather.town"
+            - "https://login.microsoftonline.com"
+        '';
       };
     };
   };

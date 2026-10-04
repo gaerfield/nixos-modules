@@ -15,10 +15,13 @@ with lib; let
       value
     );
 
+  appName = app: sanitizeDesktopName app.title;
+  appDataDir = app: "${config.xdg.configHome}/pwa-chromium/${appName app}";
+  appCacheDir = app: "${config.xdg.cacheHome}/pwa-chromium/${appName app}";
+
   appIcon = app:
     let
-      title = app.title;
-      safeAppTitle = sanitizeDesktopName title;
+      safeAppTitle = appName app;
       iconSource = if app.iconUrl != null then app.iconUrl else app.icon;
     in if iconSource == null then null else if builtins.isPath iconSource then iconSource else if lib.hasPrefix "http://" iconSource || lib.hasPrefix "https://" iconSource then
       pkgs.fetchurl {
@@ -39,7 +42,7 @@ with lib; let
   ];
   
   mkExtensionJson = app: ext: {
-    name = "${config.xdg.configHome}/${sanitizeDesktopName app.title}/External Extensions/${ext.id}.json";
+    name = "${appDataDir app}/External Extensions/${ext.id}.json";
     value = {
       text = builtins.toJSON {
         external_update_url = ext.updateUrl or "https://clients2.google.com/service/update2/crx";
@@ -53,11 +56,7 @@ with lib; let
 
   pwaApp = app:
     let
-      title = app.title;
-      safeAppTitle = sanitizeDesktopName title;
-      userDataDir = "${config.xdg.configHome}/${safeAppTitle}";
-      profileName = "${safeAppTitle}";
-      cacheDir = "${config.xdg.cacheHome}/${safeAppTitle}";
+      safeAppTitle = appName app;
       launchScript = ''
         if command -v hyprctl >/dev/null 2>&1; then
           window="$(hyprctl clients -j | ${pkgs.jq}/bin/jq -r --arg app "${safeAppTitle}" '
@@ -71,9 +70,8 @@ with lib; let
     
         exec ${pkgs.chromium}/bin/chromium \
           --class=${safeAppTitle} \
-          --user-data-dir="${userDataDir}" \
-          --disk-cache-dir="${cacheDir}" \
-          --profile-directory="${profileName}" \
+          --user-data-dir="${appDataDir app}" \
+          --disk-cache-dir="${appCacheDir app}" \
           --app="${app.url}" \
           --app-id=${safeAppTitle} \
           --no-first-run \
@@ -84,7 +82,7 @@ with lib; let
   pwaDesktopEntries = builtins.listToAttrs (
     map (app: let
       title = app.title;
-      safeAppTitle = sanitizeDesktopName title;
+      safeAppTitle = appName app;
       iconPath = appIcon app;
       desktopEntry = {
         name = title;
@@ -103,15 +101,10 @@ with lib; let
     }) cfg.apps
   );
 
-  persistedDirs = lib.concatMap (
-    app: let
-      title = app.title;
-      dirName = sanitizeDesktopName title;
-    in [
-      "${config.xdg.configHome}/${dirName}"
-      "${config.xdg.cacheHome}/${dirName}"
-    ]
-  ) cfg.apps;
+  persistedDirs = lib.concatMap (app: [
+    (appDataDir app)
+    (appCacheDir app)
+  ]) cfg.apps;
 in {
   options.gnm.hm.pwaChromium = {
     enable = mkEnableOption "enable Chromium PWA apps";
@@ -172,7 +165,7 @@ in {
   config = mkIf cfg.enable {
     gnm.hm.browserNativeClient = {
       enable = true;
-      extraChromiumDataDirs = map (app: "${config.xdg.configHome}/${sanitizeDesktopName app.title}") cfg.apps;
+      extraChromiumDataDirs = map appDataDir cfg.apps;
     };
 
     home.packages = map pwaApp cfg.apps;

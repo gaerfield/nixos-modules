@@ -28,10 +28,6 @@ in writeShellApplication {
   ];
 
   text = ''
-    mkdir -p \
-      "${appDataDir app}" \
-      "${appCacheDir app}"
-
     if command -v hyprctl >/dev/null 2>&1; then
       window="$(hyprctl clients -j | ${pkgs.jq}/bin/jq -r --arg app "${safeAppTitle}" '
         map(select((.class // "") | contains($app))) | .[0].address // empty
@@ -48,8 +44,7 @@ in writeShellApplication {
       --proc /proc \
       --bind /run /run \
       --bind /tmp /tmp \
-      --bind "${appDataDir app}" "${appDataDir app}" \
-      --bind "${appCacheDir app}" "${appCacheDir app}" \
+      --bind "$HOME" "$HOME" \
       --ro-bind "${mkPwaPolicyDir app}" /etc/chromium/policies \
       ${browserPackage}/bin/chromium \
         ${chromiumExtraFlags} \

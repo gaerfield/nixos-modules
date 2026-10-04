@@ -6,14 +6,17 @@
 , mkPwaPolicyDir
 , browserPackage
 , enableScreenSharing
+, extraChromiumFlags
 , writeShellApplication
 }:
 let
   safeAppTitle = appName app;
-  chromiumExtraFlags = if enableScreenSharing then ''
-    --enable-features=UseOzonePlatform,WebRTCPipeWireCapturer \
-    --ozone-platform=wayland \
-  '' else "";
+  chromiumExtraFlags = builtins.concatStringsSep " " (
+    (if enableScreenSharing then [
+      "--enable-features=UseOzonePlatform,WebRTCPipeWireCapturer"
+      "--ozone-platform=wayland"
+    ] else []) ++ extraChromiumFlags
+  );
 in writeShellApplication {
   name = safeAppTitle;
 
@@ -49,7 +52,7 @@ in writeShellApplication {
       --bind "${appCacheDir app}" "${appCacheDir app}" \
       --ro-bind "${mkPwaPolicyDir app}" /etc/chromium/policies \
       ${browserPackage}/bin/chromium \
-        ${chromiumExtraFlags}
+        ${chromiumExtraFlags} \
         --class=${safeAppTitle} \
         --user-data-dir="${appDataDir app}" \
         --disk-cache-dir="${appCacheDir app}" \

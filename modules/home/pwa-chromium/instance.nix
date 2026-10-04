@@ -86,6 +86,7 @@ let
       inherit app appName appDataDir appCacheDir mkPwaPolicyDir;
       browserPackage = browserPackage;
       enableScreenSharing = config.gnm.hm.pwaChromium.enableScreenSharing;
+      extraChromiumFlags = app.extraChromiumFlags or [];
     };
 in {
   inherit appId appName appDataDir appCacheDir appIcon browserPackage mkPwaPolicyDir mkPwaLauncher pwaDesktopEntry;
@@ -125,6 +126,16 @@ in {
           Example values:
             - "https://*.gather.town"
             - "https://login.microsoftonline.com"
+        '';
+      };
+      extraChromiumFlags = mkOption {
+        type = types.listOf types.str;
+        default = [];
+        description = ''
+          Extra command-line flags passed only to this Chromium PWA app.
+
+          This is useful for app-specific flags like Wayland/PipeWire capture or
+          other browser workarounds that should not be shared with other apps.
         '';
       };
     };

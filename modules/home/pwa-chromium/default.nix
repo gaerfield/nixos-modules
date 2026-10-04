@@ -54,6 +54,9 @@ in {
                   "https://*.live.com"
                   "https://*.office.com"
                 ];
+                extraChromiumFlags = [
+                  "--allow-insecure-localhost"
+                ];
               }
             ];
           };

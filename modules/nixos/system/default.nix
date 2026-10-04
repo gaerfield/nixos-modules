@@ -65,6 +65,11 @@ in {
       impermanence.enable = mkDefault false;
     };
 
+    # this is required to make the pwa-chromium module work
+    # allowing to force some chromium policies to be applied 
+    # to pwa chromium instances
+    environment.etc."chromium/policies/.keep".text = "";
+
     home-manager.users."${cfg.mainuser.name}" = {
       imports = [
         #flake.homeManagerModules.base

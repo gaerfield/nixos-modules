@@ -7,7 +7,7 @@
 with lib; let
   cfg = config.gnm.hm.pwaChromium;
 
-  sanitizeDesktopName = value:
+  appId = value:
     lib.toLower (
       lib.replaceStrings
       [ " " "/" ":" "\"" "'" "&" "+" "?" "(" ")" "[" "]" "{" "}" ]
@@ -15,7 +15,7 @@ with lib; let
       value
     );
 
-  appName = app: sanitizeDesktopName app.title;
+  appName = app: appId app.title;
   appDataDir = app: "${config.xdg.configHome}/pwa-chromium/${appName app}";
   appCacheDir = app: "${config.xdg.cacheHome}/pwa-chromium/${appName app}";
 
@@ -30,26 +30,21 @@ with lib; let
         name = "${safeAppTitle}-icon";
       }
     else if builtins.isString iconSource && (lib.hasPrefix "./" iconSource || lib.hasPrefix "../" iconSource || lib.hasPrefix "/" iconSource) then
-      throw "Gather icon paths must be passed as Nix path literals, e.g. icon = ./gather-logo.png; rather than quoted strings."
+      throw "PWA icon paths must be passed as Nix path literals, e.g. icon = ./icon.png; rather than quoted strings."
     else
       iconSource;
 
 
   openInFirefoxExtension = {
-    title = "Open in Firefox";
     id = "lmeddoobegbaiopohmpmmobpnpjifpii";
+    updateUrl = "https://clients2.google.com/service/update2/crx";
   };
-  pwaExtensions = [ openInFirefoxExtension ];
   
-  pwaPolicyDir = app: pkgs.runCommand "${appName app}-chromium-policies" {} ''
-    mkdir -p "$out/managed"
-
-    cat > "$out/managed/pwa.json" <<'EOF'
-    ${builtins.toJSON {
-      ExtensionInstallForcelist = map (
-        ext:
-          "${ext.id};${ext.updateUrl or "https://clients2.google.com/service/update2/crx"}"
-      ) pwaExtensions;
+  mkPwaPolicyDir = app: pkgs.writeTextDir "managed/pwa.json" (
+    builtins.toJSON {
+      ExtensionInstallForcelist = [
+        "${openInFirefoxExtension.id};${openInFirefoxExtension.updateUrl}"
+      ];
 
       "3rdparty" = {
         extensions = {
@@ -62,15 +57,18 @@ with lib; let
           };
         };
       };
-    }}
-    EOF
-'';
+    }
+  );
 
-  pwaApp = app:
+  mkPwaLauncher = app:
     let
       safeAppTitle = appName app;
-      policyDir = pwaPolicyDir app;
+      policyDir = mkPwaPolicyDir app;
       launchScript = ''
+        mkdir -p \
+          "${appDataDir app}" \
+          "${appCacheDir app}"
+
         if command -v hyprctl >/dev/null 2>&1; then
           window="$(hyprctl clients -j | ${pkgs.jq}/bin/jq -r --arg app "${safeAppTitle}" '
             map(select((.class // "") | contains($app))) | .[0].address // empty
@@ -81,8 +79,17 @@ with lib; let
           fi
         fi
     
+        # Chromium's Linux policy directory is hard-coded to
+        # /etc/chromium/policies. Give each PWA its own view of that
+        # directory while otherwise exposing the normal host filesystem
         exec ${pkgs.bubblewrap}/bin/bwrap \
-          --bind / / \
+          --ro-bind / / \
+          --dev-bind /dev /dev \
+          --proc /proc \
+          --bind /run /run \
+          --bind /tmp /tmp \
+          --bind "${appDataDir app}" "${appDataDir app}" \
+          --bind "${appCacheDir app}" "${appCacheDir app}" \
           --ro-bind "${policyDir}" /etc/chromium/policies \
           ${pkgs.chromium}/bin/chromium \
             --class=${safeAppTitle} \
@@ -117,10 +124,7 @@ with lib; let
     }) cfg.apps
   );
 
-  persistedDirs = lib.concatMap (app: [
-    (appDataDir app)
-    (appCacheDir app)
-  ]) cfg.apps;
+  persistedDirs = map appDataDir cfg.apps;
 in {
   options.gnm.hm.pwaChromium = {
     enable = mkEnableOption "enable Chromium PWA apps";
@@ -184,7 +188,7 @@ in {
       extraChromiumDataDirs = map appDataDir cfg.apps;
     };
 
-    home.packages = map pwaApp cfg.apps;
+    home.packages = map mkPwaLauncher cfg.apps;
     xdg.desktopEntries = pwaDesktopEntries;
     persistence.directories = persistedDirs;
   };

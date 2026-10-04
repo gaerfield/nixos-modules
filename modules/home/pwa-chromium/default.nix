@@ -34,12 +34,12 @@ with lib; let
     else
       iconSource;
 
-  pwaExtensions = [
-    {
-      title = "Open in Firefox";
-      id = "lmeddoobegbaiopohmpmmobpnpjifpii";
-    }
-  ];
+
+  openInFirefoxExtension = {
+    title = "Open in Firefox";
+    id = "lmeddoobegbaiopohmpmmobpnpjifpii";
+  };
+  pwaExtensions = [ openInFirefoxExtension ];
   
   mkExtensionJson = app: ext: {
     name = "${appDataDir app}/External Extensions/${ext.id}.json";
@@ -54,9 +54,30 @@ with lib; let
     concatMap (app: map (ext: mkExtensionJson app ext) pwaExtensions) cfg.apps
   );
 
+  pwaPolicyDir = app: pkgs.runCommand "${appName app}-chromium-policies" {} ''
+    mkdir -p "$out/managed"
+
+    cat > "$out/managed/open-in-firefox.json" <<'EOF'
+    ${builtins.toJSON {
+      "3rdparty" = {
+        extensions = {
+          "${openInFirefoxExtension.id}" = {
+            reverse = true;
+            urls = [
+              "${app.url}*"
+            ];
+            faqs = false;
+          };
+        };
+      };
+    }}
+    EOF
+  '';
+
   pwaApp = app:
     let
       safeAppTitle = appName app;
+      policyDir = pwaPolicyDir app;
       launchScript = ''
         if command -v hyprctl >/dev/null 2>&1; then
           window="$(hyprctl clients -j | ${pkgs.jq}/bin/jq -r --arg app "${safeAppTitle}" '

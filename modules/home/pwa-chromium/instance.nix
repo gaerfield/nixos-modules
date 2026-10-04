@@ -44,6 +44,8 @@ let
   mkPwaPolicyDir = app:
     let
       cookieAllowlist = lib.unique ([ (appOrigin app) ] ++ app.cookieAllowlist);
+      keepInAppUrlPatterns = lib.unique ([ app.url ] ++ app.keepInAppUrlPatterns);
+      extensionUrls = lib.unique ([ "${app.url}*" ] ++ app.keepInAppUrlPatterns);
       policy = {
         ExtensionInstallForcelist = [
           "${openInFirefoxExtension.id};${openInFirefoxExtension.updateUrl}"
@@ -53,13 +55,15 @@ let
           extensions = {
             "${openInFirefoxExtension.id}" = {
               reverse = true;
-              urls = [ "${app.url}*" ];
+              urls = extensionUrls;
               faqs = false;
             };
           };
         };
       } // lib.optionalAttrs (cookieAllowlist != []) {
         CookiesAllowedForUrls = cookieAllowlist;
+      } // lib.optionalAttrs (keepInAppUrlPatterns != []) {
+        URLAllowlist = keepInAppUrlPatterns;
       };
     in pkgs.writeTextDir "managed/pwa.json" (builtins.toJSON policy);
 
@@ -126,6 +130,18 @@ in {
           Example values:
             - "https://*.gather.town"
             - "https://login.microsoftonline.com"
+        '';
+      };
+      keepInAppUrlPatterns = mkOption {
+        type = types.listOf types.str;
+        default = [];
+        description = ''
+          URL glob patterns that should stay inside this app instead of being handed
+          off to the system browser. The app URL itself is always included.
+
+          Example values:
+            - "https://*.gather.town/*"
+            - "https://*.outlook.com/*"
         '';
       };
       extraChromiumFlags = mkOption {

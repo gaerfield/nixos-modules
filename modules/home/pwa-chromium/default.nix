@@ -41,24 +41,16 @@ with lib; let
   };
   pwaExtensions = [ openInFirefoxExtension ];
   
-  mkExtensionJson = app: ext: {
-    name = "${appDataDir app}/External Extensions/${ext.id}.json";
-    value = {
-      text = builtins.toJSON {
-        external_update_url = ext.updateUrl or "https://clients2.google.com/service/update2/crx";
-      };
-    };
-  };
-
-  pwaExtensionFiles = builtins.listToAttrs (
-    concatMap (app: map (ext: mkExtensionJson app ext) pwaExtensions) cfg.apps
-  );
-
   pwaPolicyDir = app: pkgs.runCommand "${appName app}-chromium-policies" {} ''
     mkdir -p "$out/managed"
 
-    cat > "$out/managed/open-in-firefox.json" <<'EOF'
+    cat > "$out/managed/pwa.json" <<'EOF'
     ${builtins.toJSON {
+      ExtensionInstallForcelist = map (
+        ext:
+          "${ext.id};${ext.updateUrl or "https://clients2.google.com/service/update2/crx"}"
+      ) pwaExtensions;
+
       "3rdparty" = {
         extensions = {
           "${openInFirefoxExtension.id}" = {
@@ -72,7 +64,7 @@ with lib; let
       };
     }}
     EOF
-  '';
+'';
 
   pwaApp = app:
     let
@@ -89,14 +81,17 @@ with lib; let
           fi
         fi
     
-        exec ${pkgs.chromium}/bin/chromium \
-          --class=${safeAppTitle} \
-          --user-data-dir="${appDataDir app}" \
-          --disk-cache-dir="${appCacheDir app}" \
-          --app="${app.url}" \
-          --app-id=${safeAppTitle} \
-          --no-first-run \
-          "$@"
+        exec ${pkgs.bubblewrap}/bin/bwrap \
+          --bind / / \
+          --ro-bind "${policyDir}" /etc/chromium/policies \
+          ${pkgs.chromium}/bin/chromium \
+            --class=${safeAppTitle} \
+            --user-data-dir="${appDataDir app}" \
+            --disk-cache-dir="${appCacheDir app}" \
+            --app="${app.url}" \
+            --app-id=${safeAppTitle} \
+            --no-first-run \
+            "$@"
       '';
     in pkgs.writeShellScriptBin safeAppTitle launchScript;
   
@@ -192,7 +187,5 @@ in {
     home.packages = map pwaApp cfg.apps;
     xdg.desktopEntries = pwaDesktopEntries;
     persistence.directories = persistedDirs;
-
-    home.file = pwaExtensionFiles;
   };
 }

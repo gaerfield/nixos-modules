@@ -12,7 +12,7 @@ let
       value
     );
 
-  appName = app: appId app.title;
+  appName = app: appId (app.instanceName or app.title);
   appDataDir = app: "${config.xdg.configHome}/pwa-chromium/${appName app}";
   appCacheDir = app: "${config.xdg.cacheHome}/pwa-chromium/${appName app}";
 
@@ -93,6 +93,8 @@ let
       browserPackage = browserPackage;
       enableScreenSharing = config.gnm.hm.pwaChromium.enableScreenSharing;
       extraChromiumFlags = app.extraChromiumFlags or [];
+      singleInstance = app.singleInstance or true;
+      stateHome = config.xdg.stateHome;
       openInFirefoxChromiumExtension = openInFirefoxChromiumExtension;
     };
 in {
@@ -155,6 +157,15 @@ in {
 
           This is useful for app-specific flags like Wayland/PipeWire capture or
           other browser workarounds that should not be shared with other apps.
+        '';
+      };
+      singleInstance = mkOption {
+        type = types.bool;
+        default = true;
+        description = ''
+          Whether to allow only a single instance of this Chromium PWA app.
+
+          If true, launching the app again will focus the existing window instead of opening a new one.
         '';
       };
     };

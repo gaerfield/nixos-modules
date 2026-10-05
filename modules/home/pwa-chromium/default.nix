@@ -46,6 +46,7 @@ in {
               }
               {
                 title = "Teams";
+                instanceName = "Teams-Work";
                 url = "https://teams.microsoft.com";
                 icon = ./icons/teams.png;
                 cookieAllowlist = [

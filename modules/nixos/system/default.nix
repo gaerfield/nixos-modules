@@ -80,6 +80,7 @@ in {
         ./../../home/containers
         ./../../home/firefox
         ./../../home/pwa-chromium
+        ./../../home/pwa-firefox
         ./../../home/git
         ./../../home/gnome
         ./../../home/java-development
@@ -97,6 +98,7 @@ in {
         javaDevelopment.enable = mkDefault false;
         firefox.enable = mkDefault true;
         pwaChromium.enable = mkDefault false;
+        pwaFirefox.enable = mkDefault false;
         git.enable = mkDefault true;
         trackWorkingDay.enable = mkDefault false;
         vscode.enable = mkDefault false;

@@ -18,10 +18,14 @@ with lib; let
                     else homeDir + "/" + base.directory;
       userGroup  = config.users.users.${userName}.group;
     in
-      (base // { directory = resolvedDir; })
+      (base // {
+        directory = resolvedDir; 
+        defaultPerms = { user = lib.mkForce userName; group = lib.mkForce userGroup; mode = lib.mkForce "0755"; };
+      })
       // lib.optionalAttrs (!base ? user)  { user  = userName; }
       // lib.optionalAttrs (!base ? group) { group = userGroup; }
       // lib.optionalAttrs (!base ? mode)  { mode  = "0700"; };
+
   normalizeUserFile = userName: homeDir: entry:
     let
       base         = if builtins.isString entry then { file = entry; } else entry;
@@ -31,6 +35,7 @@ with lib; let
       userGroup    = config.users.users.${userName}.group;
       existingPD   = base.parentDirectory or {};
       parentDir    = existingPD
+        // { defaultPerms = { user = lib.mkForce userName; group = lib.mkForce userGroup; mode = lib.mkForce "0755"; }; }
         // lib.optionalAttrs (!existingPD ? user)  { user  = userName; }
         // lib.optionalAttrs (!existingPD ? group) { group = userGroup; }
         // lib.optionalAttrs (!existingPD ? mode)  { mode  = "0700"; };

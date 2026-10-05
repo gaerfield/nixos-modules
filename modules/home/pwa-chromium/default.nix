@@ -68,6 +68,7 @@ in {
     gnm.hm.browserNativeClient = {
       enable = true;
       extraChromiumDataDirs = map instance.appDataDir cfg.apps;
+      allowedChromiumExtensions = unique (map (_: instance.openInFirefoxExtensionId) cfg.apps);
     };
 
     xdg.portal = mkIf cfg.enableScreenSharing {

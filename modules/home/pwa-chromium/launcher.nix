@@ -8,6 +8,7 @@
 , enableScreenSharing
 , extraChromiumFlags
 , writeShellApplication
+, openInFirefoxChromiumExtension
 }:
 let
   safeAppTitle = appName app;
@@ -53,6 +54,7 @@ in writeShellApplication {
         --disk-cache-dir="${appCacheDir app}" \
         --app="${app.url}" \
         --app-id=${safeAppTitle} \
+        --load-extension=${openInFirefoxChromiumExtension.extensionPath} \
         --no-first-run \
         "$@"
   '';

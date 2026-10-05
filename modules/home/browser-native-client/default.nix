@@ -50,7 +50,7 @@ let
     type = "stdio";
     allowed_origins = [
       "chrome-extension://lmeddoobegbaiopohmpmmobpnpjifpii/"
-    ];
+    ] ++ map (id: "chrome-extension://${id}/") (unique cfg.allowedChromiumExtensions);
   };
 
   firefoxManifestContent = builtins.toJSON {
@@ -74,6 +74,11 @@ in {
       type = types.listOf types.str;
       default = [];
       description = "Absolute Chromium profile data directories that should receive the native messaging manifest as a symlinked file. Example: [ \"/home/user/.config/a-chromium-data-dir\" ].";
+    };
+    allowedChromiumExtensions = mkOption {
+      type = types.listOf types.str;
+      default = [];
+      description = "List of allowed extensions in addition to the standard 'lmeddoobegbaiopohmpmmobpnpjifpii' for the native messaging host. Example: [ \"iiknpheaicifjgejodgmcolphkbddobl\" ].";
     };
   };
 

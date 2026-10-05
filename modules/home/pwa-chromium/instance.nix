@@ -1,6 +1,9 @@
 { config, lib, pkgs, ... }:
 with lib;
 let
+  openInFirefoxChromiumExtension = import ./open-in-firefox-chromium-extension.nix { inherit pkgs; };
+  openInFirefoxExtensionId = openInFirefoxChromiumExtension.runtimeExtensionId;
+
   appId = value:
     lib.toLower (
       lib.replaceStrings
@@ -27,11 +30,6 @@ let
     else
       iconSource;
 
-  openInFirefoxExtension = {
-    id = "lmeddoobegbaiopohmpmmobpnpjifpii";
-    updateUrl = "https://clients2.google.com/service/update2/crx";
-  };
-
   browserPackage = pkgs.ungoogled-chromium;
 
   appOrigin = app:
@@ -47,13 +45,9 @@ let
       keepInAppUrlPatterns = lib.unique ([ app.url ] ++ app.keepInAppUrlPatterns);
       extensionUrls = lib.unique ([ "${app.url}*" ] ++ app.keepInAppUrlPatterns);
       policy = {
-        ExtensionInstallForcelist = [
-          "${openInFirefoxExtension.id};${openInFirefoxExtension.updateUrl}"
-        ];
-
         "3rdparty" = {
           extensions = {
-            "${openInFirefoxExtension.id}" = {
+            "${openInFirefoxExtensionId}" = {
               reverse = true;
               urls = extensionUrls;
               faqs = false;
@@ -65,7 +59,15 @@ let
       } // lib.optionalAttrs (keepInAppUrlPatterns != []) {
         URLAllowlist = keepInAppUrlPatterns;
       };
-    in pkgs.writeTextDir "managed/pwa.json" (builtins.toJSON policy);
+      # Apps with the same URL and URL allowlists would otherwise collapse to the
+      # same Nix store path and Chromium would see only one managed policy.
+      policyDirName = "pwa-policy-${appName app}";
+    in pkgs.runCommand policyDirName {} ''
+      mkdir -p "$out/managed"
+      cat > "$out/managed/pwa.json" <<'EOF'
+      ${builtins.toJSON policy}
+      EOF
+    '';
 
   pwaDesktopEntry = app:
     let
@@ -91,9 +93,10 @@ let
       browserPackage = browserPackage;
       enableScreenSharing = config.gnm.hm.pwaChromium.enableScreenSharing;
       extraChromiumFlags = app.extraChromiumFlags or [];
+      openInFirefoxChromiumExtension = openInFirefoxChromiumExtension;
     };
 in {
-  inherit appId appName appDataDir appCacheDir appIcon browserPackage mkPwaPolicyDir mkPwaLauncher pwaDesktopEntry;
+  inherit appId appName appDataDir appCacheDir appIcon browserPackage openInFirefoxExtensionId mkPwaPolicyDir mkPwaLauncher pwaDesktopEntry;
 
   appModule = {
     options = {

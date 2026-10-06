@@ -83,6 +83,7 @@ let
         startupNotify = true;
         settings = {
           StartupWMClass = safeAppTitle;
+          Keywords = lib.concatStringsSep ";" (app.keywords or []);
         };
       };
     in if iconPath == null then desktopEntry else desktopEntry // { icon = toString iconPath; };
@@ -172,6 +173,11 @@ in {
         type = types.listOf types.str;
         default = [ "Network" ];
         description = "Desktop entry categories.";
+      };
+      keywords = mkOption {
+        type = types.listOf types.str;
+        default = [];
+        description = "Desktop entry keywords.";
       };
     };
   };

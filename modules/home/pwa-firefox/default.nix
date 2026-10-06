@@ -27,7 +27,7 @@ let
 
   pwaDesktopEntries = builtins.listToAttrs (
     map (app: {
-      name = instance.mkStableId "site" app.id;
+      name = app.id;
       value = instance.pwaDesktopEntry app;
     }) cfg.apps
   );

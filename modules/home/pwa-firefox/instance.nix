@@ -86,6 +86,11 @@ let
         default = [ "Network" ];
         description = "Desktop entry categories.";
       };
+      keywords = mkOption {
+        type = types.listOf types.str;
+        default = [];
+        description = "Desktop entry keywords.";
+      };
       singleInstance = mkOption {
         type = types.bool;
         default = true;
@@ -102,12 +107,13 @@ let
       desktopEntry = {
         name = title;
         genericName = title;
-        exec = "${firefoxPwaLauncher} ${mkStableId "site" app.id} ${singleInstanceString}";
+        exec = "${firefoxPwaLauncher}/bin/firefoxpwa-launch ${mkStableId "site" app.id} ${singleInstanceString} %u";
         terminal = false;
         categories = app.categories or [];
         startupNotify = true;
         settings = {
           StartupWMClass = title;
+          Keywords = lib.concatStringsSep ";" (app.keywords or []);
         };
       };
     in if iconPath == null then desktopEntry else desktopEntry // { icon = toString iconPath; };
@@ -115,6 +121,7 @@ let
   site = app: {
       name = app.title;
       inherit (app) url manifestUrl;
+      desktopEntry.enable = false;
     };
 in {
   inherit mkStableId appIcon appModule site pwaDesktopEntry;

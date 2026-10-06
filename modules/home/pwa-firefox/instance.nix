@@ -1,4 +1,4 @@
-{ lib, pkgs, firefoxPwaLauncher ? null, ... }:
+{ lib, pkgs, ... }:
 let
   # Encode the first 128 SHA-256 bits as Crockford Base32. Two leading zero
   # bits keep the first digit <= 7, as required by the ULID parser.
@@ -99,30 +99,30 @@ let
     };
   };
   
-  pwaDesktopEntry = app:
-    let
-      title = app.title;
-      singleInstanceString = if app.singleInstance or true then "1" else "0";
-      iconPath = appIcon app;
-      desktopEntry = {
-        name = title;
-        genericName = title;
-        exec = "${firefoxPwaLauncher}/bin/firefoxpwa-launch ${mkStableId "site" app.id} ${singleInstanceString} %u";
-        terminal = false;
-        categories = app.categories or [];
-        startupNotify = true;
-        settings = {
-          StartupWMClass = title;
-          Keywords = lib.concatStringsSep ";" (app.keywords or []);
-        };
-      };
-    in if iconPath == null then desktopEntry else desktopEntry // { icon = toString iconPath; };
+  #pwaDesktopEntry = app:
+  #  let
+  #    title = app.title;
+  #    singleInstanceString = if app.singleInstance or true then "1" else "0";
+  #    iconPath = appIcon app;
+  #    desktopEntry = {
+  #      name = title;
+  #      genericName = title;
+  #      exec = "env GTK_USE_PORTAL=1 ${firefoxPwaLauncher}/bin/firefoxpwa-launch ${mkStableId "site" app.id} ${singleInstanceString} %u";
+  #      terminal = false;
+  #      categories = app.categories or [];
+  #      startupNotify = true;
+  #      settings = {
+  #        StartupWMClass = title;
+  #        Keywords = lib.concatStringsSep ";" (app.keywords or []);
+  #      };
+  #    };
+  #  in if iconPath == null then desktopEntry else desktopEntry // { icon = toString iconPath; };
 
   site = app: {
       name = app.title;
       inherit (app) url manifestUrl;
-      desktopEntry.enable = false;
+      # desktopEntry.enable = false;
     };
 in {
-  inherit mkStableId appIcon appModule site pwaDesktopEntry;
+  inherit mkStableId appIcon appModule site;
 }

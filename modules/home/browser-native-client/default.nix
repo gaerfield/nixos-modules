@@ -59,7 +59,7 @@ let
     path = "${nativeClient}/bin/native-client";
     type = "stdio";
     allowed_extensions = [
-      "{8db82a75-48fd-452a-81cf-bd40b2e60dac}"
+      "{65b77238-bb05-470a-a445-ec0efe1d66c4}" # Open in external application
     ];
   };
 
@@ -67,6 +67,7 @@ let
   chromiumManifestFile = pkgs.writeText "com.add0n.node.json" chromiumManifestContent;
 
   firefoxManifest = pkgs.writeTextDir "etc/firefox/native-messaging-hosts/com.add0n.node.json" firefoxManifestContent;
+  firefoxManifestFile = pkgs.writeText "com.add0n.node.json" firefoxManifestContent;
 in {
   options.gnm.hm.browserNativeClient = {
     enable = mkEnableOption "enable native-client native messaging host";
@@ -74,6 +75,11 @@ in {
       type = types.listOf types.str;
       default = [];
       description = "Absolute Chromium profile data directories that should receive the native messaging manifest as a symlinked file. Example: [ \"/home/user/.config/a-chromium-data-dir\" ].";
+    };
+    extraFirefoxProfileDirs = mkOption {
+      type = types.listOf types.str;
+      default = [];
+      description = "Absolute Firefox profile directories that should receive the native messaging manifest. Example: [ \"/home/user/.mozilla/firefox/profile.default\" ].";
     };
     allowedChromiumExtensions = mkOption {
       type = types.listOf types.str;
@@ -87,11 +93,16 @@ in {
     programs.chromium.nativeMessagingHosts = [ chromiumManifest ];
     programs.firefox.nativeMessagingHosts = [ firefoxManifest ];
 
-    home.file = builtins.listToAttrs (
+    home.file = builtins.listToAttrs ((
       map (dataDir: {
         name = "${dataDir}/NativeMessagingHosts/com.add0n.node.json";
         value = { source = chromiumManifestFile; };
       }) cfg.extraChromiumDataDirs
-    );
+    ) ++ (
+      map (profileDir: {
+        name = "${profileDir}/NativeMessagingHosts/com.add0n.node.json";
+        value = { source = firefoxManifestFile; };
+      }) cfg.extraFirefoxProfileDirs
+    ));
   };
 }

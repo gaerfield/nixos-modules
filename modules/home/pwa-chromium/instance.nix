@@ -79,7 +79,7 @@ let
         genericName = title;
         exec = safeAppTitle;
         terminal = false;
-        categories = [ "Network" "Chat" ];
+        categories = cfg.appsCategories or [];
         startupNotify = true;
         settings = {
           StartupWMClass = safeAppTitle;
@@ -167,6 +167,11 @@ in {
 
           If true, launching the app again will focus the existing window instead of opening a new one.
         '';
+      };
+      categories = mkOption {
+        type = types.listOf types.str;
+        default = [ "Network" ];
+        description = "Desktop entry categories.";
       };
     };
   };

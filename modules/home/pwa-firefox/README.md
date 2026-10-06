@@ -1,7 +1,14 @@
 # Declarative Firefox web apps for Home Manager
 
-This sibling to `gnm.hm.pwaChromium` declares ordinary websites or PWAs via
-Home Manager's `programs.firefoxpwa`. Chromium configuration is independent.
+
+## TODOs
+
+* single instance behaviour with focusing already opened window
+* open links in default browser
+* document howto disable the top bar
+* disable telemetry
+* shell-launcher
+
 
 ## Use
 

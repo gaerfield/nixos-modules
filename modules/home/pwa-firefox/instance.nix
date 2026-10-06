@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ lib, pkgs, firefoxPwaLauncher ? null, ... }:
 let
   # Encode the first 128 SHA-256 bits as Crockford Base32. Two leading zero
   # bits keep the first digit <= 7, as required by the ULID parser.
@@ -26,77 +26,96 @@ let
         in builtins.elemAt alphabet n;
     in lib.concatStrings (builtins.genList digit 26);
 
-  appIcon = app:
+  appIcon = app: with lib;
     let source = if app.iconUrl != null then app.iconUrl else app.icon;
     in if source == null then null
     else if builtins.isPath source then source
-    else if lib.hasPrefix "https://" source || lib.hasPrefix "http://" source then
+    else if hasPrefix "https://" source || hasPrefix "http://" source then
       pkgs.fetchurl {
         url = source;
         hash = if app.iconHash != null then app.iconHash
           else throw "pwaFirefox: remote icon for ${app.title} requires iconHash.";
         name = "firefoxpwa-${app.id}-icon";
       }
-    else if lib.hasPrefix "/" source || lib.hasPrefix "./" source || lib.hasPrefix "../" source then
+    else if hasPrefix "/" source || hasPrefix "./" source || hasPrefix "../" source then
       throw "pwaFirefox: use a Nix path literal for ${app.title}'s icon."
     else source;
 
-  appModule = { config, ... }: {
+  appModule = { config, ... }: with lib; {
     options = {
-      title = lib.mkOption {
-        type = lib.types.str;
+      title = mkOption {
+        type = types.str;
         description = "Display name; may change without changing an explicit id.";
       };
-      id = lib.mkOption {
-        type = lib.types.strMatching "[a-z0-9][a-z0-9_-]*";
-        default = lib.toLower (lib.replaceStrings [ " " ] [ "-" ] config.title);
+      id = mkOption {
+        type = types.strMatching "[a-z0-9][a-z0-9_-]*";
+        default = toLower (replaceStrings [ " " ] [ "-" ] config.title);
         description = "Stable app key. Set explicitly before first use; keep unchanged to retain data.";
       };
-      profile = lib.mkOption {
-        type = lib.types.strMatching "[a-z0-9][a-z0-9_-]*";
+      profile = mkOption {
+        type = types.strMatching "[a-z0-9][a-z0-9_-]*";
         default = config.id;
         description = "Stable profile key. Apps with the same key share cookies, login and browser data.";
       };
-      url = lib.mkOption {
-        type = lib.types.strMatching "https?://[^[:space:]]+";
+      url = mkOption {
+        type = types.strMatching "https?://[^[:space:]]+";
         description = "Start URL.";
       };
-      manifestUrl = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
+      manifestUrl = mkOption {
+        type = types.nullOr types.str;
         default = null;
         description = "Optional web manifest URL. Null also supports ordinary websites.";
       };
-      icon = lib.mkOption {
-        type = lib.types.nullOr (lib.types.either lib.types.path lib.types.str);
+      icon = mkOption {
+        type = types.nullOr (types.either types.path types.str);
         default = null;
         description = "Local Nix path literal, icon-theme name, or pinned remote URL.";
       };
-      iconUrl = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
+      iconUrl = mkOption {
+        type = types.nullOr types.str;
         default = null;
         description = "Remote icon URL; requires iconHash. Mutually exclusive with icon.";
       };
-      iconHash = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
+      iconHash = mkOption {
+        type = types.nullOr types.str;
         default = null;
         description = "Fixed-output hash for a remote icon.";
       };
-      categories = lib.mkOption {
-        type = lib.types.listOf lib.types.str;
+      categories = mkOption {
+        type = types.listOf types.str;
         default = [ "Network" ];
         description = "Desktop entry categories.";
       };
+      singleInstance = mkOption {
+        type = types.bool;
+        default = true;
+        description = "Whether to allow only a single instance of the app.";
+      };
     };
   };
+  
+  pwaDesktopEntry = app:
+    let
+      title = app.title;
+      singleInstanceString = if app.singleInstance or true then "1" else "0";
+      iconPath = appIcon app;
+      desktopEntry = {
+        name = title;
+        genericName = title;
+        exec = "${firefoxPwaLauncher} ${mkStableId "site" app.id} ${singleInstanceString}";
+        terminal = false;
+        categories = app.categories or [];
+        startupNotify = true;
+        settings = {
+          StartupWMClass = title;
+        };
+      };
+    in if iconPath == null then desktopEntry else desktopEntry // { icon = toString iconPath; };
 
   site = app: {
-    name = app.title;
-    inherit (app) url manifestUrl;
-    desktopEntry = {
-      icon = appIcon app;
-      inherit (app) categories;
+      name = app.title;
+      inherit (app) url manifestUrl;
     };
-  };
 in {
-  inherit mkStableId appIcon appModule site;
+  inherit mkStableId appIcon appModule site pwaDesktopEntry;
 }

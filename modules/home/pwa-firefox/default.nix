@@ -1,7 +1,8 @@
 { config, lib, pkgs, options, ... }:
 let
   cfg = config.gnm.hm.pwaFirefox;
-  instance = import ./instance.nix { inherit lib pkgs; };
+  firefoxPwaLauncher = pkgs.callPackage ./launcher.nix { };
+  instance = import ./instance.nix { inherit lib pkgs firefoxPwaLauncher; };
   groupedApps = lib.groupBy (app: app.profile) cfg.apps;
   profiles = lib.mapAttrs' (profile: apps: lib.nameValuePair
     (instance.mkStableId "profile" profile)
@@ -23,6 +24,14 @@ let
   profileDirectories = map
     (id: "${config.xdg.dataHome}/firefoxpwa/profiles/${id}")
     (builtins.attrNames profiles);
+
+  pwaDesktopEntries = builtins.listToAttrs (
+    map (app: {
+      name = instance.mkStableId "site" app.id;
+      value = instance.pwaDesktopEntry app;
+    }) cfg.apps
+  );
+
 in {
   options.gnm.hm.pwaFirefox = {
     enable = lib.mkEnableOption "declarative Firefox web apps";
@@ -85,6 +94,10 @@ in {
           always_patch = false;
         };
       };
+
+      xdg.desktopEntries = pwaDesktopEntries;
+
+      home.packages = [ firefoxPwaLauncher ];
     }
     (lib.optionalAttrs hasPersistence {
       persistence.directories = lib.mkIf cfg.persistProfiles profileDirectories;

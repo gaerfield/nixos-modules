@@ -79,7 +79,7 @@ let
         genericName = title;
         exec = safeAppTitle;
         terminal = false;
-        categories = cfg.appsCategories or [];
+        categories = app.categories or [];
         startupNotify = true;
         settings = {
           StartupWMClass = safeAppTitle;

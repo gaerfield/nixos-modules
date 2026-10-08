@@ -65,9 +65,6 @@ let
 
   chromiumManifest = pkgs.writeTextDir "etc/chromium/native-messaging-hosts/com.add0n.node.json" chromiumManifestContent;
   chromiumManifestFile = pkgs.writeText "com.add0n.node.json" chromiumManifestContent;
-
-  firefoxManifest = pkgs.writeTextDir "etc/firefox/native-messaging-hosts/com.add0n.node.json" firefoxManifestContent;
-  firefoxManifestFile = pkgs.writeText "com.add0n.node.json" firefoxManifestContent;
 in {
   options.gnm.hm.browserNativeClient = {
     enable = mkEnableOption "enable native-client native messaging host";
@@ -75,11 +72,6 @@ in {
       type = types.listOf types.str;
       default = [];
       description = "Absolute Chromium profile data directories that should receive the native messaging manifest as a symlinked file. Example: [ \"/home/user/.config/a-chromium-data-dir\" ].";
-    };
-    extraFirefoxProfileDirs = mkOption {
-      type = types.listOf types.str;
-      default = [];
-      description = "Absolute Firefox profile directories that should receive the native messaging manifest. Example: [ \"/home/user/.mozilla/firefox/profile.default\" ].";
     };
     allowedChromiumExtensions = mkOption {
       type = types.listOf types.str;
@@ -91,18 +83,14 @@ in {
   config = mkIf cfg.enable {
     home.packages = [ nativeClient ];
     programs.chromium.nativeMessagingHosts = [ chromiumManifest ];
-    programs.firefox.nativeMessagingHosts = [ firefoxManifest ];
-
-    home.file = builtins.listToAttrs ((
+    # programs.firefox.nativeMessagingHosts = [ firefoxManifest ];
+    home.file = {
+      ".mozilla/native-messaging-hosts/com.add0n.node.json".text = firefoxManifestContent;
+    } // builtins.listToAttrs (
       map (dataDir: {
         name = "${dataDir}/NativeMessagingHosts/com.add0n.node.json";
         value = { source = chromiumManifestFile; };
       }) cfg.extraChromiumDataDirs
-    ) ++ (
-      map (profileDir: {
-        name = "${profileDir}/NativeMessagingHosts/com.add0n.node.json";
-        value = { source = firefoxManifestFile; };
-      }) cfg.extraFirefoxProfileDirs
-    ));
+    );
   };
 }

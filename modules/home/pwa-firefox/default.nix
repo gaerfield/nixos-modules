@@ -1,47 +1,79 @@
 # that is in interesting discussion regarding configuration options: https://discourse.nixos.org/t/declare-firefox-extensions-and-settings/36265/26
 # https://pwasforfirefox.filips.si/user-guide/browser/#open-out-of-scope-urls-in-the-default-browser
 # GTK_USE_PORTAL=1
-{ config, lib, pkgs, options, ... }:
+{ config, lib, pkgs, ... }:
 let
   cfg = config.gnm.hm.pwaFirefox;
-  #firefoxPwaLauncher = pkgs.callPackage ./launcher.nix { };
-  instance = import ./instance.nix { inherit lib pkgs; };
-  groupedApps = lib.groupBy (app: app.profile) cfg.apps;
-  profiles = lib.mapAttrs' (profile: apps: lib.nameValuePair
-    (instance.mkStableId "profile" profile)
-    {
-      name = profile;
-      sites = builtins.listToAttrs (map (app: lib.nameValuePair
-        (instance.mkStableId "site" app.id) (instance.site app)) apps);
-      settings = {
-        # Keep out-of-scope pages in-app with the URL bar visible for debugging.
-        "firefoxpwa.enableHidingIconBar" = false;
-        "firefoxpwa.openOutOfScopeInDefaultBrowser" = false;
-        "firefoxpwa.linksTarget" = 1;
-        "firefoxpwa.allowedDomains" = "";
-        "browser.aboutConfig.showWarning" = false;
+  pwaFirefoxDataDir = "${config.xdg.dataHome}/pwa-firefox";
+  lockFalse = { Value = false; Status = "locked"; };
+  lockTrue = { Value = true; Status = "locked"; };
+  defaultPolicies = {
+    DisableTelemetry = true;
+    DisableFirefoxStudies = true;
+    EnableTrackingProtection = {
+      Value = true;
+      Locked = true;
+      Cryptomining = true;
+      Fingerprinting = true;
+    };
+    DisablePocket = true;
+    DisableFirefoxAccounts = true;
+    DisableAccounts = true;
+    DisableFirefoxScreenshots = true;
+    OverrideFirstRunPage = "";
+    OverridePostUpdatePage = "";
+    DontCheckDefaultBrowser = true;
+    DisplayBookmarksToolbar = "never"; # alternatives: "always" or "newtab"
+    DisplayMenuBar = "default-off"; # alternatives: "always", "never" or "default-on"
+    Preferences = {
+      #"browser.contentblocking.category" = { Value = "strict"; Status = "locked"; };
+      "extensions.pocket.enabled" = lockFalse;
+      "extensions.screenshots.disabled" = lockTrue;
+      "browser.topsites.contile.enabled" = lockFalse;
+      "browser.formfill.enable" = lockFalse;
+      "browser.search.suggest.enabled" = lockFalse;
+      "browser.search.suggest.enabled.private" = lockFalse;
+      "browser.urlbar.suggest.searches" = lockFalse;
+      "browser.urlbar.showSearchSuggestionsFirst" = lockFalse;
+      "browser.newtabpage.activity-stream.feeds.section.topstories" = lockFalse;
+      "browser.newtabpage.activity-stream.feeds.snippets" = lockFalse;
+      "browser.newtabpage.activity-stream.section.highlights.includePocket" = lockFalse;
+      "browser.newtabpage.activity-stream.section.highlights.includeBookmarks" = lockFalse;
+      "browser.newtabpage.activity-stream.section.highlights.includeDownloads" = lockFalse;
+      "browser.newtabpage.activity-stream.section.highlights.includeVisited" = lockFalse;
+      "browser.newtabpage.activity-stream.showSponsored" = lockFalse;
+      "browser.newtabpage.activity-stream.system.showSponsored" = lockFalse;
+      "browser.newtabpage.activity-stream.showSponsoredTopSites" = lockFalse;
+    };
+    ExtensionSettings = {
+      # https://addons.mozilla.org/en-US/firefox/addon/external-application:
+      "{65b77238-bb05-470a-a445-ec0efe1d66c4}" = {
+        install_url = "https://addons.mozilla.org/firefox/downloads/file/4914536/external_application-0.6.1.xpi ";
+        installation_mode = "force_installed";
       };
-    }) groupedApps;
-  ids = map (app: app.id) cfg.apps;
+    };
+  };
 
-  # Nixpkgs patches this runtime at build time and wraps it with the same
-  # graphics/media environment as Firefox. No runtime install/link is needed.
-  pwaPackage = pkgs.wrapFirefox
-    (pkgs.firefoxpwa-unwrapped.override { firefoxRuntime = cfg.runtimePackage; })
-    { };
-  
-  hasPersistence = lib.hasAttrByPath [ "persistence" "directories" ] options;
-  
-  profileDirectories = map
-    (id: "${config.xdg.dataHome}/firefoxpwa/profiles/${id}")
-    (builtins.attrNames profiles);
-
-  pwaDesktopEntries = builtins.listToAttrs (
-    map (app: {
-      name = app.id;
-      value = instance.pwaDesktopEntry app;
-    }) cfg.apps
-  );
+  # Used only to obtain appModule option schema; must not depend on config.
+  instanceBaseDataDir = "/var/empty/pwa-firefox";
+  instanceBase = import ./instance.nix {
+    inherit lib pkgs;
+    pwaFirefoxDataDir = instanceBaseDataDir;
+    apps = [ ];
+    cfg = {
+      enableWayland = true;
+      usePortals = true;
+    };
+    defaultUserPreferences = { };
+    firefoxPackage = pkgs.firefox;
+    profileId = "base";
+  };
+  userPreferenceType = lib.types.oneOf [
+    lib.types.bool
+    lib.types.int
+    lib.types.float
+    lib.types.str
+  ];
 
 in {
   options.gnm.hm.pwaFirefox = {
@@ -50,36 +82,89 @@ in {
       type = lib.types.package;
       default = pkgs.firefox-esr-153-unwrapped;
       defaultText = lib.literalExpression "pkgs.firefox-esr-153-unwrapped";
-      description = "Unwrapped Firefox runtime used by the Nixpkgs immutable-runtime package.";
+      description = "Unwrapped Firefox package used by generated app launchers.";
     };
     enableWayland = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Enable FirefoxPWA's Wayland setting; existing environment variables take precedence.";
+      description = "Set MOZ_ENABLE_WAYLAND=1 in app launchers when not already set.";
     };
     usePortals = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Use existing XDG desktop portals. Configure the desktop's portal backend separately.";
+      description = "Set GTK_USE_PORTAL=1 in app launchers when not already set.";
     };
     persistProfiles = lib.mkOption {
       type = lib.types.bool;
-      default = hasPersistence;
+      default = true;
       description = "Register profile directories with the persistence.directories.";
     };
     debugLogEffectiveSettings = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Log FirefoxPWA profile settings from config.json during activation for debugging.";
+      description = "Log generated launcher/profile mapping during activation for debugging.";
     };
     apps = lib.mkOption {
-      type = lib.types.listOf (lib.types.submodule instance.appModule);
+      type = lib.types.listOf (lib.types.submodule instanceBase.appModule);
       default = [ ];
       description = "Web apps, isolated by default; set the same profile key to share browser data.";
     };
+    userPreferences = lib.mkOption {
+      type = lib.types.attrsOf userPreferenceType;
+      default = {
+        "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+        "browser.tabs.drawInTitlebar" = false;
+      };
+      example = {
+        "browser.tabs.warnOnClose" = false;
+        "widget.gtk.non-native-titlebar-buttons.enabled" = false;
+      };
+      description = "Default Firefox user preferences written to each generated profile's user.js.";
+    };
+    policyOverrides = lib.mkOption {
+      type = lib.types.attrs;
+      default = { };
+      example = {
+        DisplayBookmarksToolbar = "always";
+        EnableTrackingProtection.Fingerprinting = false;
+      };
+      description = "Per-key overrides merged into the module's built-in Firefox enterprise policy baseline.";
+    };
   };
 
-  config = lib.mkIf cfg.enable (lib.mkMerge [
+  config = lib.mkIf cfg.enable (
+    let
+      ids = map (app: app.id) cfg.apps;
+      effectivePolicies = lib.recursiveUpdate defaultPolicies cfg.policyOverrides;
+      firefoxPackage = pkgs.wrapFirefox cfg.runtimePackage {
+        extraPolicies = effectivePolicies;
+      };
+      appsByProfile = lib.groupBy (app: app.profile) cfg.apps;
+
+      mkProfileInstance = profileId: profileApps:
+        import ./instance.nix {
+          inherit lib pkgs cfg firefoxPackage profileId pwaFirefoxDataDir;
+          apps = profileApps;
+          defaultUserPreferences = cfg.userPreferences;
+        };
+
+      profileInstances = lib.mapAttrs mkProfileInstance appsByProfile;
+      profileInstancesList = builtins.attrValues profileInstances;
+      profileFragments = map (instance: instance.profileConfigFragment) profileInstancesList;
+      profileDirectories = map (instance: instance.profileDir) profileInstancesList;
+
+      mergedDesktopEntries = builtins.foldl' (acc: fragment:
+        acc // fragment.xdg.desktopEntries
+      ) { } profileFragments;
+
+      mergedHomePackages = lib.concatMap (fragment: fragment.home.packages) profileFragments;
+
+      mergedHomeFiles = builtins.foldl' (acc: fragment:
+        acc // fragment.home.file
+      ) { } profileFragments;
+
+      profileAssertions = lib.concatMap (fragment: fragment.assertions or [ ]) profileFragments;
+    in
     {
       assertions = [
         {
@@ -87,84 +172,27 @@ in {
           message = "pwaFirefox: app ids must be unique.";
         }
         {
-          assertion = !cfg.persistProfiles || hasPersistence;
-          message = "pwaFirefox: persistProfiles requires a module declaring persistence.directories.";
-        }
-        {
           assertion = pkgs.stdenv.hostPlatform.isLinux;
           message = "pwaFirefox: this module targets Linux.";
-        }
-        {
-          assertion = builtins.all
-            (profile: (profile.settings."firefoxpwa.linksTarget" or null) != null)
-            (builtins.attrValues profiles);
-          message = "pwaFirefox: expected firefoxpwa.linksTarget in each generated profile settings map.";
         }
       ] ++ map (app: {
         assertion = app.icon == null || app.iconUrl == null;
         message = "pwaFirefox: ${app.title} must set at most one of icon and iconUrl.";
-      }) cfg.apps;
+      }) cfg.apps ++ profileAssertions;
 
-      programs.firefoxpwa = {
-        enable = true;
-        package = pwaPackage;
-        inherit profiles;
-        settings.config = {
-          runtime_enable_wayland = cfg.enableWayland;
-          #runtime_use_portals = cfg.usePortals;
-          # Use the runtime shipped by the Nix package instead of a separately downloaded runtime.
-          #use_linked_runtime = true;
-          #always_patch = true;
-        };
-      };
-      programs.firefox.nativeMessagingHosts = [ pkgs.firefoxpwa ];
-      
-      #gnm.hm.browserNativeClient = {
-      #  enable = true;
-      #  extraFirefoxProfileDirs = map (id: "${config.xdg.dataHome}/firefoxpwa/profiles/${id}") (builtins.attrNames profiles);
-      #};
+      gnm.hm.browserNativeClient.enable = true;
 
-      # xdg.desktopEntries = pwaDesktopEntries;
+      xdg.desktopEntries = mergedDesktopEntries;
+      home.packages = mergedHomePackages;
+      home.file = mergedHomeFiles;
 
-      home.packages = [ pkgs.firefoxpwa ];
+      home.activation.pwaFirefoxDebugEffectiveSettings = lib.mkIf cfg.debugLogEffectiveSettings (lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        echo "pwaFirefox debug: using plain Firefox package ${firefoxPackage.name}"
+        echo "pwaFirefox debug: profile directories"
+        ${lib.concatMapStringsSep "\n" (dir: "echo ${lib.escapeShellArg "pwaFirefox debug: ${dir}"}") profileDirectories}
+      '');
+
+      persistence.directories = lib.mkIf cfg.persistProfiles [ pwaFirefoxDataDir ];
     }
-    (lib.mkIf cfg.debugLogEffectiveSettings {
-      home.activation.pwaFirefoxDebugEffectiveSettings = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        cfg_path="${config.xdg.dataHome}/firefoxpwa/config.json"
-        runtime_version="${pkgs.firefoxpwa-unwrapped.version}"
-        runtime_mm="$(echo "$runtime_version" | ${pkgs.gnused}/bin/sed -E 's/^([0-9]+\.[0-9]+).*/\1/')"
-        if [[ -f "$cfg_path" ]]; then
-          echo "pwaFirefox debug: effective profile settings in $cfg_path"
-          ${pkgs.jq}/bin/jq -c '.profiles | to_entries[] | { id: .key, name: .value.name, settings: (.value.settings // {}) }' "$cfg_path" || true
-
-          echo "pwaFirefox debug: extension/runtime version check (runtime=$runtime_version)"
-          ${pkgs.jq}/bin/jq -r '.profiles | keys[]' "$cfg_path" | while IFS= read -r profile_id; do
-            ext_json="${config.xdg.dataHome}/firefoxpwa/profiles/$profile_id/extensions.json"
-            if [[ ! -f "$ext_json" ]]; then
-              echo "pwaFirefox debug: profile=$profile_id extensions.json missing"
-              continue
-            fi
-
-            ext_version="$(${pkgs.jq}/bin/jq -r '.addons[] | select(.id == "firefoxpwa@filips.si") | .version' "$ext_json" | head -n1)"
-            if [[ -z "$ext_version" ]]; then
-              echo "pwaFirefox debug: profile=$profile_id addon firefoxpwa@filips.si not installed"
-              continue
-            fi
-
-            ext_mm="$(echo "$ext_version" | ${pkgs.gnused}/bin/sed -E 's/^([0-9]+\.[0-9]+).*/\1/')"
-            if [[ "$ext_mm" != "$runtime_mm" ]]; then
-              echo "pwaFirefox debug: profile=$profile_id addon=$ext_version runtime=$runtime_version (major.minor mismatch)"
-            else
-              echo "pwaFirefox debug: profile=$profile_id addon=$ext_version runtime=$runtime_version (major.minor matches)"
-            fi
-          done
-        else
-          echo "pwaFirefox debug: missing $cfg_path"
-        fi
-      '';
-    })
-    (lib.optionalAttrs hasPersistence {
-      persistence.directories = lib.mkIf cfg.persistProfiles profileDirectories;
-    })
-  ]);
+  );
 }

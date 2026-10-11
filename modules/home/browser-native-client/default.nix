@@ -59,7 +59,7 @@ let
     path = "${nativeClient}/bin/native-client";
     type = "stdio";
     allowed_extensions = [
-      "{65b77238-bb05-470a-a445-ec0efe1d66c4}" # Open in external application
+      "{5cf4e3be-dd11-4589-befe-1b9e5037792b}" # Open in waterfox
     ];
   };
 

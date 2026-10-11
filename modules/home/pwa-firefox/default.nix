@@ -45,19 +45,12 @@ let
       "browser.newtabpage.activity-stream.system.showSponsored" = lockFalse;
       "browser.newtabpage.activity-stream.showSponsoredTopSites" = lockFalse;
     };
-    ExtensionSettings = {
-      # https://addons.mozilla.org/en-US/firefox/addon/external-application:
-      "{65b77238-bb05-470a-a445-ec0efe1d66c4}" = {
-        install_url = "https://addons.mozilla.org/firefox/downloads/file/4914536/external_application-0.6.1.xpi ";
-        installation_mode = "force_installed";
-      };
-    };
   };
 
   # Used only to obtain appModule option schema; must not depend on config.
   instanceBaseDataDir = "/var/empty/pwa-firefox";
   instanceBase = import ./instance.nix {
-    inherit lib pkgs;
+    inherit config lib pkgs;
     pwaFirefoxDataDir = instanceBaseDataDir;
     apps = [ ];
     cfg = {
@@ -65,7 +58,7 @@ let
       usePortals = true;
     };
     defaultUserPreferences = { };
-    firefoxPackage = pkgs.firefox;
+    runtimePackage = pkgs.firefox;
     profileId = "base";
   };
   userPreferenceType = lib.types.oneOf [
@@ -135,17 +128,15 @@ in {
   config = lib.mkIf cfg.enable (
     let
       ids = map (app: app.id) cfg.apps;
-      effectivePolicies = lib.recursiveUpdate defaultPolicies cfg.policyOverrides;
-      firefoxPackage = pkgs.wrapFirefox cfg.runtimePackage {
-        extraPolicies = effectivePolicies;
-      };
+      basePolicies = lib.recursiveUpdate defaultPolicies cfg.policyOverrides;
       appsByProfile = lib.groupBy (app: app.profile) cfg.apps;
 
       mkProfileInstance = profileId: profileApps:
         import ./instance.nix {
-          inherit lib pkgs cfg firefoxPackage profileId pwaFirefoxDataDir;
+          inherit config lib pkgs cfg profileId pwaFirefoxDataDir basePolicies;
           apps = profileApps;
           defaultUserPreferences = cfg.userPreferences;
+          runtimePackage = cfg.runtimePackage;
         };
 
       profileInstances = lib.mapAttrs mkProfileInstance appsByProfile;
@@ -159,8 +150,8 @@ in {
 
       mergedHomePackages = lib.concatMap (fragment: fragment.home.packages) profileFragments;
 
-      mergedHomeFiles = builtins.foldl' (acc: fragment:
-        acc // fragment.home.file
+      mergedXdgDataFiles = builtins.foldl' (acc: fragment:
+        acc // (fragment.xdg.dataFile or { })
       ) { } profileFragments;
 
       profileAssertions = lib.concatMap (fragment: fragment.assertions or [ ]) profileFragments;
@@ -183,11 +174,11 @@ in {
       gnm.hm.browserNativeClient.enable = true;
 
       xdg.desktopEntries = mergedDesktopEntries;
+      xdg.dataFile = mergedXdgDataFiles;
       home.packages = mergedHomePackages;
-      home.file = mergedHomeFiles;
 
       home.activation.pwaFirefoxDebugEffectiveSettings = lib.mkIf cfg.debugLogEffectiveSettings (lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        echo "pwaFirefox debug: using plain Firefox package ${firefoxPackage.name}"
+        echo "pwaFirefox debug: wrapped Firefox package source ${cfg.runtimePackage.name}"
         echo "pwaFirefox debug: profile directories"
         ${lib.concatMapStringsSep "\n" (dir: "echo ${lib.escapeShellArg "pwaFirefox debug: ${dir}"}") profileDirectories}
       '');

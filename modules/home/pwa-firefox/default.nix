@@ -17,33 +17,71 @@ let
       Fingerprinting = true;
     };
     DisablePocket = true;
-    DisableFirefoxAccounts = true;
     DisableAccounts = true;
     DisableFirefoxScreenshots = true;
     OverrideFirstRunPage = "";
     OverridePostUpdatePage = "";
     DontCheckDefaultBrowser = true;
-    DisplayBookmarksToolbar = "never"; # alternatives: "always" or "newtab"
     DisplayMenuBar = "default-off"; # alternatives: "always", "never" or "default-on"
+
+    # Disable browser features
+    DisableFormHistory = true;
+    DisableProfileImport = true;
+    PasswordManagerEnabled = false;
+
+    # Disable generative AI
+    GenerativeAI = {
+      Enabled = false;
+      Chatbot = false;
+      LinkPreviews = false;
+      TabGroups = false;
+      Locked = true;
+    };
+    # starting with Firefox 157 disable all AI features using a single config
+    # AIControls = {
+    #   Default = { Value = "blocked"; Locked = true; };
+    # };
+
     Preferences = {
       #"browser.contentblocking.category" = { Value = "strict"; Status = "locked"; };
-      "extensions.pocket.enabled" = lockFalse;
-      "extensions.screenshots.disabled" = lockTrue;
       "browser.topsites.contile.enabled" = lockFalse;
       "browser.formfill.enable" = lockFalse;
       "browser.search.suggest.enabled" = lockFalse;
       "browser.search.suggest.enabled.private" = lockFalse;
-      "browser.urlbar.suggest.searches" = lockFalse;
       "browser.urlbar.showSearchSuggestionsFirst" = lockFalse;
-      "browser.newtabpage.activity-stream.feeds.section.topstories" = lockFalse;
-      "browser.newtabpage.activity-stream.feeds.snippets" = lockFalse;
-      "browser.newtabpage.activity-stream.section.highlights.includePocket" = lockFalse;
-      "browser.newtabpage.activity-stream.section.highlights.includeBookmarks" = lockFalse;
-      "browser.newtabpage.activity-stream.section.highlights.includeDownloads" = lockFalse;
-      "browser.newtabpage.activity-stream.section.highlights.includeVisited" = lockFalse;
-      "browser.newtabpage.activity-stream.showSponsored" = lockFalse;
-      "browser.newtabpage.activity-stream.system.showSponsored" = lockFalse;
-      "browser.newtabpage.activity-stream.showSponsoredTopSites" = lockFalse;
+
+      # Tabs: prefer current window
+      "browser.link.open_newwindow" = { Value = 1; Status = "locked"; };
+      "browser.tabs.loadInBackground" = lockFalse;
+      "browser.tabs.opentabfor.middleclick" = lockFalse;
+      "middlemouse.openNewWindow" = lockFalse;
+      "browser.tabs.loadBookmarksInTabs" = lockFalse;
+      "browser.urlbar.openintab" = lockFalse;
+      "browser.search.openintab" = lockFalse;
+      # Bookmarks and browser UI: hide suggestions
+      "browser.bookmarks.showMobileBookmarks" = lockFalse;
+      "browser.urlbar.suggest.bookmark" = lockFalse;
+      "browser.urlbar.suggest.history" = lockFalse;
+      "browser.urlbar.suggest.searches" = lockFalse;
+
+      # New tab / Firefox Home
+      "browser.newtabpage.enabled" = lockFalse;
+      # Browser discovery
+      "browser.discovery.enabled" = lockFalse;
+      # Browser-specific features
+      "browser.translations.enable" = lockFalse;
+      "reader.parse-on-load.enabled" = lockFalse;
+
+      # Containers
+      "privacy.userContext.enabled" = lockFalse;
+      "privacy.userContext.ui.enabled" = lockFalse;
+
+      # Enforce hidden bookmarks toolbar
+      "browser.toolbars.bookmarks.visibility" = { Value = "never"; Status = "locked"; };
+
+      # Startup
+      "browser.aboutConfig.showWarning" = lockFalse;
+
     };
   };
 
@@ -107,8 +145,6 @@ in {
       default = {
         "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
         "browser.tabs.drawInTitlebar" = false;
-        # Use PWAsForFirefox internal URL popup (Ctrl+L/F6/Alt+D) instead of showing URL bar.
-        "firefoxpwa.displayUrlBar" = 2;
       };
       example = {
         "browser.tabs.warnOnClose" = false;

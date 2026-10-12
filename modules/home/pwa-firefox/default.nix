@@ -107,6 +107,8 @@ in {
       default = {
         "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
         "browser.tabs.drawInTitlebar" = false;
+        # Use PWAsForFirefox internal URL popup (Ctrl+L/F6/Alt+D) instead of showing URL bar.
+        "firefoxpwa.displayUrlBar" = 2;
       };
       example = {
         "browser.tabs.warnOnClose" = false;

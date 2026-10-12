@@ -201,18 +201,17 @@ let
           }
 
           #nav-bar {
-            visibility: visible !important;
+            visibility: collapse !important;
           }
 
           #navigator-toolbox {
             border: 0 !important;
             max-height: 0 !important;
+            opacity: 0 !important;
             overflow: hidden !important;
-            transition: max-height 120ms ease-in-out !important;
-          }
-
-          #navigator-toolbox:focus-within {
-            max-height: 120px !important;
+            visibility: collapse !important;
+            pointer-events: none !important;
+            transition: none !important;
           }
         '';
       };

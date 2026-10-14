@@ -7,6 +7,11 @@
 with lib; let
   cfg = config.gnm.hm.firefox;
 in {
+  imports = [
+    ./profile.nix
+    ./profile-launcher.nix
+  ];
+
   options.gnm.hm.firefox.enable = mkEnableOption "enable Firefox browser support";
 
   config = mkIf cfg.enable {

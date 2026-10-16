@@ -55,6 +55,7 @@ writeShellApplication {
         if [[ -z "$candidate" || -z "$pattern" ]]; then
           continue
         fi
+        # shellcheck disable=SC2053
         if [[ "$target" == $pattern ]]; then
           route_profile="$candidate"
           break

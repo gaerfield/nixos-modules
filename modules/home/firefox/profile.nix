@@ -9,14 +9,9 @@ let
     lib.concatMapStringsSep "\n" (profile:
       lib.concatMapStringsSep "\n" (pattern: "${profile}\t${pattern}") cfg.profiles.${profile}.routeUrls
     ) routeProfiles;
-  openInExternalBrowserExtensionId = "{5cf4e3be-dd11-4589-befe-1b9e5037792b}";
-  openInExternalBrowserXpiUrl = "https://addons.mozilla.org/firefox/downloads/file/3686239/open_in_waterfox-0.1.1.xpi";
+  openInExternalBrowser = pkgs.callPackage ./open-in-external-browser-shared.nix { };
 
-  browserShimToXdgOpen = pkgs.callPackage ./browser-shim-to-xdg-open.nix {
-    inherit pkgs;
-    command = "waterfox";
-    firefoxConfigDir = "${config.xdg.configHome}/mozilla/firefox";
-  };
+  browserShimToXdgOpen = openInExternalBrowser.mkBrowserShimToXdgOpen { command = "waterfox"; };
 
   firefoxProfileLauncher = pkgs.callPackage ./profile-launcher.nix {
     inherit pkgs profileNames routePatternsTsv;
@@ -99,22 +94,9 @@ in {
 
     gnm.hm.browserNativeClient.enable = lib.mkIf hasUrlRouting (lib.mkDefault true);
 
-    programs.firefox.policies = lib.mkIf hasUrlRouting {
-      ExtensionSettings = {
-        "${openInExternalBrowserExtensionId}" = {
-          install_url = openInExternalBrowserXpiUrl;
-          installation_mode = "force_installed";
-        };
-      };
-      "3rdparty" = {
-        Extensions = {
-          "${openInExternalBrowserExtensionId}" = {
-            reverse = true;
-            faqs = false;
-              urls = allRouteUrls;
-          };
-        };
-      };
-    };
+    programs.firefox.policies = lib.mkIf hasUrlRouting (openInExternalBrowser.mkPolicy {
+      urls = allRouteUrls;
+      reverse = false;
+    });
   };
 }

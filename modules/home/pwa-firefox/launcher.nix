@@ -6,6 +6,7 @@
   jq,
   lib,
   profileDir,
+  shimDir,
   writeShellApplication,
 }:
 let
@@ -29,7 +30,7 @@ writeShellApplication {
   name = launcherName;
   text = ''
     profile_dir=${lib.escapeShellArg profileDir}
-    shim_dir="$profile_dir/.pwa-firefox-shims"
+    shim_dir=${lib.escapeShellArg shimDir}
     default_url=${lib.escapeShellArg app.url}
     forwarded_url="''${1:-}"
     single_instance="${if app.singleInstance then "true" else "false"}"

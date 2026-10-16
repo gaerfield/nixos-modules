@@ -12,7 +12,7 @@
   ...
 }:
 let
-  openInExternalBrowserExtensionId = "{5cf4e3be-dd11-4589-befe-1b9e5037792b}";
+  openInExternalBrowser = pkgs.callPackage ../firefox/open-in-external-browser-shared.nix { };
 
   preferenceValueType = lib.types.oneOf [
     lib.types.bool
@@ -100,38 +100,28 @@ let
   mkOpenInExternalBrowserPolicy =
     let
       profileUrls = lib.unique (lib.concatMap (app: [ app.url ] ++ app.extraUrls) apps);
-    in {
-      ExtensionSettings = {
-        # https://addons.mozilla.org/en-US/firefox/addon/external-application:
-        "${openInExternalBrowserExtensionId}" = {
-          install_url = "https://addons.mozilla.org/firefox/downloads/file/3686239/open_in_waterfox-0.1.1.xpi";
-          installation_mode = "force_installed";
-        };
-      };
-      "3rdparty" = {
-        Extensions = {
-          "${openInExternalBrowserExtensionId}" = {
-            reverse = true;
-            faqs = false;
-            urls = profileUrls;
-          };
-        };
-      };
+    in openInExternalBrowser.mkPolicy {
+      urls = profileUrls;
+      reverse = true;
     };
 
   profileFirefoxPackage = pkgs.wrapFirefox runtimePackage {
     extraPolicies = lib.recursiveUpdate basePolicies mkOpenInExternalBrowserPolicy;
   };
 
-  browserShimToXdgOpen = pkgs.callPackage ./browser-shim-to-xdg-open.nix {
-    inherit profileDir pkgs;
+  browserShimToXdgOpen = openInExternalBrowser.mkBrowserShimToXdgOpen {
     command = "waterfox";
+    shimDir = openInExternalBrowser.mkShimDir {
+      baseDir = profileDir;
+      shimDirName = openInExternalBrowser.pwaFirefoxShimDirName;
+    };
   };
   
   # launcher script generation
   appLaunchers = map (
     app: pkgs.callPackage ./launcher.nix {
       inherit app cfg profileDir;
+      shimDir = browserShimToXdgOpen.shimDir;
       firefoxPackage = profileFirefoxPackage;
     }
   ) apps;
@@ -215,7 +205,7 @@ let
           }
         '';
       };
-      xdg.dataFile."${profileRelativeDir}/.pwa-firefox-shims/${browserShimToXdgOpen.command}" = {
+      xdg.dataFile."${profileRelativeDir}/${openInExternalBrowser.pwaFirefoxShimDirName}/${browserShimToXdgOpen.command}" = {
         source = "${browserShimToXdgOpen.package}/bin/${browserShimToXdgOpen.command}";
       };
     };

@@ -2,6 +2,7 @@
 with lib;
 let
   cfg = config.gnm.hm.browserNativeClient;
+  openInExternalBrowser = pkgs.callPackage ../firefox/open-in-external-browser-shared.nix { };
 
   nativeClientVersion = "1.1.4";
 
@@ -59,7 +60,7 @@ let
     path = "${nativeClient}/bin/native-client";
     type = "stdio";
     allowed_extensions = [
-      "{5cf4e3be-dd11-4589-befe-1b9e5037792b}" # Open in waterfox
+      openInExternalBrowser.extensionId # Open in waterfox
     ];
   };
 

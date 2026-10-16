@@ -1,53 +1,82 @@
-{ config, lib, pkgs, ... }:
+{
+  pkgs,
+  profileNames,
+  routePatternsTsv,
+  writeShellApplication,
+}:
 let
-  cfg = config.gnm.hm.firefoxProfiles;
-  profileNames = builtins.attrNames cfg.profiles;
-  profileNamesShell = lib.concatMapStringsSep " " lib.escapeShellArg profileNames;
+  profileNamesShell = pkgs.lib.concatMapStringsSep " " pkgs.lib.escapeShellArg profileNames;
+  routePatternsTsvShell = pkgs.lib.escapeShellArg routePatternsTsv;
+in
+writeShellApplication {
+  name = "firefox-profile-launcher";
+  runtimeInputs = with pkgs; [
+    firefox
+    coreutils
+    gnugrep
+    jq
+    procps
+  ];
+  text = ''
+    set -euo pipefail
 
-  firefoxProfileLauncher = pkgs.writeShellApplication {
-    name = "firefox-profile-launcher";
-    runtimeInputs = with pkgs; [
-      firefox
-      coreutils
-      gnugrep
-      jq
-      procps
-    ];
-    text = ''
-      set -euo pipefail
+    if [[ $# -lt 1 ]]; then
+      echo "usage: firefox-profile-launcher <profile-name|url>" >&2
+      exit 1
+    fi
 
-      if [[ $# -lt 1 ]]; then
-        echo "usage: firefox-profile-launcher <profile-name|url>" >&2
-        exit 1
+    target="$1"
+    known_profiles=( ${profileNamesShell} )
+
+    is_profile=false
+    for p in "''${known_profiles[@]}"; do
+      if [[ "$target" == "$p" ]]; then
+        is_profile=true
+        break
+      fi
+    done
+
+    if [[ "$is_profile" == "true" ]]; then
+      # Match by class or initialClass against profile id.
+      addr="$(hyprctl clients -j | jq --arg cls "$target" -r '.[] | select((.initialClass // "") == $cls) | .address' | head -n 1)"
+      if [ -n "$addr" ] && [ "$addr" != "null" ]; then
+        hyprctl --quiet dispatch "hl.dsp.focus({ window = \"address:$addr\" })"
+        exit $?
       fi
 
-      target="$1"
-      known_profiles=( ${profileNamesShell} )
+      exec firefox --name "$target" --no-remote -P "$target" --new-window
+    fi
 
-      is_profile=false
-      for p in "''${known_profiles[@]}"; do
-        if [[ "$target" == "$p" ]]; then
-          is_profile=true
+    route_profile=""
+    route_patterns_tsv=${routePatternsTsvShell}
+
+    if [[ -n "$route_patterns_tsv" && "$target" =~ ^https?:// ]]; then
+      while IFS=$'\t' read -r candidate pattern; do
+        if [[ -z "$candidate" || -z "$pattern" ]]; then
+          continue
+        fi
+        if [[ "$target" == $pattern ]]; then
+          route_profile="$candidate"
           break
         fi
-      done
+      done <<< "$route_patterns_tsv"
+    fi
 
-      if [[ "$is_profile" == "true" ]]; then
-        # Match by class or initialClass against profile id.
-        addr="$(hyprctl clients -j | jq --arg cls "$target" -r '.[] | select((.initialClass // "") == $cls) | .address' | head -n 1)"
-        if [ -n "$addr" ] && [ "$addr" != "null" ]; then
-          hyprctl --quiet dispatch "hl.dsp.focus({ window = \"address:$addr\" })"
-          exit $?
-        fi
-
-        exec firefox --name "$target" --no-remote -P "$target" --new-window about:blank
+    if [[ -n "$route_profile" ]]; then
+      # If the active window already belongs to the target profile, keep the URL in it.
+      active_profile="$(hyprctl activewindow -j 2>/dev/null | jq -r '(.initialClass // .class // "")')"
+      if [[ "$active_profile" == "$route_profile" ]]; then
+        exec firefox --name "$route_profile" --no-remote -P "$route_profile" "$target"
       fi
 
-      exec firefox "$target"
-    '';
-  };
-in {
-  config = lib.mkIf cfg.enable {
-    home.packages = [ firefoxProfileLauncher ];
-  };
+      addr="$(hyprctl clients -j | jq --arg cls "$route_profile" -r '.[] | select((.initialClass // "") == $cls) | .address' | head -n 1)"
+      if [[ -n "$addr" && "$addr" != "null" ]]; then
+        hyprctl --quiet dispatch "hl.dsp.focus({ window = \"address:$addr\" })"
+      fi
+
+      exec firefox --name "$route_profile" --no-remote -P "$route_profile" "$target"
+    fi
+
+    exec firefox "$target"
+  '';
 }

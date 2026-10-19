@@ -55,7 +55,7 @@ let
       icon = mkOption {
         type = types.nullOr (types.either types.path types.str);
         default = null;
-        description = "Local Nix path literal, icon-theme name, or pinned remote URL.";
+        description = "Local Nix path literal, icon-theme name, /nix/store icon path string from a package, or pinned remote URL.";
       };
       iconUrl = mkOption {
         type = types.nullOr types.str;
@@ -163,6 +163,7 @@ let
           else throw "pwaFirefox: remote icon for ${app.title} requires iconHash.";
         name = "pwa-firefox-${app.id}-icon";
       }
+    else if hasPrefix "/nix/store/" source then source
     else if hasPrefix "/" source || hasPrefix "./" source || hasPrefix "../" source then
       throw "pwaFirefox: use a Nix path literal for ${app.title}'s icon."
     else source;

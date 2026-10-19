@@ -25,6 +25,8 @@ let
         hash = app.iconHash;
         name = "${appName app}-icon";
       }
+    else if builtins.isString iconSource && lib.hasPrefix "/nix/store/" iconSource then
+      iconSource
     else if builtins.isString iconSource && (lib.hasPrefix "./" iconSource || lib.hasPrefix "../" iconSource || lib.hasPrefix "/" iconSource) then
       throw "PWA icon paths must be passed as Nix path literals, e.g. icon = ./icon.png; rather than quoted strings."
     else
@@ -115,7 +117,7 @@ in {
       icon = mkOption {
         type = types.nullOr (types.oneOf [ types.path types.str ]);
         default = null;
-        description = "Optional local icon file as a Nix path literal, e.g. ./icons/gather.png. Do not pass a quoted relative string such as \"./gather.png\".";
+        description = "Optional icon value: Nix path literal (e.g. ./icons/gather.png), icon-theme name, /nix/store icon path string from a package, or remote URL when iconHash is provided. Do not pass quoted relative paths such as \"./gather.png\".";
       };
       iconHash = mkOption {
         type = types.nullOr types.str;

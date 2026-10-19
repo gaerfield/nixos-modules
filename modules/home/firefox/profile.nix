@@ -15,6 +15,7 @@ let
 
   firefoxProfileLauncher = pkgs.callPackage ./profile-launcher.nix {
     inherit pkgs profileNames routePatternsTsv;
+    firefoxPackage = config.programs.firefox.package;
   };
 
   profileIcon = profileName: profileCfg:
@@ -49,6 +50,11 @@ let
     };
   }) cfg.profiles;
 
+  defaultSettings = {
+    # prevents Firefox from disabling newly added or side-loaded extensions upon startup.
+    "extensions.autoDisableScopes" = 0;
+  };
+
   mkProfile = profileName: profileCfg:
     let
       normalizeExtension = extension:
@@ -68,20 +74,16 @@ let
         }) (lib.filter (extensionCfg: extensionCfg.id != null) normalizedExtensions)
       );
       baseProfile = {
-      id = profileCfg.id;
-      name = profileCfg.name;
-      isDefault = profileCfg.isDefault;
-      extensions.force = true;
-      extensions.packages = lib.unique configuredPackages;
-      extensions.settings = configuredExtensionSettings;
-      settings = {
-        # prevents Firefox from disabling newly added or side-loaded extensions upon startup.
-        "extensions.autoDisableScopes" = 0;
-      };
+        id = profileCfg.id;
+        name = profileCfg.name;
+        isDefault = profileCfg.isDefault;
+        extensions.force = true;
+        extensions.packages = lib.unique configuredPackages;
+        extensions.settings = configuredExtensionSettings;
+        settings = defaultSettings // (profileCfg.extraSettings.settings or { });
       };
       extraSettingsWithoutSettings = removeAttrs profileCfg.extraSettings [ "settings" ];
-      mergedSettings = baseProfile.settings // (profileCfg.extraSettings.settings or { });
-    in baseProfile // extraSettingsWithoutSettings // { settings = mergedSettings; };
+    in baseProfile // extraSettingsWithoutSettings;
 in {
   options.gnm.hm.firefoxProfiles = {
     enable = lib.mkEnableOption "custom Firefox profiles with declarative addon sets";

@@ -1,5 +1,6 @@
 {
   pkgs,
+  firefoxPackage,
   profileNames,
   routePatternsTsv,
   writeShellApplication,
@@ -7,11 +8,12 @@
 let
   profileNamesShell = pkgs.lib.concatMapStringsSep " " pkgs.lib.escapeShellArg profileNames;
   routePatternsTsvShell = pkgs.lib.escapeShellArg routePatternsTsv;
+  firefoxBin = "${firefoxPackage}/bin/firefox";
 in
 writeShellApplication {
   name = "firefox-profile-launcher";
   runtimeInputs = with pkgs; [
-    firefox
+    firefoxPackage
     coreutils
     gnugrep
     jq
@@ -44,7 +46,7 @@ writeShellApplication {
         exit $?
       fi
 
-      exec firefox --name "$target" --no-remote -P "$target" --new-window
+      exec ${firefoxBin} --name "$target" --no-remote -P "$target" --new-window
     fi
 
     route_profile=""
@@ -67,7 +69,7 @@ writeShellApplication {
       # If the active window already belongs to the target profile, keep the URL in it.
       active_profile="$(hyprctl activewindow -j 2>/dev/null | jq -r '(.initialClass // .class // "")')"
       if [[ "$active_profile" == "$route_profile" ]]; then
-        exec firefox --name "$route_profile" --no-remote -P "$route_profile" "$target"
+        exec ${firefoxBin} --name "$route_profile" --no-remote -P "$route_profile" "$target"
       fi
 
       addr="$(hyprctl clients -j | jq --arg cls "$route_profile" -r '.[] | select((.initialClass // "") == $cls) | .address' | head -n 1)"
@@ -75,9 +77,9 @@ writeShellApplication {
         hyprctl --quiet dispatch "hl.dsp.focus({ window = \"address:$addr\" })"
       fi
 
-      exec firefox --name "$route_profile" --no-remote -P "$route_profile" "$target"
+      exec ${firefoxBin} --name "$route_profile" --no-remote -P "$route_profile" "$target"
     fi
 
-    exec firefox "$target"
+    exec ${firefoxBin} "$target"
   '';
 }

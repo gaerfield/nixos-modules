@@ -49,13 +49,39 @@ let
     };
   }) cfg.profiles;
 
-  mkProfile = profileName: profileCfg: {
-    id = profileCfg.id;
-    name = profileCfg.name;
-    isDefault = profileCfg.isDefault;
-    extensions.force = true;
-    extensions.packages = lib.unique profileCfg.extensions;
-  } // profileCfg.extraSettings;
+  mkProfile = profileName: profileCfg:
+    let
+      normalizeExtension = extension:
+        if lib.isDerivation extension then {
+          package = extension;
+          id = null;
+          force = true;
+          settings = { };
+        } else extension;
+
+      normalizedExtensions = map normalizeExtension profileCfg.extensions;
+      configuredPackages = map (extensionCfg: extensionCfg.package) normalizedExtensions;
+      configuredExtensionSettings = builtins.listToAttrs (
+        map (extensionCfg: {
+          name = extensionCfg.id;
+          value = { force = extensionCfg.force; } // extensionCfg.settings;
+        }) (lib.filter (extensionCfg: extensionCfg.id != null) normalizedExtensions)
+      );
+      baseProfile = {
+      id = profileCfg.id;
+      name = profileCfg.name;
+      isDefault = profileCfg.isDefault;
+      extensions.force = true;
+      extensions.packages = lib.unique configuredPackages;
+      extensions.settings = configuredExtensionSettings;
+      settings = {
+        # prevents Firefox from disabling newly added or side-loaded extensions upon startup.
+        "extensions.autoDisableScopes" = 0;
+      };
+      };
+      extraSettingsWithoutSettings = removeAttrs profileCfg.extraSettings [ "settings" ];
+      mergedSettings = baseProfile.settings // (profileCfg.extraSettings.settings or { });
+    in baseProfile // extraSettingsWithoutSettings // { settings = mergedSettings; };
 in {
   options.gnm.hm.firefoxProfiles = {
     enable = lib.mkEnableOption "custom Firefox profiles with declarative addon sets";
@@ -81,9 +107,37 @@ in {
           };
 
           extensions = lib.mkOption {
-            type = lib.types.listOf lib.types.package;
+            type = lib.types.listOf (lib.types.oneOf [
+              lib.types.package
+              (lib.types.submodule ({ ... }: {
+                options = {
+                  package = lib.mkOption {
+                    type = lib.types.package;
+                    description = "Firefox extension package to install.";
+                  };
+
+                  id = lib.mkOption {
+                    type = lib.types.nullOr lib.types.str;
+                    default = null;
+                    description = "Firefox extension id used as extensions.settings.<id>. Set this when using force/settings.";
+                  };
+
+                  force = lib.mkOption {
+                    type = lib.types.bool;
+                    default = true;
+                    description = "Whether to force-enable this extension in extensions.settings.<id>.force.";
+                  };
+
+                  settings = lib.mkOption {
+                    type = lib.types.attrs;
+                    default = { };
+                    description = "Additional settings merged into extensions.settings.<id>.";
+                  };
+                };
+              }))
+            ]);
             default = [ ];
-            description = "Firefox extension packages for this profile only.";
+            description = "Firefox extension entries for this profile. Use package-only entries for simple installs, or attrset entries with package/id/force/settings for per-extension configuration.";
           };
 
           icon = lib.mkOption {
@@ -151,9 +205,11 @@ in {
 
     gnm.hm.browserNativeClient.enable = lib.mkIf hasUrlRouting (lib.mkDefault true);
 
-    programs.firefox.policies = lib.mkIf hasUrlRouting (openInExternalBrowser.mkPolicy {
-      urls = allRouteUrls;
-      reverse = false;
-    });
+    programs.firefox = {
+      policies = lib.mkIf hasUrlRouting (openInExternalBrowser.mkPolicy {
+        urls = allRouteUrls;
+        reverse = false;
+      });
+    };
   };
 }

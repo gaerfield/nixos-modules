@@ -17,6 +17,38 @@ let
     inherit pkgs profileNames routePatternsTsv;
   };
 
+  profileIcon = profileName: profileCfg:
+    if builtins.isPath profileCfg.icon then profileCfg.icon else if lib.hasPrefix "http://" profileCfg.icon || lib.hasPrefix "https://" profileCfg.icon then
+      if profileCfg.iconHash == null then
+        throw "gnm.hm.firefoxProfiles.profiles.${profileName}.iconHash must be set when icon is a remote URL."
+      else
+        pkgs.fetchurl {
+          url = profileCfg.icon;
+          hash = profileCfg.iconHash;
+          name = "firefox-profile-${profileName}-icon";
+        }
+    else if builtins.isString profileCfg.icon && (lib.hasPrefix "./" profileCfg.icon || lib.hasPrefix "../" profileCfg.icon || lib.hasPrefix "/" profileCfg.icon) then
+      throw "Firefox profile icon paths must be passed as Nix path literals, e.g. icon = ./icon.png; rather than quoted strings."
+    else
+      profileCfg.icon;
+
+  profileDesktopEntries = lib.mapAttrs' (profileName: profileCfg: {
+    name = "firefox-profile-${profileName}";
+    value = {
+      name = profileCfg.name;
+      genericName = profileCfg.name;
+      exec = "${firefoxProfileLauncher}/bin/firefox-profile-launcher ${lib.escapeShellArg profileName}";
+      icon = toString (profileIcon profileName profileCfg);
+      terminal = false;
+      categories = profileCfg.categories;
+      startupNotify = true;
+      settings = {
+        StartupWMClass = profileName;
+        Keywords = lib.concatStringsSep ";" profileCfg.keywords;
+      };
+    };
+  }) cfg.profiles;
+
   mkProfile = profileName: profileCfg: {
     id = profileCfg.id;
     name = profileCfg.name;
@@ -54,6 +86,30 @@ in {
             description = "Firefox extension packages for this profile only.";
           };
 
+          icon = lib.mkOption {
+            type = lib.types.oneOf [ lib.types.path lib.types.str ];
+            default = "firefox";
+            description = "Desktop icon name, local icon path, or remote icon URL. Local files should be passed as Nix path literals, for example ./icons/work.png.";
+          };
+
+          iconHash = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            description = "sha256 hash required when icon is a remote URL.";
+          };
+
+          categories = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [ "Network" "WebBrowser" ];
+            description = "Desktop entry categories for this profile launcher.";
+          };
+
+          keywords = lib.mkOption {
+            type = lib.types.listOf lib.types.str;
+            default = [ "browser" "firefox" "profile" ];
+            description = "Desktop entry keywords for this profile launcher.";
+          };
+
           routeUrls = lib.mkOption {
             type = lib.types.listOf lib.types.str;
             default = [ ];
@@ -88,6 +144,7 @@ in {
 
   config = lib.mkIf cfg.enable {
     programs.firefox.profiles = lib.mapAttrs mkProfile cfg.profiles;
+    xdg.desktopEntries = profileDesktopEntries;
 
     home.packages = [ firefoxProfileLauncher ]
       ++ lib.optionals hasUrlRouting [ browserShimToXdgOpen.package ];

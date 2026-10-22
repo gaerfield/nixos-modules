@@ -1,6 +1,7 @@
 {
   pkgs,
   firefoxPackage,
+  shimDir,
   profileNames,
   routePatternsTsv,
   writeShellApplication,
@@ -8,6 +9,7 @@
 let
   profileNamesShell = pkgs.lib.concatMapStringsSep " " pkgs.lib.escapeShellArg profileNames;
   routePatternsTsvShell = pkgs.lib.escapeShellArg routePatternsTsv;
+  shimPathSetup = if shimDir == null then "" else ''export PATH=${pkgs.lib.escapeShellArg shimDir}:"$PATH"'';
   firefoxBin = "${firefoxPackage}/bin/firefox";
 in
 writeShellApplication {
@@ -21,6 +23,8 @@ writeShellApplication {
   ];
   text = ''
     set -euo pipefail
+
+    ${shimPathSetup}
 
     if [[ $# -lt 1 ]]; then
       echo "usage: firefox-profile-launcher <profile-name|url>" >&2

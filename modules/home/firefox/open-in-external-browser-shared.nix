@@ -4,8 +4,8 @@
   writeShellApplication,
 }:
 let
-  extensionId = "{5cf4e3be-dd11-4589-befe-1b9e5037792b}";
-  xpiUrl = "https://addons.mozilla.org/firefox/downloads/file/3686239/open_in_waterfox-0.1.1.xpi";
+  extensionId = "{8db82a75-48fd-452a-81cf-bd40b2e60dac}";
+  xpiUrl = "https://addons.mozilla.org/firefox/downloads/file/4593044/open_in_opera_browser-0.3.4.xpi";
 
   firefoxShimDirName = ".firefox-shims";
   pwaFirefoxShimDirName = ".pwa-firefox-shims";
@@ -17,7 +17,6 @@ in {
     reverse,
   }: {
     ExtensionSettings = {
-      # https://addons.mozilla.org/en-US/firefox/addon/external-application:
       "${extensionId}" = {
         install_url = xpiUrl;
         installation_mode = "force_installed";
@@ -40,7 +39,7 @@ in {
   }: "${baseDir}/${shimDirName}";
 
   mkBrowserShimToXdgOpen = {
-    command ? "waterfox",
+    command ? "opera",
     shimDir ? null,
   }:
     let

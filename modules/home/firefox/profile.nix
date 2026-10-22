@@ -10,12 +10,19 @@ let
       lib.concatMapStringsSep "\n" (pattern: "${profile}\t${pattern}") cfg.profiles.${profile}.routeUrls
     ) routeProfiles;
   openInExternalBrowser = pkgs.callPackage ./open-in-external-browser-shared.nix { };
+  firefoxConfigRelativeDir = lib.removePrefix "${config.xdg.configHome}/" config.programs.firefox.configPath;
 
-  browserShimToXdgOpen = openInExternalBrowser.mkBrowserShimToXdgOpen { command = "waterfox"; };
+  browserShimToXdgOpen = openInExternalBrowser.mkBrowserShimToXdgOpen {
+    shimDir = openInExternalBrowser.mkShimDir {
+      baseDir = "${config.xdg.configHome}/mozilla/firefox";
+      shimDirName = openInExternalBrowser.firefoxShimDirName;
+    };
+  };
 
   firefoxProfileLauncher = pkgs.callPackage ./profile-launcher.nix {
     inherit pkgs profileNames routePatternsTsv;
-    firefoxPackage = config.programs.firefox.package;
+    firefoxPackage = config.programs.firefox.finalPackage or config.programs.firefox.package;
+    shimDir = if hasUrlRouting then browserShimToXdgOpen.shimDir else null;
   };
 
   profileIcon = profileName: profileCfg:
@@ -49,6 +56,25 @@ let
       };
     };
   }) cfg.profiles;
+
+  launcherDesktopEntry = {
+    firefox-profile-launcher = {
+      name = "Firefox Profile Launcher";
+      genericName = "Web Browser";
+      exec = "${firefoxProfileLauncher}/bin/firefox-profile-launcher %u";
+      icon = "firefox";
+      terminal = false;
+      categories = [ "Network" "WebBrowser" ];
+      mimeType = [
+        "x-scheme-handler/http"
+        "x-scheme-handler/https"
+      ];
+      startupNotify = true;
+      settings = {
+        Keywords = "browser;firefox;profile;";
+      };
+    };
+  };
 
   defaultSettings = {
     # prevents Firefox from disabling newly added or side-loaded extensions upon startup.
@@ -178,7 +204,7 @@ in {
 
               Important behavior:
               - Route definitions from all profiles are aggregated globally into one
-                Open in Waterfox policy list.
+                "Open in" policy list.
               - Therefore, matching links are intercepted from any profile, not only
                 from this profile.
               - After interception, firefox-profile-launcher resolves the final target
@@ -200,10 +226,15 @@ in {
 
   config = lib.mkIf cfg.enable {
     programs.firefox.profiles = lib.mapAttrs mkProfile cfg.profiles;
-    xdg.desktopEntries = profileDesktopEntries;
+    xdg.desktopEntries = profileDesktopEntries // launcherDesktopEntry;
 
-    home.packages = [ firefoxProfileLauncher ]
-      ++ lib.optionals hasUrlRouting [ browserShimToXdgOpen.package ];
+    home.packages = [ firefoxProfileLauncher ];
+
+    xdg.configFile = lib.mkIf hasUrlRouting {
+      "${firefoxConfigRelativeDir}/${openInExternalBrowser.firefoxShimDirName}/${browserShimToXdgOpen.command}" = {
+        source = "${browserShimToXdgOpen.package}/bin/${browserShimToXdgOpen.command}";
+      };
+    };
 
     gnm.hm.browserNativeClient.enable = lib.mkIf hasUrlRouting (lib.mkDefault true);
 

@@ -5,6 +5,7 @@
 }:
 with lib; let
   cfg = config.gnm.hm.firefox;
+  firefoxPackage = config.programs.firefox.finalPackage or config.programs.firefox.package;
 in {
   imports = [
     ./profile.nix
@@ -14,7 +15,7 @@ in {
 
   config = mkIf cfg.enable {
 
-    home.sessionVariables.BROWSER = "${config.programs.firefox.package}/bin/firefox";
+    home.sessionVariables.BROWSER = "${firefoxPackage}/bin/firefox";
     programs.firefox = {
       enable = true;
       configPath = "${config.xdg.configHome}/mozilla/firefox";

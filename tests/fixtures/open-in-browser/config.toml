@@ -1,0 +1,14 @@
+defaultExecutable = "fallback"
+
+[executables]
+private = "echo private"
+work = "echo work"
+fallback = "echo fallback"
+
+[[urlPatterns]]
+globPattern = "https://*posteo.de*"
+executable = "private"
+
+[[urlPatterns]]
+globPattern = "https://example.org/*"
+executable = "work"

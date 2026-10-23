@@ -1,0 +1,8 @@
+defaultExecutable = "$BROWSER"
+
+[executables]
+private = "echo private"
+
+[[urlPatterns]]
+globPattern = "https://*posteo.de*"
+executable = "private"

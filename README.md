@@ -74,6 +74,25 @@ I use [home-manager](https://github.com/nix-community/home-manager) and enable m
 
 ## Developing
 
+### open-in-browser
+
+Import `homeModules.open-in-browser` and enable `gnm.hm.openInBrowser` to route URLs through the standalone `open-in-browser` package. It reads `$XDG_CONFIG_HOME/open-in-browser/config.toml` (or `~/.config/open-in-browser/config.toml`). For example:
+
+```nix
+gnm.hm.openInBrowser = {
+  enable = true;
+  executables = {
+    firefox-private = "firefox -P private";
+  };
+  urlPatterns = [
+    { globPattern = "https://*posteo.de*"; executable = "firefox-private"; }
+  ];
+  # registerAsDefault = false; # opt out of HTTP/HTTPS XDG defaults
+};
+```
+
+Multiple modules can contribute `executables` (merged by name) and `urlPatterns` (concatenated in module order); the first matching, case-sensitive glob wins. Commands are split into arguments, not evaluated by a shell, and receive the URL as their final argument. Unmatched URLs use `defaultExecutable`, which defaults to `$BROWSER` resolved at runtime; it can also name a registered executable. Set `$BROWSER` to a browser command rather than `xdg-open` or `open-in-browser` to avoid recursion. XDG MIME associations, not `$BROWSER`, normally determine the desktop default browser. Firefox profiles are registered as `firefox-<profile>` automatically when `gnm.hm.firefoxProfiles` is enabled.
+
 Testing locally before committing and pushing by setting url to a local path:
 
 ```nix

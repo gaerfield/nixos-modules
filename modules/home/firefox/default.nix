@@ -8,6 +8,7 @@ with lib; let
   firefoxPackage = config.programs.firefox.finalPackage or config.programs.firefox.package;
 in {
   imports = [
+    ../open-in-browser
     ./profile.nix
   ];
 

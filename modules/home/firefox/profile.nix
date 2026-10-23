@@ -1,14 +1,15 @@
 { config, lib, pkgs, ... }:
 let
   cfg = config.gnm.hm.firefoxProfiles;
-  profileNames = builtins.attrNames cfg.profiles;
-  routeProfiles = lib.filter (name: (cfg.profiles.${name}.routeUrls or [ ]) != [ ]) profileNames;
-  allRouteUrls = lib.unique (lib.concatMap (profile: cfg.profiles.${profile}.routeUrls) routeProfiles);
-  hasUrlRouting = allRouteUrls != [ ];
-  routePatternsTsv =
-    lib.concatMapStringsSep "\n" (profile:
-      lib.concatMapStringsSep "\n" (pattern: "${profile}\t${pattern}") cfg.profiles.${profile}.routeUrls
-    ) routeProfiles;
+  routingCfg = config.gnm.hm.openInBrowser;
+  profileUrlPatterns = lib.concatMap (name:
+    map (globPattern: {
+      inherit globPattern;
+      executable = "firefox-${name}";
+    }) cfg.profiles.${name}.routeUrls
+  ) (builtins.attrNames cfg.profiles);
+  allRouteUrls = lib.unique (map (rule: rule.globPattern) profileUrlPatterns);
+  hasUrlRouting = routingCfg.enable && allRouteUrls != [ ];
   openInExternalBrowser = pkgs.callPackage ./open-in-external-browser-shared.nix { };
   firefoxConfigRelativeDir = lib.removePrefix "${config.xdg.configHome}/" config.programs.firefox.configPath;
 
@@ -19,8 +20,7 @@ let
     };
   };
 
-  firefoxProfileLauncher = pkgs.callPackage ./profile-launcher.nix {
-    inherit pkgs profileNames routePatternsTsv;
+  firefoxProfileCommand = pkgs.callPackage ./profile-command.nix {
     firefoxPackage = config.programs.firefox.finalPackage or config.programs.firefox.package;
     shimDir = if hasUrlRouting then browserShimToXdgOpen.shimDir else null;
   };
@@ -45,7 +45,7 @@ let
     value = {
       name = profileCfg.name;
       genericName = profileCfg.name;
-      exec = "${firefoxProfileLauncher}/bin/firefox-profile-launcher ${lib.escapeShellArg profileName}";
+      exec = "${firefoxProfileCommand}/bin/firefox-profile-command ${lib.escapeShellArg profileName}";
       icon = toString (profileIcon profileName profileCfg);
       terminal = false;
       categories = profileCfg.categories;
@@ -56,25 +56,6 @@ let
       };
     };
   }) cfg.profiles;
-
-  launcherDesktopEntry = {
-    firefox-profile-launcher = {
-      name = "Firefox Profile Launcher";
-      genericName = "Web Browser";
-      exec = "${firefoxProfileLauncher}/bin/firefox-profile-launcher %u";
-      icon = "firefox";
-      terminal = false;
-      categories = [ "Network" "WebBrowser" ];
-      mimeType = [
-        "x-scheme-handler/http"
-        "x-scheme-handler/https"
-      ];
-      startupNotify = true;
-      settings = {
-        Keywords = "browser;firefox;profile;";
-      };
-    };
-  };
 
   defaultSettings = {
     # prevents Firefox from disabling newly added or side-loaded extensions upon startup.
@@ -195,21 +176,8 @@ in {
           routeUrls = lib.mkOption {
             type = lib.types.listOf lib.types.str;
             default = [ ];
-            example = [
-              "https://console.cloud.google.com/*"
-              "https://auth0.com/*"
-            ];
-            description = ''
-              URL glob patterns that should be routed to this profile.
-
-              Important behavior:
-              - Route definitions from all profiles are aggregated globally into one
-                "Open in" policy list.
-              - Therefore, matching links are intercepted from any profile, not only
-                from this profile.
-              - After interception, firefox-profile-launcher resolves the final target
-                profile using the aggregated route map and opens/focuses that profile.
-            '';
+            example = [ "https://*posteo.de*" ];
+            description = "URL glob patterns routed to this profile through open-in-browser; also intercepted from Firefox by the external-browser extension.";
           };
 
           extraSettings = lib.mkOption {
@@ -226,9 +194,20 @@ in {
 
   config = lib.mkIf cfg.enable {
     programs.firefox.profiles = lib.mapAttrs mkProfile cfg.profiles;
-    xdg.desktopEntries = profileDesktopEntries // launcherDesktopEntry;
+    xdg.desktopEntries = profileDesktopEntries;
 
-    home.packages = [ firefoxProfileLauncher ];
+    home.packages = [ firefoxProfileCommand ];
+
+    gnm.hm.openInBrowser = {
+      enable = lib.mkDefault true;
+      executables = lib.mapAttrs' (name: _: {
+        name = "firefox-${name}";
+        value = "${firefoxProfileCommand}/bin/firefox-profile-command ${lib.escapeShellArg name}";
+      }) cfg.profiles // {
+        firefox-default = "${firefoxProfileCommand}/bin/firefox-profile-command --default";
+      };
+      urlPatterns = profileUrlPatterns;
+    };
 
     xdg.configFile = lib.mkIf hasUrlRouting {
       "${firefoxConfigRelativeDir}/${openInExternalBrowser.firefoxShimDirName}/${browserShimToXdgOpen.command}" = {

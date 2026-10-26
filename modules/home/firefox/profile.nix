@@ -20,7 +20,7 @@ let
     };
   };
 
-  firefoxProfileCommand = pkgs.callPackage ./profile-command.nix {
+  firefoxProfileLauncher = pkgs.callPackage ./profile-launcher.nix {
     firefoxPackage = config.programs.firefox.finalPackage or config.programs.firefox.package;
     shimDir = if hasUrlRouting then browserShimToXdgOpen.shimDir else null;
   };
@@ -45,7 +45,7 @@ let
     value = {
       name = profileCfg.name;
       genericName = profileCfg.name;
-      exec = "${firefoxProfileCommand}/bin/firefox-profile-command ${lib.escapeShellArg profileName}";
+      exec = "${firefoxProfileLauncher}/bin/firefox-profile-launcher ${lib.escapeShellArg profileName}";
       icon = toString (profileIcon profileName profileCfg);
       terminal = false;
       categories = profileCfg.categories;
@@ -196,16 +196,14 @@ in {
     programs.firefox.profiles = lib.mapAttrs mkProfile cfg.profiles;
     xdg.desktopEntries = profileDesktopEntries;
 
-    home.packages = [ firefoxProfileCommand ];
+    home.packages = [ firefoxProfileLauncher ];
 
     gnm.hm.openInBrowser = {
       enable = lib.mkDefault true;
       executables = lib.mapAttrs' (name: _: {
         name = "firefox-${name}";
-        value = "${firefoxProfileCommand}/bin/firefox-profile-command ${lib.escapeShellArg name}";
-      }) cfg.profiles // {
-        firefox-default = "${firefoxProfileCommand}/bin/firefox-profile-command --default";
-      };
+        value = "${firefoxProfileLauncher}/bin/firefox-profile-launcher ${lib.escapeShellArg name}";
+      }) cfg.profiles;
       urlPatterns = profileUrlPatterns;
     };
 

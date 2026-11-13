@@ -8,7 +8,8 @@ let
   extensionCrx = pkgs.fetchurl {
     url = "https://clients2.google.com/service/update2/crx?response=redirect&acceptformat=crx2,crx3&prodversion=130&x=id%3D${extensionId}%26installsource%3Dondemand%26uc";
     name = "open-in-firefox-browser.crx";
-    sha256 = "sha256-e85yx9yT79Iu+zNuc7GbJt07xu3MSKsMAhP23XuvVFI=";
+    sha256 = "sha256-8aO/XVDoe7T/+Sou2PPpJj/5/E9pskH4dJicKGHCvvM=";
+
   };
   # CRX files are ZIP payloads wrapped in a small binary header. Skipping the
   # initial 16 bytes leaves the actual ZIP data, which unzip can recover.
